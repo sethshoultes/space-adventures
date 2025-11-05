@@ -192,14 +192,28 @@ docker-compose exec redis redis-cli
 
 Comprehensive design documents are in the `docs/` folder:
 
+### Core Design
 | Document | Description |
 |----------|-------------|
 | [**Game Design Document**](docs/game-design-document.md) | Complete game design, mechanics, systems |
 | [**Technical Architecture**](docs/technical-architecture.md) | Code structure, data models, architecture |
-| [**Ship Systems**](docs/ship-systems.md) | Detailed specs for all 10 ship systems |
+| [**MVP Roadmap**](docs/mvp-roadmap.md) | Week-by-week development plan (6 weeks) |
+
+### Game Systems
+| Document | Description |
+|----------|-------------|
+| [**Ship Systems**](docs/ship-systems.md) | Detailed specs for all 10 ship systems (levels 0-5) |
 | [**Mission Framework**](docs/mission-framework.md) | How missions work, progression, encounters |
+| [**Resources & Survival**](docs/resources-survival.md) | Resource management, time system, concurrent missions |
+| [**Crew & Companions**](docs/crew-companion-system.md) | Optional crew system, relationships, abilities |
+
+### AI & Content
+| Document | Description |
+|----------|-------------|
 | [**AI Integration**](docs/ai-integration.md) | AI prompts, templates, integration patterns |
-| [**MVP Roadmap**](docs/mvp-roadmap.md) | Week-by-week development plan |
+| [**Visual Features**](docs/visual-features.md) | AI image generation, galaxy maps, Stable Diffusion |
+| [**Ship Documentation**](docs/ship-documentation.md) | AI-generated ship manuals, task queue system |
+| [**Settings System**](docs/settings-system.md) | Multi-provider AI config, visual styles, preferences |
 
 ---
 
