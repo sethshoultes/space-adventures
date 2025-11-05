@@ -73,6 +73,33 @@
 6. **Update:** Godot updates game state and UI
 7. **Save:** Periodically save game state to file
 
+### Containerized Architecture (Docker)
+
+```
+┌─────────────────────────────────────────────────────┐
+│              DOCKER COMPOSE STACK                   │
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│  ┌───────────────────┐  ┌───────────────────┐     │
+│  │  Python FastAPI   │  │     Redis         │     │
+│  │  AI Service       │←→│  Cache & Session  │     │
+│  │  Port: 8000       │  │  Port: 6379       │     │
+│  └───────────────────┘  └───────────────────┘     │
+│           ↑                       ↑                │
+│           │                       │                │
+│           └───────────────────────┘                │
+│                   Docker Network                   │
+└─────────────────────────────────────────────────────┘
+           ↑
+           │ HTTP
+           │
+┌──────────┴──────────┐
+│   GODOT (Native)    │
+│   Game Client       │
+│   localhost:8000    │
+└─────────────────────┘
+```
+
 ---
 
 ## Technology Stack
@@ -105,6 +132,463 @@
 - **httpx**: Async HTTP client
 - **rich**: CLI formatting (for dev tools)
 - **pytest**: Testing framework
+
+### Docker & Containerization
+- **Docker**: Container runtime
+- **Docker Compose**: Multi-container orchestration
+- **Redis**: In-memory data store for caching
+
+**Why:**
+- Consistent development environment
+- Easy deployment
+- Isolated services
+- Simple scaling
+- Redis for fast caching (vs SQLite)
+
+---
+
+## Docker Configuration
+
+### docker-compose.yml
+
+```yaml
+version: '3.8'
+
+services:
+  # Python AI Service
+  ai-service:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    container_name: space-adventures-ai
+    ports:
+      - "8000:8000"
+    environment:
+      - AI_PROVIDER=${AI_PROVIDER:-ollama}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama2}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+    volumes:
+      - ./python:/app
+      - ./generated_images:/app/generated_images
+    depends_on:
+      - redis
+    networks:
+      - space-adventures-network
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: space-adventures-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - space-adventures-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Optional: Redis Commander (GUI for Redis)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: space-adventures-redis-ui
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - space-adventures-network
+    restart: unless-stopped
+
+networks:
+  space-adventures-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local
+```
+
+### Python Dockerfile
+
+```dockerfile
+# python/Dockerfile
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first (for layer caching)
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Create directories for generated content
+RUN mkdir -p /app/generated_images/cache
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run the application
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+```
+
+### .dockerignore
+
+```
+# python/.dockerignore
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+pip-log.txt
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+.env
+*.env
+!.env.example
+
+# Generated content (mount as volume instead)
+generated_images/cache/*
+!generated_images/cache/.gitkeep
+
+# Tests
+tests/
+.pytest_cache/
+
+# Development
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+```
+
+### Development Commands
+
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f ai-service
+
+# Stop all services
+docker-compose down
+
+# Rebuild after code changes
+docker-compose up -d --build
+
+# Access Redis CLI
+docker-compose exec redis redis-cli
+
+# View Redis data (Web UI)
+# Open http://localhost:8081 in browser
+
+# Stop and remove volumes (clear cache)
+docker-compose down -v
+```
+
+---
+
+## Redis Caching System
+
+### Redis Configuration
+
+```python
+# python/src/cache/redis_cache.py
+
+import redis
+from redis import asyncio as aioredis
+import json
+import hashlib
+from typing import Optional, Any
+from datetime import timedelta
+import logging
+
+logger = logging.getLogger(__name__)
+
+class RedisCache:
+    def __init__(
+        self,
+        host: str = "redis",
+        port: int = 6379,
+        db: int = 0,
+        default_ttl: int = 86400  # 24 hours
+    ):
+        self.host = host
+        self.port = port
+        self.db = db
+        self.default_ttl = default_ttl
+        self.redis: Optional[aioredis.Redis] = None
+
+    async def connect(self):
+        """Establish Redis connection"""
+        try:
+            self.redis = await aioredis.from_url(
+                f"redis://{self.host}:{self.port}/{self.db}",
+                encoding="utf-8",
+                decode_responses=True
+            )
+            # Test connection
+            await self.redis.ping()
+            logger.info(f"Connected to Redis at {self.host}:{self.port}")
+        except Exception as e:
+            logger.error(f"Failed to connect to Redis: {e}")
+            raise
+
+    async def disconnect(self):
+        """Close Redis connection"""
+        if self.redis:
+            await self.redis.close()
+
+    def _generate_key(self, prefix: str, data: dict) -> str:
+        """Generate cache key from data"""
+        data_str = json.dumps(data, sort_keys=True)
+        hash_value = hashlib.md5(data_str.encode()).hexdigest()
+        return f"{prefix}:{hash_value}"
+
+    async def get(self, key: str) -> Optional[Any]:
+        """Get value from cache"""
+        try:
+            value = await self.redis.get(key)
+            if value:
+                return json.loads(value)
+            return None
+        except Exception as e:
+            logger.error(f"Redis GET error: {e}")
+            return None
+
+    async def set(
+        self,
+        key: str,
+        value: Any,
+        ttl: Optional[int] = None
+    ) -> bool:
+        """Set value in cache with TTL"""
+        try:
+            value_json = json.dumps(value)
+            ttl = ttl or self.default_ttl
+            await self.redis.setex(key, ttl, value_json)
+            return True
+        except Exception as e:
+            logger.error(f"Redis SET error: {e}")
+            return False
+
+    async def delete(self, key: str) -> bool:
+        """Delete key from cache"""
+        try:
+            await self.redis.delete(key)
+            return True
+        except Exception as e:
+            logger.error(f"Redis DELETE error: {e}")
+            return False
+
+    async def exists(self, key: str) -> bool:
+        """Check if key exists"""
+        try:
+            return await self.redis.exists(key) > 0
+        except Exception as e:
+            logger.error(f"Redis EXISTS error: {e}")
+            return False
+
+    async def get_or_set(
+        self,
+        key: str,
+        factory_func,
+        ttl: Optional[int] = None
+    ) -> Any:
+        """Get from cache or compute and store"""
+        # Try to get from cache
+        value = await self.get(key)
+        if value is not None:
+            return value
+
+        # Cache miss - compute value
+        value = await factory_func()
+
+        # Store in cache
+        await self.set(key, value, ttl)
+
+        return value
+
+    async def clear_pattern(self, pattern: str) -> int:
+        """Clear all keys matching pattern"""
+        try:
+            keys = []
+            async for key in self.redis.scan_iter(match=pattern):
+                keys.append(key)
+
+            if keys:
+                return await self.redis.delete(*keys)
+            return 0
+        except Exception as e:
+            logger.error(f"Redis CLEAR error: {e}")
+            return 0
+
+    async def get_stats(self) -> dict:
+        """Get cache statistics"""
+        try:
+            info = await self.redis.info("stats")
+            return {
+                "total_connections": info.get("total_connections_received", 0),
+                "total_commands": info.get("total_commands_processed", 0),
+                "keyspace_hits": info.get("keyspace_hits", 0),
+                "keyspace_misses": info.get("keyspace_misses", 0),
+                "used_memory_human": info.get("used_memory_human", "0"),
+            }
+        except Exception as e:
+            logger.error(f"Redis STATS error: {e}")
+            return {}
+
+# Global cache instance
+cache = RedisCache()
+```
+
+### Cache Integration
+
+```python
+# python/src/main.py
+
+from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from src.cache.redis_cache import cache
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Connect to Redis
+    await cache.connect()
+    yield
+    # Shutdown: Close Redis connection
+    await cache.disconnect()
+
+app = FastAPI(lifespan=lifespan)
+
+@app.get("/health")
+async def health():
+    redis_healthy = await cache.redis.ping() if cache.redis else False
+    return {
+        "status": "healthy" if redis_healthy else "degraded",
+        "redis": "connected" if redis_healthy else "disconnected"
+    }
+
+@app.get("/cache/stats")
+async def cache_stats():
+    """Get cache statistics"""
+    stats = await cache.get_stats()
+    return {"cache_stats": stats}
+```
+
+### Caching AI Responses
+
+```python
+# python/src/api/missions.py
+
+from src.cache.redis_cache import cache
+
+@router.post("/generate")
+async def generate_mission(request: MissionGenerationRequest):
+    """Generate mission with Redis caching"""
+
+    # Generate cache key
+    cache_key = cache._generate_key("mission", {
+        "difficulty": request.difficulty,
+        "reward_type": request.required_reward_type,
+        "player_level": request.game_state.player.level
+    })
+
+    # Try to get from cache
+    async def generate_new_mission():
+        # ... AI generation logic ...
+        return mission_data
+
+    # Get from cache or generate new
+    mission = await cache.get_or_set(
+        cache_key,
+        generate_new_mission,
+        ttl=172800  # 48 hours
+    )
+
+    return {"mission": mission, "cached": await cache.exists(cache_key)}
+```
+
+### Cache Management Endpoints
+
+```python
+# python/src/api/cache.py
+
+from fastapi import APIRouter, HTTPException
+from src.cache.redis_cache import cache
+
+router = APIRouter()
+
+@router.delete("/cache/clear")
+async def clear_cache(pattern: str = "*"):
+    """Clear cache by pattern"""
+    count = await cache.clear_pattern(pattern)
+    return {"cleared_keys": count}
+
+@router.get("/cache/stats")
+async def get_cache_stats():
+    """Get cache statistics"""
+    stats = await cache.get_stats()
+    return stats
+
+@router.get("/cache/key/{key}")
+async def get_cache_key(key: str):
+    """Get specific cache key"""
+    value = await cache.get(key)
+    if value is None:
+        raise HTTPException(status_code=404, detail="Key not found")
+    return {"key": key, "value": value}
+
+@router.delete("/cache/key/{key}")
+async def delete_cache_key(key: str):
+    """Delete specific cache key"""
+    success = await cache.delete(key)
+    if not success:
+        raise HTTPException(status_code=404, detail="Key not found")
+    return {"deleted": key}
+```
 
 ---
 

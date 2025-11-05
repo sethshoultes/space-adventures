@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+*.env
+!.env.example
+
+# Generated content (mount as volume instead)
+generated_images/cache/*
+!generated_images/cache/.gitkeep
+.cache/
+logs/
+
+# Tests
+tests/
+.pytest_cache/
+
+# Development
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation
+README.md
+docs/
+
+# Git
+.git/
+.gitignore

@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # Python AI Service
+  ai-service:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    container_name: space-adventures-ai
+    ports:
+      - "8000:8000"
+    environment:
+      - AI_PROVIDER=${AI_PROVIDER:-ollama}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama2}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - CACHE_ENABLED=true
+      - CACHE_TTL_SECONDS=86400
+    volumes:
+      - ./python:/app
+      - ./generated_images:/app/generated_images
+      - ai-cache:/app/.cache
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - space-adventures-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis Cache & Session Store
+  redis:
+    image: redis:7-alpine
+    container_name: space-adventures-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - space-adventures-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Optional: Redis Commander (Web UI for Redis)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: space-adventures-redis-ui
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - space-adventures-network
+    restart: unless-stopped
+    profiles:
+      - debug
+
+networks:
+  space-adventures-network:
+    driver: bridge
+    name: space-adventures-net
+
+volumes:
+  redis-data:
+    driver: local
+    name: space-adventures-redis-data
+  ai-cache:
+    driver: local
+    name: space-adventures-ai-cache

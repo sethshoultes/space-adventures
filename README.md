@@ -55,7 +55,8 @@
 
 **Required:**
 - [Godot Engine 4.2+](https://godotengine.org/download)
-- [Python 3.10+](https://www.python.org/downloads/)
+- [Docker & Docker Compose](https://docs.docker.com/get-docker/) (recommended)
+- **OR** [Python 3.10+](https://www.python.org/downloads/) + [Redis](https://redis.io/download) (manual setup)
 - Git
 
 **For AI (Choose one):**
@@ -64,67 +65,101 @@
 
 ### Setup Steps
 
-1. **Clone the repository**
+#### **Option A: Docker (Recommended) 🐳**
+
+1. **Clone and configure**
+   ```bash
+   git clone https://github.com/yourusername/space-adventures.git
+   cd space-adventures
+   cp python/.env.example python/.env
+   # Edit python/.env with your AI settings
+   ```
+
+2. **Start services**
+   ```bash
+   docker-compose up -d
+   ```
+
+   Services started:
+   - AI Service: http://localhost:8000
+   - Redis Cache: localhost:6379
+   - Redis UI: http://localhost:8081 (optional)
+
+3. **Verify**
+   ```bash
+   # Check services
+   docker-compose ps
+
+   # Test API
+   curl http://localhost:8000/health
+   ```
+
+4. **Open Godot and play**
+   - Open Godot → Import → `godot/project.godot`
+   - Press F5
+
+#### **Option B: Manual Setup**
+
+1. **Clone repository**
    ```bash
    git clone https://github.com/yourusername/space-adventures.git
    cd space-adventures
    ```
 
-2. **Set up Python environment**
+2. **Install and start Redis**
+   ```bash
+   # Linux
+   sudo apt-get install redis-server
+   redis-server
+
+   # Mac
+   brew install redis
+   brew services start redis
+
+   # Windows
+   # Download from https://redis.io/download
+   ```
+
+3. **Set up Python**
    ```bash
    cd python
    python -m venv venv
-
-   # On Linux/Mac:
-   source venv/bin/activate
-
-   # On Windows:
-   venv\Scripts\activate
-
+   source venv/bin/activate  # Windows: venv\Scripts\activate
    pip install -r requirements.txt
-   ```
-
-3. **Configure AI provider**
-   ```bash
    cp .env.example .env
-   # Edit .env with your settings
+   # Edit .env
    ```
 
-   **For OpenAI:**
-   ```
-   AI_PROVIDER=openai
-   OPENAI_API_KEY=sk-your-key-here
-   OPENAI_MODEL=gpt-4
-   ```
-
-   **For Ollama:**
-   ```
-   AI_PROVIDER=ollama
-   OLLAMA_BASE_URL=http://localhost:11434
-   OLLAMA_MODEL=llama2
-   ```
-
-4. **Start the AI service**
+4. **Start AI service**
    ```bash
    python src/main.py
    ```
 
-   You should see:
-   ```
-   INFO: Application startup complete.
-   INFO: Uvicorn running on http://0.0.0.0:8000
-   ```
+5. **Open Godot and play**
+   - Open Godot → Import → `godot/project.godot`
+   - Press F5
 
-5. **Open Godot project**
-   - Open Godot Engine
-   - Click "Import"
-   - Navigate to `space-adventures/godot`
-   - Select `project.godot`
-   - Click "Import & Edit"
+### Docker Commands
 
-6. **Run the game**
-   - Press F5 in Godot or click the Play button
-   - Enjoy!
+```bash
+# Start services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f ai-service
+
+# Stop services
+docker-compose down
+
+# Rebuild after code changes
+docker-compose up -d --build
+
+# Clear cache and restart
+docker-compose down -v && docker-compose up -d
+
+# Access Redis CLI
+docker-compose exec redis redis-cli
+```
 
 ---
 
