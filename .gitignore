@@ -1,0 +1,80 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Environment variables
+.env
+*.env
+!.env.example
+
+# AI Cache
+python/cache.db
+python/src/cache/*.db
+
+# Godot
+.import/
+export.cfg
+export_presets.cfg
+.mono/
+data_*/
+*.translation
+.godot/
+
+# Save files (optional - uncomment if you don't want to commit saves)
+# godot/saves/*.json
+# !godot/saves/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+test-results/
+coverage/
+
+# Build artifacts
+*.o
+*.a
+*.dylib
+*.exe
+*.pck
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Documentation builds
+docs/_build/
+site/
