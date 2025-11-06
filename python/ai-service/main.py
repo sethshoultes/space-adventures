@@ -22,12 +22,16 @@ from datetime import datetime
 import logging
 from typing import Dict, Any
 
+# Import API routers
+from src.api import missions_router, chat_router, dialogue_router
+from src.ai.client import get_ai_client
+
 # Load environment variables
 load_dotenv()
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
+    level=os.getenv("LOG_LEVEL", "INFO").upper(),
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -36,7 +40,9 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="Space Adventures AI Service",
     description="AI-powered content generation service",
-    version="0.1.0"
+    version="0.1.0",
+    docs_url="/docs",
+    redoc_url="/redoc"
 )
 
 # CORS configuration
@@ -48,6 +54,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Register API routers
+app.include_router(missions_router)
+app.include_router(chat_router)
+app.include_router(dialogue_router)
+
 
 # Health check endpoint
 @app.get("/health")
@@ -56,20 +67,31 @@ async def health_check() -> Dict[str, Any]:
     AI Service health check.
     Returns service status and available AI providers.
     """
-    # Check which AI providers are configured
-    providers_status = {
-        "claude": bool(os.getenv("ANTHROPIC_API_KEY")),
-        "openai": bool(os.getenv("OPENAI_API_KEY")),
-        "ollama": bool(os.getenv("OLLAMA_BASE_URL"))
-    }
+    # Get AI client to check providers
+    try:
+        ai_client = get_ai_client()
+        available_providers = ai_client.get_available_providers()
+        providers_health = await ai_client.health_check()
+    except Exception as e:
+        logger.error(f"Error checking AI providers: {e}")
+        available_providers = []
+        providers_health = {}
 
     return {
         "status": "healthy",
         "service": "ai-service",
         "timestamp": datetime.utcnow().isoformat(),
         "version": "0.1.0",
-        "providers": providers_status,
-        "cache_enabled": os.getenv("CACHE_ENABLED", "true") == "true"
+        "providers": {
+            "available": available_providers,
+            "health": providers_health
+        },
+        "cache_enabled": os.getenv("CACHE_ENABLED", "true") == "true",
+        "endpoints": {
+            "missions": "/api/missions/generate",
+            "chat": "/api/chat/message",
+            "dialogue": "/api/dialogue/generate"
+        }
     }
 
 
@@ -91,62 +113,24 @@ async def root():
     }
 
 
-# API Endpoints will be added in separate router files
-# These are placeholders showing the structure
-
-@app.get("/api/missions/health")
-async def missions_health():
-    """Mission generation endpoint health check."""
-    return {
-        "endpoint": "missions",
-        "status": "ready",
-        "description": "Mission generation endpoint"
-    }
-
-
-@app.get("/api/chat/health")
-async def chat_health():
-    """Chat system endpoint health check."""
-    return {
-        "endpoint": "chat",
-        "status": "ready",
-        "description": "AI chat and conversation endpoint"
-    }
+# Startup event
+@app.on_event("startup")
+async def startup_event():
+    """Initialize AI client on startup."""
+    logger.info("Starting AI Service...")
+    try:
+        ai_client = get_ai_client()
+        available = ai_client.get_available_providers()
+        logger.info(f"AI Service started with providers: {available}")
+    except Exception as e:
+        logger.error(f"Error initializing AI client: {e}")
 
 
-@app.get("/api/dialogue/health")
-async def dialogue_health():
-    """Dialogue generation endpoint health check."""
-    return {
-        "endpoint": "dialogue",
-        "status": "ready",
-        "description": "NPC dialogue generation endpoint"
-    }
-
-
-@app.get("/api/encounters/health")
-async def encounters_health():
-    """Encounter generation endpoint health check."""
-    return {
-        "endpoint": "encounters",
-        "status": "ready",
-        "description": "Space encounter generation endpoint"
-    }
-
-
-# Placeholder for future AI generation endpoints
-# These will be implemented in Phase 1, Week 2
-
-"""
-TODO Phase 1, Week 2:
-- Implement AI provider clients (Claude, OpenAI, Ollama)
-- Create prompt templates
-- Implement mission generation endpoint
-- Implement chat endpoint
-- Implement dialogue generation
-- Add Redis caching
-- Add response validation
-"""
+# Shutdown event
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Cleanup on shutdown."""
+    logger.info("Shutting down AI Service...")
 
 if __name__ == "__main__":
     import uvicorn
