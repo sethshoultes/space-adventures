@@ -203,6 +203,7 @@ Comprehensive design documents are in the `docs/` folder:
 | Document | Description |
 |----------|-------------|
 | [**Ship Systems**](docs/ship-systems.md) | Detailed specs for all 10 ship systems (levels 0-5) |
+| [**Ship Classification**](docs/ship-classification-system.md) | 10 ship classes (Scout, Explorer, Dreadnought, etc.) with requirements |
 | [**Mission Framework**](docs/mission-framework.md) | How missions work, progression, encounters |
 | [**Resources & Survival**](docs/resources-survival.md) | Resource management, time system, concurrent missions |
 | [**Crew & Companions**](docs/crew-companion-system.md) | Optional crew system, relationships, abilities |

@@ -126,12 +126,18 @@ Read these before implementing:
    - Power consumption mechanics
    - System interactions and synergies
 
-4. **[docs/mission-framework.md](docs/mission-framework.md)** - Mission system
+4. **[docs/ship-classification-system.md](docs/ship-classification-system.md)** - Ship classes
+   - 10 ship classes (Scout, Courier, Frigate, Science Vessel, Destroyer, Cruiser, Heavy Cruiser, Explorer, Dreadnought, Support Vessel)
+   - Classification requirements based on system configuration
+   - Class bonuses and special abilities
+   - Recognition system and player goals
+
+5. **[docs/mission-framework.md](docs/mission-framework.md)** - Mission system
    - Mission JSON schema
    - 6 mission types (salvage, exploration, trade, rescue, combat, story)
    - Example fully-specified missions
 
-5. **[docs/ai-integration.md](docs/ai-integration.md)** - AI implementation
+6. **[docs/ai-integration.md](docs/ai-integration.md)** - AI implementation
    - Complete prompt templates
    - Context management strategies
    - Caching and validation
