@@ -51,10 +51,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Service URLs from environment
-AI_SERVICE_URL = os.getenv("AI_SERVICE_URL", "http://localhost:8001")
-WHISPER_SERVICE_URL = os.getenv("WHISPER_SERVICE_URL", "http://localhost:8002")
-IMAGE_SERVICE_URL = os.getenv("IMAGE_SERVICE_URL", "http://localhost:8003")
+# Service URLs from environment (NCC-1701 Registry System)
+AI_SERVICE_URL = os.getenv("AI_SERVICE_URL", "http://localhost:17011")
+WHISPER_SERVICE_URL = os.getenv("WHISPER_SERVICE_URL", "http://localhost:17012")
+IMAGE_SERVICE_URL = os.getenv("IMAGE_SERVICE_URL", "http://localhost:17013")
 
 SERVICE_TIMEOUT = int(os.getenv("SERVICE_TIMEOUT", "30"))
 
@@ -252,6 +252,6 @@ if __name__ == "__main__":
     uvicorn.run(
         app,
         host=os.getenv("HOST", "0.0.0.0"),
-        port=int(os.getenv("PORT", "8000")),
+        port=int(os.getenv("PORT", "17010")),
         log_level=os.getenv("LOG_LEVEL", "info")
     )

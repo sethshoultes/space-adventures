@@ -32,9 +32,9 @@ class RedisCache:
             self.client = None
             return
 
-        # Connect to Redis
+        # Connect to Redis (NCC-1701-4)
         redis_host = os.getenv("REDIS_HOST", "localhost")
-        redis_port = int(os.getenv("REDIS_PORT", "6379"))
+        redis_port = int(os.getenv("REDIS_PORT", "17014"))
         redis_db = int(os.getenv("REDIS_DB", "0"))
 
         try:
