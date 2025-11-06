@@ -78,3 +78,4 @@ temp/
 # Documentation builds
 docs/_build/
 site/
+.claude/settings.local.json

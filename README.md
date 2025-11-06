@@ -198,6 +198,8 @@ Comprehensive design documents are in the `docs/` folder:
 | Document | Description |
 |----------|-------------|
 | [**Game Design Document**](docs/game-design-document.md) | Complete game design, mechanics, systems |
+| [**Development Organization**](docs/development-organization.md) | **⭐ START HERE** - Master development plan with phases, microservices, AI-assisted workflow |
+| [**CLAUDE.md Templates**](docs/claude-md-templates.md) | Embedded documentation system for every directory |
 | [**Technical Architecture**](docs/technical-architecture.md) | Code structure, data models, architecture |
 | [**MVP Roadmap**](docs/mvp-roadmap.md) | Week-by-week development plan (6 weeks) |
 

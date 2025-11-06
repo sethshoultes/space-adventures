@@ -5,9 +5,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Status
 
 **Current Phase:** Design Complete - Ready for Implementation
-**Next Phase:** Week 1 of MVP Development (Foundation)
+**Next Phase:** Phase 1, Week 1 - Foundation & Core Services
 
-This repository contains complete design documentation for **Space Adventures**, a narrative-driven space adventure game. No implementation code exists yet - this is intentional. The project is ready to begin Week 1 of the 6-week MVP roadmap.
+This repository contains complete design documentation for **Space Adventures**, a narrative-driven space adventure game. No implementation code exists yet - this is intentional.
+
+## 🚀 IMPORTANT: Start Here for Development
+
+**For AI-Assisted Development:**
+1. **Read:** [docs/development-organization.md](docs/development-organization.md) - Master development plan
+2. **Understand:** Microservices architecture and phase-based development
+3. **Follow:** Embedded CLAUDE.md system for directory-level guidance
+4. **Reference:** [docs/claude-md-templates.md](docs/claude-md-templates.md) for documentation patterns
+
+**Development Approach:**
+- **Microservices Architecture** - Independent services (Gateway, AI, Whisper, Image)
+- **Phase-Based Development** - 5 phases, each 3-4 weeks
+- **Embedded Documentation** - CLAUDE.md in every directory
+- **AI-Assisted Workflow** - Claude Code as primary development partner
+- **SOLID Principles** - Clean, maintainable, scalable code
 
 ## Project Overview
 
@@ -836,19 +851,30 @@ CACHE_ENABLED=true
 
 ## Next Steps for Implementation
 
-**If starting fresh (Week 1, Day 1):**
+**📖 READ FIRST:** [docs/development-organization.md](docs/development-organization.md)
 
-1. Create `godot/project.godot` (Godot 4.2+ project)
-2. Create `python/src/main.py` (basic FastAPI app)
-3. Implement GameState singleton in `godot/scripts/autoload/game_state.gd`
-4. Test HTTP request from Godot to Python `/health` endpoint
-5. Follow Day 1-2 checklist in [docs/mvp-roadmap.md](docs/mvp-roadmap.md)
+This document provides the complete development system including:
+- ✅ Microservices architecture (Gateway, AI, Whisper, Image services)
+- ✅ Phase-based development (Phases 1-5 with week-by-week breakdowns)
+- ✅ Embedded CLAUDE.md system (directory-level guidance)
+- ✅ AI-assisted development workflow
+- ✅ Quality assurance and testing strategy
+- ✅ Launch and maintenance plans
+
+**If starting Phase 1, Week 1, Day 1:**
+
+1. Read [docs/development-organization.md](docs/development-organization.md) - Sections 1-3
+2. Read [docs/claude-md-templates.md](docs/claude-md-templates.md) - Understand CLAUDE.md system
+3. Follow Phase 1, Week 1 checklist from development-organization.md
+4. Create directory structure with CLAUDE.md files
+5. Begin Gateway Service implementation
 
 **If continuing development:**
-- Check current week in mvp-roadmap.md
-- Review what's been completed
-- Continue with next unchecked task
-- Update roadmap checkboxes as you complete items
+- Check current phase/week in development-organization.md
+- Read relevant CLAUDE.md files for context
+- Follow established patterns
+- Update CLAUDE.md files as you work
+- Commit with descriptive messages
 
 ## Reference Links
 
