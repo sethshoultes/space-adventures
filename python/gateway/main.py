@@ -19,12 +19,15 @@ from datetime import datetime
 from typing import Dict, Any
 import logging
 
+# Import custom middleware
+from src.middleware import RequestLoggingMiddleware, service_registry
+
 # Load environment variables
 load_dotenv()
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
+    level=os.getenv("LOG_LEVEL", "INFO").upper(),
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -35,6 +38,9 @@ app = FastAPI(
     description="API Gateway for Space Adventures backend services",
     version="0.1.0"
 )
+
+# Add custom middleware (order matters!)
+app.add_middleware(RequestLoggingMiddleware)
 
 # CORS configuration
 app.add_middleware(
@@ -51,6 +57,11 @@ WHISPER_SERVICE_URL = os.getenv("WHISPER_SERVICE_URL", "http://localhost:8002")
 IMAGE_SERVICE_URL = os.getenv("IMAGE_SERVICE_URL", "http://localhost:8003")
 
 SERVICE_TIMEOUT = int(os.getenv("SERVICE_TIMEOUT", "30"))
+
+# Register services with service registry
+service_registry.register_service("ai-service", AI_SERVICE_URL)
+service_registry.register_service("whisper-service", WHISPER_SERVICE_URL)
+service_registry.register_service("image-service", IMAGE_SERVICE_URL)
 
 
 # Health check endpoint
