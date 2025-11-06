@@ -475,6 +475,10 @@ func _on_test_propulsion_system_button_pressed() -> void:
 
 	log_output("\n[color=green][b]✓ Propulsion System Tests Complete![/b][/color]")
 
+func _on_workshop_button_pressed() -> void:
+	log_output("\n[b]Opening Workshop...[/b]")
+	get_tree().change_scene_to_file("res://scenes/workshop.tscn")
+
 func _on_quit_button_pressed() -> void:
 	log_output("\n[b]Quitting...[/b]")
 	get_tree().quit()

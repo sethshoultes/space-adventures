@@ -76,6 +76,29 @@ text = "Test Dialogue Generation"
 layout_mode = 2
 text = "Test Save/Load"
 
+[node name="HSeparator4" type="HSeparator" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TestHullButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Test Hull System"
+
+[node name="TestPowerButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Test Power Core System"
+
+[node name="TestPropulsionButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Test Propulsion System"
+
+[node name="HSeparator5" type="HSeparator" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="WorkshopButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "OPEN WORKSHOP"
+
 [node name="GameStateInfo" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
@@ -109,4 +132,8 @@ scroll_following = true
 [connection signal="pressed" from="CenterContainer/VBoxContainer/TestMissionButton" to="." method="_on_test_mission_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/TestDialogueButton" to="." method="_on_test_dialogue_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/TestSaveButton" to="." method="_on_test_save_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/TestHullButton" to="." method="_on_test_hull_system_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/TestPowerButton" to="." method="_on_test_power_system_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/TestPropulsionButton" to="." method="_on_test_propulsion_system_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/WorkshopButton" to="." method="_on_workshop_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
