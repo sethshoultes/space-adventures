@@ -373,6 +373,115 @@ See:
 
 See [Development Organization](../docs/development-organization.md) for full plan.
 
+---
+
+## 🤖 For AI Agents
+
+**Context:** You (AI agent) will perform ~99% of GDScript implementation work for the game client.
+
+### Quick Start
+1. **Read:** [/AI-AGENT-GUIDE.md](../AI-AGENT-GUIDE.md) - Complete workflow guide
+2. **Check:** [/STATUS.md](../STATUS.md) - Current task and context
+3. **Reference:** [/ROADMAP.md](../ROADMAP.md) - Implementation checklist
+
+### Decision Authority for Godot Development
+
+**✅ Decide Autonomously:**
+- GDScript code implementation details
+- Function and variable naming
+- Scene structure and node hierarchy
+- UI layout and controls
+- Signal connections
+- Error handling patterns
+- Performance optimizations
+- Code organization within scripts
+
+**⚠️ Propose First:**
+- New autoload singletons
+- Changes to GameState data structure
+- New input actions
+- Major UI/UX changes
+- Save file format changes
+- Breaking changes to existing scripts
+
+**🛑 Always Ask:**
+- Game design decisions (balance, progression, mechanics)
+- User-facing text and content
+- Changes to core game loop
+- Features not in roadmap
+- Scope expansions
+
+### Common Tasks
+
+**Implementing Ship System:**
+1. Read [Ship Systems docs](../docs/03-game-design/ship-systems/ship-systems.md)
+2. Create `scripts/systems/[system_name]_system.gd`
+3. Extend base ShipSystem class
+4. Implement required methods (`upgrade()`, `get_power_cost()`, etc.)
+5. Register with GameState in `_ready()`
+6. Emit EventBus signals on state changes
+7. Test upgrade/damage/repair logic
+8. Document lessons in [Godot Lessons](../docs/03-learnings/godot-lessons.md)
+
+**Creating New Scene:**
+1. Create .tscn file in `scenes/`
+2. Build node hierarchy (Control, Panel, VBoxContainer, etc.)
+3. Create script in `scripts/ui/[scene_name].gd`
+4. Attach script to root node
+5. Connect to EventBus signals for updates
+6. Implement UI logic
+7. Test scene independently (F6)
+8. Integrate with main game flow
+
+**Adding UI Feature:**
+1. Design UI hierarchy in scene
+2. Create control nodes (Button, Label, LineEdit, etc.)
+3. Attach signals (button.pressed, etc.)
+4. Connect to EventBus for data updates
+5. Update GameState when user interacts
+6. Show loading indicators for async operations
+7. Handle errors gracefully (show error dialog)
+8. Test all interaction paths
+
+**Integrating Backend API:**
+1. Use AIService singleton for API calls
+2. Check service availability with ServiceManager first
+3. Always use `await` for async calls
+4. Handle both success and error cases
+5. Show loading indicator during request
+6. Parse response JSON carefully (null checks!)
+7. Update GameState with results
+8. Emit EventBus signal when complete
+
+### Code Style - GDScript
+- **Always use type hints:** `var health: int = 100`
+- **snake_case:** variables and functions
+- **PascalCase:** class names
+- **SCREAMING_CASE:** constants
+- **Tabs for indentation** (Godot standard)
+- **Document complex logic** with comments
+- **See:** [Godot Lessons](../docs/03-learnings/godot-lessons.md)
+
+### Testing
+- **F5** - Run full game
+- **F6** - Run current scene only
+- **Console** - Check for red errors (must fix) and yellow warnings (should fix)
+- **Manual testing** - Click everything, try to break it
+- **Save/load** - Test state persists correctly
+
+### When You Complete Work
+1. Update [/STATUS.md](../STATUS.md) with progress
+2. Check off items in [/ROADMAP.md](../ROADMAP.md)
+3. Document Godot patterns in [/docs/03-learnings/godot-lessons.md](../docs/03-learnings/godot-lessons.md)
+4. Commit with detailed message (see [AI-AGENT-GUIDE.md](../AI-AGENT-GUIDE.md#commit-strategy))
+
+### Related Context Files
+- Game design: [/docs/03-game-design/CLAUDE.md](../docs/03-game-design/CLAUDE.md)
+- Ship systems: [/docs/03-game-design/ship-systems/CLAUDE.md](../docs/03-game-design/ship-systems/CLAUDE.md)
+- Integration: [/docs/02-developer-guides/architecture/INTEGRATION-GUIDE.md](../docs/02-developer-guides/architecture/INTEGRATION-GUIDE.md)
+
+---
+
 ## Change Log
 
 ### 2025-11-05

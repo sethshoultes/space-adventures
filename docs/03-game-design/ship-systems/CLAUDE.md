@@ -21,4 +21,16 @@
 
 ---
 
+## 🤖 AI Agent Workflow
+
+**Quick References:**
+- [/AI-AGENT-GUIDE.md](../../../AI-AGENT-GUIDE.md) - Complete workflow guide
+- [/STATUS.md](../../../STATUS.md) - Current task
+- [/ROADMAP.md](../../../ROADMAP.md) - Implementation checklist
+- [/docs/03-learnings/godot-lessons.md](../../03-learnings/godot-lessons.md) - Document patterns here
+
+**Decision Authority:** Always ask before changing ship system balance (power costs, HP values, etc.) - this is game design.
+
+---
+
 **Parent:** [../CLAUDE.md](../CLAUDE.md)

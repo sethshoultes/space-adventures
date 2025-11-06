@@ -53,6 +53,17 @@ Complete game design specifications.
 - **[Mission Framework](./03-game-design/content-systems/mission-framework.md)** - Mission structure
 - **[Crew Companion System](./03-game-design/content-systems/crew-companion-system.md)** - Crew mechanics
 
+#### [Future Features](./03-game-design/future-features/)
+- **[Future Features README](./03-game-design/future-features/README.md)** - Someday/maybe features
+- Captain's Log, Ship Personality, First Contact Protocol, and more
+
+### [03-learnings](./03-learnings/) - Learning Documentation
+Curated technical lessons and patterns discovered during development.
+- **[Docker Lessons](./03-learnings/docker-lessons.md)** - Container orchestration patterns
+- **[Godot Lessons](./03-learnings/godot-lessons.md)** - Game engine patterns and quirks
+- **[AI Integration Lessons](./03-learnings/ai-integration-lessons.md)** - Prompt engineering and AI patterns
+- **[Architecture Lessons](./03-learnings/architecture-lessons.md)** - Design patterns and SOLID principles
+
 ### [04-ui-graphics](./04-ui-graphics/) - UI & Visual Design
 User interface and graphics guidelines.
 - **[UI Graphics Index](./04-ui-graphics/UI-GRAPHICS-INDEX.md)** - Complete UI guide
@@ -137,6 +148,7 @@ See [Technical Architecture](./02-developer-guides/architecture/technical-archit
 ### By Topic
 - **Architecture:** `02-developer-guides/architecture/`
 - **Game Design:** `03-game-design/`
+- **Learning/Patterns:** `03-learnings/`
 - **Testing:** `01-user-guides/testing/`
 - **AI Features:** `05-ai-content/`
 - **UI/Graphics:** `04-ui-graphics/`

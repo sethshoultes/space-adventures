@@ -1,16 +1,43 @@
 # Space Adventures
 
-**A narrative-driven space adventure game where you build your own starship and explore the cosmos.**
+> **🎓 Learning Project:** This is a hobby project exploring AI-powered procedural narrative in games. Built as a learning experience in Godot, microservices architecture, and AI integration. Expect experimentation and rough edges!
 
-![Game Status](https://img.shields.io/badge/status-in%20development-yellow)
-![Version](https://img.shields.io/badge/version-0.1.0--MVP-blue)
+**A Star Trek TNG-inspired space adventure where you build your starship system-by-system with AI-powered storytelling.**
+
+![Status](https://img.shields.io/badge/status-Milestone%201-yellow)
+![Version](https://img.shields.io/badge/version-0.1.0--foundation-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
+
+**Status:** Milestone 1 (Proof of Concept) - In Progress | [Roadmap](./ROADMAP.md) | [Journal](./JOURNAL.md) | [Status](./STATUS.md)
+
+---
+
+## 🎯 What Makes This Interesting
+
+**Learning Goals:**
+- 🐳 Microservices architecture with Docker
+- 🎮 Godot 4.2+ game development
+- 🤖 AI API integration (Claude/OpenAI/Ollama)
+- 📦 Redis caching strategies
+- 🏗️ Event-driven architecture
+- 📚 Professional documentation practices
+
+**Game Concept:**
+- 🔧 Build starship from salvaged parts (10 systems)
+- 🎭 AI-powered dynamic storytelling
+- 🖖 Star Trek TNG tone and themes
+- ⚖️ Meaningful choices with consequences
+- 💾 Progress saves across sessions
+
+**Success Metric:** Did I learn new skills and have fun building it? ✅
 
 ---
 
 ## 🚀 Overview
 
 **Space Adventures** is a serious sci-fi choose-your-own-adventure game inspired by Star Trek: The Next Generation. Starting on a post-exodus Earth in 2247 AD, you'll scavenge for parts to build a starship from nothing, system by system. Once complete, embark on an AI-powered journey through the galaxy, making meaningful choices that shape your story.
+
+**Note:** This is primarily a learning project and portfolio piece. The journey of building it is as valuable as the final product.
 
 ### Core Features
 - **🔧 Ship Building**: 10 core ship systems to find, install, and upgrade
@@ -42,12 +69,37 @@
 
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
+- [Current Status](#-current-status)
 - [Documentation](#-documentation)
 - [Development](#-development)
 - [Architecture](#-architecture)
 - [Contributing](#-contributing)
-- [Roadmap](#-roadmap)
 - [License](#-license)
+
+---
+
+## 📊 Current Status
+
+**Milestone:** Milestone 1 - Proof of Concept (20% complete)
+**Next Task:** Implement Hull system (Level 0→1)
+
+**Quick Links:**
+- 📍 [STATUS.md](./STATUS.md) - Current task and progress
+- 🗺️ [ROADMAP.md](./ROADMAP.md) - Milestone checklist
+- 📝 [JOURNAL.md](./JOURNAL.md) - Development log and learnings
+- 📋 [DECISIONS.md](./DECISIONS.md) - Architecture decisions
+- 🤖 [AI-AGENT-GUIDE.md](./AI-AGENT-GUIDE.md) - For AI developers
+
+**Recent Completions:**
+- ✅ Microservices architecture (Gateway, AI Service, Redis)
+- ✅ Godot foundation (5 autoload singletons)
+- ✅ Comprehensive documentation (32 files)
+- ✅ AI-agent development workflow
+
+**Up Next:**
+- 🔨 Implement 3 core ship systems
+- 🔨 Write tutorial mission
+- 🔨 Build basic Workshop UI
 
 ---
 

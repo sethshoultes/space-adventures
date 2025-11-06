@@ -1,13 +1,39 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+**Primary guidance for AI agents (Claude Code, etc.) working on this project.**
+
+## 🤖 AI Agent as Primary Developer
+
+**This project uses AI agents to perform ~99% of development work.**
+
+**CRITICAL FILES (Read These First):**
+- `/STATUS.md` - Current task and context (read every session)
+- `/AI-AGENT-GUIDE.md` - Complete development workflow and authority levels
+- `/ROADMAP.md` - Milestone checklist (your task list)
+- `/DECISIONS.md` - Don't re-decide things
+- `/JOURNAL.md` - Document learnings
+
+**Quick Start Each Session:**
+1. Read STATUS.md
+2. Check ROADMAP.md for current checklist item
+3. Read relevant directory CLAUDE.md
+4. Implement → Test → Update STATUS → Commit
+
+---
 
 ## Project Status
 
-**Current Phase:** Design Complete - Ready for Implementation
-**Next Phase:** Phase 1, Week 1 - Foundation & Core Services
+**Current Milestone:** Milestone 1 - Proof of Concept (20% complete)
+**Current Task:** Implement Hull system (Level 0→1)
+**Next Phase:** Continue Milestone 1 implementation
 
-This repository contains complete design documentation for **Space Adventures**, a narrative-driven space adventure game. No implementation code exists yet - this is intentional.
+**Foundation Complete:**
+- ✅ Microservices architecture (Gateway, AI Service, Redis)
+- ✅ Godot foundation (5 autoload singletons)
+- ✅ Comprehensive documentation (32+ files)
+- ✅ AI-agent workflow established
+
+**Ready for:** Game implementation (systems, missions, UI)
 
 ## 🚀 IMPORTANT: Start Here for Development
 
@@ -33,6 +59,45 @@ A serious sci-fi choose-your-own-adventure game inspired by Star Trek: TNG where
 4. Experience AI-powered dynamic narrative using ChatGPT or Ollama
 
 **Tech Stack:** Godot 4.2+ (game) + Python 3.10+ FastAPI (AI service)
+
+---
+
+## 🎯 Project Philosophy
+
+**This is a hobby/learning project, not a commercial product.**
+
+**What this means for AI agents:**
+
+✅ **Prioritize:**
+- Learning opportunities over perfect solutions
+- Working code over perfect architecture
+- Progress over perfection
+- Simple solutions over complex ones
+- Documenting discoveries in JOURNAL.md
+
+⚠️ **Remember:**
+- No deadlines, build when user is motivated
+- Milestones not timelines
+- Rough edges are acceptable
+- Experimentation encouraged
+- User makes game design decisions (balance, content)
+- You make implementation decisions (code, patterns)
+
+**Success Criteria:**
+- ✅ Developer learned new skills
+- ✅ Code works (even if rough)
+- ✅ Progress documented
+- ✅ Something playable exists
+
+Not required:
+- Professional polish
+- Complete feature set
+- Thousands of users
+- Perfect code
+
+**Decision Authority:** See `/AI-AGENT-GUIDE.md` for complete 3-tier authority levels (✅ Autonomous / ⚠️ Propose / 🛑 Ask)
+
+---
 
 ## Architecture
 

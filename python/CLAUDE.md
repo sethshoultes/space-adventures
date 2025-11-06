@@ -323,6 +323,89 @@ See:
 
 See [Development Organization](../docs/development-organization.md) for full roadmap.
 
+---
+
+## 🤖 For AI Agents
+
+**Context:** You (AI agent) will perform ~99% of implementation work on these backend services.
+
+### Quick Start
+1. **Read:** [/AI-AGENT-GUIDE.md](../AI-AGENT-GUIDE.md) - Complete workflow guide
+2. **Check:** [/STATUS.md](../STATUS.md) - Current task and context
+3. **Reference:** [/ROADMAP.md](../ROADMAP.md) - Implementation checklist
+
+### Decision Authority for Python Services
+
+**✅ Decide Autonomously:**
+- API endpoint implementation details
+- Pydantic model structure
+- Error handling strategies
+- Code organization within services
+- Testing strategies
+- Performance optimizations
+- Logging and debugging code
+- Docker configuration tweaks
+
+**⚠️ Propose First:**
+- New API endpoints
+- Changes to service boundaries
+- New dependencies/packages
+- Changes to Docker Compose structure
+- Database schema changes (Redis, SQLite)
+
+**🛑 Always Ask:**
+- AI provider selection/changes
+- Breaking API changes
+- Changes affecting Godot integration
+- Cost implications (API calls, resources)
+- Architectural changes (new services, removing services)
+
+### Common Tasks
+
+**Adding New API Endpoint:**
+1. Create route in `src/api/[module].py`
+2. Define Pydantic request/response models in `src/models/`
+3. Implement business logic
+4. Add error handling
+5. Write tests in `tests/test_[module].py`
+6. Update service's CLAUDE.md with endpoint documentation
+
+**Implementing AI Feature:**
+1. Read [AI Integration docs](../docs/05-ai-content/ai-integration.md)
+2. Choose appropriate provider (or use existing)
+3. Create prompt template in `src/ai/prompts.py`
+4. Implement generation logic with caching
+5. Add Pydantic validation
+6. Test with multiple providers
+7. Document lessons in [/docs/03-learnings/ai-integration-lessons.md](../docs/03-learnings/ai-integration-lessons.md)
+
+**Testing Services:**
+1. Write unit tests (mock dependencies)
+2. Write integration tests (test with real services)
+3. Manual testing with curl/Postman
+4. Update [TESTING-GUIDE.md](../docs/01-user-guides/testing/TESTING-GUIDE.md) if new patterns
+
+### Code Style
+- Follow PEP 8 (use black for formatting)
+- Type hints on all functions
+- Pydantic models for all API contracts
+- Async/await for I/O operations
+- Docstrings for complex functions
+- See [Architecture Lessons](../docs/03-learnings/architecture-lessons.md)
+
+### When You Complete Work
+1. Update [/STATUS.md](../STATUS.md) with progress
+2. Check off items in [/ROADMAP.md](../ROADMAP.md)
+3. Document discoveries in [/docs/03-learnings/](../docs/03-learnings/)
+4. Commit with detailed message (see [AI-AGENT-GUIDE.md](../AI-AGENT-GUIDE.md#commit-strategy))
+
+### Related Context Files
+- Service-specific: `gateway/CLAUDE.md`, `ai-service/CLAUDE.md`, etc.
+- Architecture: [/docs/02-developer-guides/architecture/CLAUDE.md](../docs/02-developer-guides/architecture/CLAUDE.md)
+- Integration: [/docs/02-developer-guides/architecture/INTEGRATION-GUIDE.md](../docs/02-developer-guides/architecture/INTEGRATION-GUIDE.md)
+
+---
+
 ## Change Log
 
 ### 2025-11-05
