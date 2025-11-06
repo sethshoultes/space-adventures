@@ -1,0 +1,266 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3n6ck5mhj2vf"]
+
+[ext_resource type="Script" path="res://scripts/ui/workshop.gd" id="1_workshop"]
+
+[node name="Workshop" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_workshop")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.08, 0.12, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 48
+text = "WORKSHOP"
+
+[node name="ShipName" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+text = "USS Unnamed Vessel"
+horizontal_alignment = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PowerBudget" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PowerBudget"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PowerBudget/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PowerBudget/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "POWER BUDGET"
+
+[node name="PowerGeneration" type="Label" parent="MarginContainer/VBoxContainer/PowerBudget/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Power Generation: 0 PU"
+
+[node name="PowerConsumption" type="Label" parent="MarginContainer/VBoxContainer/PowerBudget/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Power Consumption: 0 PU"
+
+[node name="PowerAvailable" type="Label" parent="MarginContainer/VBoxContainer/PowerBudget/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Available Power: 0 PU"
+
+[node name="HullHP" type="Label" parent="MarginContainer/VBoxContainer/PowerBudget/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Hull Integrity: 0/0 HP"
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SystemsLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "SHIP SYSTEMS"
+
+[node name="SystemsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="HullSystem" type="PanelContainer" parent="MarginContainer/VBoxContainer/SystemsContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/SystemsContainer/HullSystem"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SystemsContainer/HullSystem/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Info" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SystemsContainer/HullSystem/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/HullSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Hull & Structure"
+
+[node name="Status" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/HullSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Level 0: NOT INSTALLED"
+
+[node name="Description" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/HullSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Ship frame only, not spaceworthy."
+autowrap_mode = 3
+
+[node name="UpgradeButton" type="Button" parent="MarginContainer/VBoxContainer/SystemsContainer/HullSystem/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "UPGRADE
+(Cost: 100)"
+
+[node name="PowerSystem" type="PanelContainer" parent="MarginContainer/VBoxContainer/SystemsContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/SystemsContainer/PowerSystem"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SystemsContainer/PowerSystem/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Info" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SystemsContainer/PowerSystem/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/PowerSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Power Core"
+
+[node name="Status" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/PowerSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Level 0: NOT INSTALLED"
+
+[node name="Description" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/PowerSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Ship is dead in space."
+autowrap_mode = 3
+
+[node name="UpgradeButton" type="Button" parent="MarginContainer/VBoxContainer/SystemsContainer/PowerSystem/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "UPGRADE
+(Cost: 150)"
+
+[node name="PropulsionSystem" type="PanelContainer" parent="MarginContainer/VBoxContainer/SystemsContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/SystemsContainer/PropulsionSystem"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SystemsContainer/PropulsionSystem/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Info" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SystemsContainer/PropulsionSystem/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/PropulsionSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Propulsion (Impulse Engines)"
+
+[node name="Status" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/PropulsionSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Level 0: NOT INSTALLED"
+
+[node name="Description" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/PropulsionSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "No propulsion system installed."
+autowrap_mode = 3
+
+[node name="UpgradeButton" type="Button" parent="MarginContainer/VBoxContainer/SystemsContainer/PropulsionSystem/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "UPGRADE
+(Cost: 100)"
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Actions" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SaveButton" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "SAVE GAME"
+
+[node name="MissionsButton" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "MISSIONS"
+disabled = true
+
+[node name="MainMenuButton" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "MAIN MENU"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/SystemsContainer/HullSystem/MarginContainer/HBoxContainer/UpgradeButton" to="." method="_on_hull_upgrade_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/SystemsContainer/PowerSystem/MarginContainer/HBoxContainer/UpgradeButton" to="." method="_on_power_upgrade_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/SystemsContainer/PropulsionSystem/MarginContainer/HBoxContainer/UpgradeButton" to="." method="_on_propulsion_upgrade_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/SaveButton" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/MissionsButton" to="." method="_on_missions_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/MainMenuButton" to="." method="_on_main_menu_pressed"]

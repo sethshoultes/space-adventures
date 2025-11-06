@@ -1,0 +1,361 @@
+{
+  "mission_id": "tutorial_first_salvage",
+  "title": "The Inheritance",
+  "type": "salvage",
+  "location": "Old Aerospace Museum, Nevada",
+  "description": "Your grandfather's final message led you here: an abandoned aerospace museum in the Nevada desert. He claimed to have hidden something valuable—a ship frame, parts, and tools. Everything you need to start rebuilding. But the museum has attracted other scavengers too.",
+  "difficulty": 1,
+  "requirements": {
+    "min_level": 1,
+    "required_systems": [],
+    "completed_missions": []
+  },
+  "objectives": [
+    "Locate your grandfather's workshop in the museum",
+    "Claim the ship frame and essential parts",
+    "[OPTIONAL] Avoid conflict with other scavengers"
+  ],
+  "stages": [
+    {
+      "stage_id": "arrival",
+      "title": "Desert Sunrise",
+      "description": "The Old Aerospace Museum sits half-buried in sand, a relic of humanity's golden age. Solar panels glint in the dawn light. Your grandfather's coordinates point to the main exhibit hall. As you approach, you notice fresh footprints in the sand—you're not alone here.",
+      "image": "museum_exterior",
+      "choices": [
+        {
+          "choice_id": "front_entrance",
+          "text": "Enter through the front—the direct approach",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The museum's automatic doors still work, powered by the ancient solar array. You enter the vast exhibit hall. Suspended overhead are humanity's greatest achievements: the Apollo lander, early orbital shuttles, even a prototype warp nacelle from the 2040s. In the far corner, you spot the workshop entrance—and two scavengers arguing near it.",
+              "next_stage": "workshop_contested",
+              "effects": ["encountered_scavengers"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "side_entrance",
+          "text": "Circle around, look for another way in",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You find a side entrance through the old maintenance tunnels. The narrow corridors are dark and dusty, but intact. You emerge inside the workshop area, behind the scavengers who are still at the main entrance. Your grandfather's workshop is right here—a sealed door with a biometric lock.",
+              "next_stage": "workshop_uncontested",
+              "effects": ["avoided_scavengers"],
+              "xp_bonus": 15
+            }
+          }
+        },
+        {
+          "choice_id": "observe_first",
+          "text": "Stay hidden, observe the situation before acting",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "From concealment, you scan the museum with your grandfather's old binoculars. Two scavengers, armed but not aggressive. They're searching for something specific—your workshop, most likely. But they don't have the biometric key. You also notice the museum's power grid is active: lights, security, even a few service robots still functioning. Interesting.",
+              "next_stage": "workshop_informed",
+              "effects": ["gathered_intel", "knows_power_active"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "While observing, you accidentally kick a loose panel. The sound echoes through the desert silence. The scavengers turn in your direction, hands moving to their weapons. This just got complicated.",
+              "next_stage": "workshop_contested",
+              "effects": ["encountered_scavengers", "suspicious_scavengers"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "workshop_contested",
+      "title": "Unwelcome Committee",
+      "description": "The two scavengers spot you approaching. The taller one, a woman with a plasma cutter on her hip, steps forward. 'This museum's claimed. Whatever's in that workshop, it's ours now.' Her companion, younger and nervous, keeps his hand near a weapon. They haven't opened the workshop yet—the biometric lock stopped them.",
+      "image": "scavengers_confrontation",
+      "choices": [
+        {
+          "choice_id": "explain_inheritance",
+          "text": "Explain that your grandfather owned this workshop—it's legally yours",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "'Legally?' The woman laughs, but not unkindly. 'There's no law left. But... alright. You've got honest eyes. This place meant something to you, I can tell. Take your inheritance. Just remember—out here, people look after each other. You'll need friends more than enemies.' She steps aside. Her partner looks relieved.",
+              "next_stage": "workshop_open",
+              "effects": ["peaceful_resolution", "potential_ally"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "'Nice story, kid. But stories don't fill stomachs.' She doesn't believe you. Or doesn't care. 'You can share what's inside, or you can leave. Your choice.'",
+              "next_stage": "workshop_negotiation",
+              "effects": ["failed_diplomacy"]
+            }
+          }
+        },
+        {
+          "choice_id": "offer_split",
+          "text": "Offer to split the salvage 50/50",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The woman considers, then nods. 'Fair enough. You open it, we split it. But if there's a ship frame in there, that's yours—we can't move one anyway.' You work together to inventory the workshop. Your grandfather left more than you expected: a complete ship frame, power cells, propulsion parts, and enough tools for two scavengers to start their own operation. They take the tools and spare parts. You keep the frame and core systems. Everyone wins.",
+              "next_stage": "workshop_open",
+              "effects": ["split_salvage", "made_contacts"],
+              "rewards_modified": {"items": ["remove:spare_tools"]},
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "use_biometric",
+          "text": "Ignore them and use your biometric access to open the workshop",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You press your hand to the scanner. It pulses green. 'IDENTITY CONFIRMED. WELCOME, AUTHORIZED USER.' The door unseals with a hiss. The scavengers exchange glances. 'So it really is yours,' the woman says, reassessing you. 'Didn't think anyone had legitimate claims anymore.' They back off, but you can tell you've made an impression—for better or worse.",
+              "next_stage": "workshop_open",
+              "effects": ["asserted_ownership"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "workshop_uncontested",
+      "title": "The Old Workshop",
+      "description": "Standing before your grandfather's workshop, you're alone. The biometric scanner waits, red light pulsing. This is it—the moment you inherit his life's work. Whatever he left you, it's behind this door. You press your hand to the scanner. It flickers, processing... then turns green. The door unseals.",
+      "image": "workshop_door",
+      "choices": [
+        {
+          "choice_id": "enter_workshop",
+          "text": "Enter the workshop",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The workshop is larger than expected, carved into the museum's foundation. Work benches, diagnostic equipment, and most importantly—a ship frame, stripped down to its basic structure but intact. Your grandfather's final project. Or your first one.",
+              "next_stage": "workshop_open",
+              "effects": ["clean_inheritance"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "workshop_informed",
+      "title": "The Informed Approach",
+      "description": "With your intel gathered, you have options. The scavengers don't know about the workshop's biometric lock. The museum's power systems are active. You could potentially use the museum itself to your advantage. Or simply walk in with confidence—knowledge is power.",
+      "image": "museum_planning",
+      "choices": [
+        {
+          "choice_id": "reactivate_security",
+          "text": "Access the museum's security system, politely escort the scavengers out",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You find a maintenance terminal and access the museum's security grid. Still operational after all these years. 'SECURITY PROTOCOL ALPHA: UNAUTHORIZED PERSONNEL DETECTED.' Service robots activate, gently but firmly directing the confused scavengers toward the exit. 'MUSEUM CLOSING. PLEASE VISIT AGAIN SOON.' You almost laugh. Your grandfather always had a sense of humor.",
+              "next_stage": "workshop_open",
+              "effects": ["security_active", "museum_controlled"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "You trigger something in the security system—alarms blare, emergency lights flash. The scavengers realize someone's tampering with the museum systems. They spot you at the terminal. 'Hey! What are you doing?' This is not going according to plan.",
+              "next_stage": "workshop_contested",
+              "effects": ["failed_hacking", "scavengers_alerted"]
+            }
+          }
+        },
+        {
+          "choice_id": "confident_approach",
+          "text": "Walk in with confidence—you know they can't access the workshop",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You stride directly to the workshop, ignoring the scavengers' surprised looks. Press your hand to the scanner. Green light. 'IDENTITY CONFIRMED.' The door opens. The woman scavenger lets out a low whistle. 'Well played,' she says, impressed despite herself. You've earned their respect through confidence and preparation.",
+              "next_stage": "workshop_open",
+              "effects": ["impressed_scavengers", "gained_respect"],
+              "xp_bonus": 30
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "workshop_negotiation",
+      "title": "Common Ground",
+      "description": "The standoff continues. The woman scavenger isn't hostile, just pragmatic. She needs salvage to survive, same as you. Her younger partner looks uncomfortable with the tension. There has to be a way everyone gets what they need.",
+      "image": "negotiation",
+      "choices": [
+        {
+          "choice_id": "demonstrate_lock",
+          "text": "Demonstrate that only you can open the workshop",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You walk to the door and place your hand on the scanner. Green light. The door unseals. 'See? Biometric lock. My grandfather's workshop. I'm not trying to cheat you—you literally couldn't open this without me.' The woman nods slowly. 'Alright. Fair enough. But we came all this way. Throw us something for our trouble?' A reasonable request.",
+              "next_stage": "workshop_compromise",
+              "effects": ["demonstrated_ownership"]
+            }
+          }
+        },
+        {
+          "choice_id": "walk_away",
+          "text": "Walk away—this isn't worth the conflict",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You turn and start walking toward the exit. 'Hey, wait!' the younger scavenger calls. 'Let them go,' the woman says, but she sounds uncertain now. You came all this way. Your grandfather wanted you to have this. Are you really going to give up?",
+              "next_stage": "mission_fail",
+              "effects": ["abandoned_inheritance"],
+              "mission_result": "failure"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "workshop_compromise",
+      "title": "Finding Balance",
+      "description": "Inside the workshop, you take stock. Your grandfather left a complete ship frame, essential system components, and various spare parts. The frame itself is too large for anyone but you to claim—and it's what you really need. The spare parts, though? Those could satisfy the scavengers without costing you anything critical.",
+      "image": "workshop_interior",
+      "choices": [
+        {
+          "choice_id": "give_spare_parts",
+          "text": "Give them the spare parts and duplicate tools—you keep the essential systems",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "'This works,' the woman says, examining the spare parts. 'Good quality stuff. Your grandfather knew his ships.' She extends a hand. 'Name's Sarah. This is Dex. You ever need anything—trading, repairs, information—you look us up. We remember people who deal fair.' You've made allies and kept what matters most.",
+              "next_stage": "workshop_claimed",
+              "effects": ["made_allies", "fair_trade"],
+              "rewards_modified": {"items": ["remove:spare_tools"]},
+              "xp_bonus": 25
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "workshop_open",
+      "title": "Your Inheritance",
+      "description": "The workshop is yours. Dust hangs in shafts of sunlight streaming through high windows. And there it is: a ship frame, mounted on a massive repair cradle. It's bare bones—no hull plating, no systems, no power—but it's structurally sound. Next to it, organized on workbenches, are the components you'll need: salvaged hull plates, a fusion cell power core, chemical thruster assemblies. Your grandfather's voice echoes from a holographic terminal: 'If you're seeing this, I'm gone. But this isn't goodbye—it's a beginning. Build something. Fly somewhere. The stars are waiting.'",
+      "image": "ship_frame",
+      "choices": [
+        {
+          "choice_id": "begin_repairs",
+          "text": "Begin installing the basic systems",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You work for hours, following your grandfather's detailed instructions. The hull plates seal against the frame with satisfying magnetic clanks. The power core slides into its mount and hums to life—100 PU, enough to get started. The thrusters align with their hard points. By sunset, you have a ship. Barely spaceworthy, but real. Level 1 systems across the board. It's a start. You check the power readout: nominal. The hull integrity: stable. The propulsion test: all thrusters responding. Your grandfather's hologram flickers: 'Well done. Now—where will you go?'",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 50
+            }
+          }
+        },
+        {
+          "choice_id": "examine_datapad",
+          "text": "Check your grandfather's datapad for notes about the ship",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "The datapad contains decades of notes. Ship designs. Salvage locations across the Nevada desert. And something else: a star map, marked with coordinates beyond the solar system. 'The Exodus didn't go where they said,' one note reads. 'I found something. Evidence. Coordinates attached. Someone needs to investigate.' You've inherited more than a workshop—you've inherited a mission.",
+              "next_stage": "workshop_claimed",
+              "effects": ["found_mystery", "grandpa_notes"],
+              "xp_bonus": 35
+            },
+            "failure": {
+              "text": "The datapad's encryption is beyond you. You'll need better science skills or a better computer system to crack it. For now, focus on the ship itself.",
+              "next_stage": "workshop_claimed",
+              "effects": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "workshop_claimed",
+      "title": "The First Step",
+      "description": "The workshop is secure. The ship frame is yours. You spend the next several days installing the basic systems your grandfather left: Level 1 hull plating, a fusion cell power core, and chemical thrusters. It's not much, but it's enough to fly. You run diagnostics: Hull integrity at 50 HP. Power core generating 100 PU. Propulsion at 1x standard speed. All systems green. You have a ship.",
+      "image": "systems_installed",
+      "choices": [
+        {
+          "choice_id": "test_flight",
+          "text": "Take the ship on a test flight around the museum grounds",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The ship lifts off the cradle, hovering on chemical thrust. Response is sluggish but functional. You pilot it in a slow circle around the museum. Hull holds. Power steady. Thrusters respond to input. It flies. It actually flies. You land back in the workshop, grinning. This is real. You're a ship captain now.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 50
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete",
+      "title": "Mission Complete",
+      "description": "The Inheritance is yours. A ship, a workshop, and the infinite possibilities of the future.",
+      "image": "ship_complete",
+      "choices": []
+    },
+    {
+      "stage_id": "mission_fail",
+      "title": "Mission Failed",
+      "description": "You walk away from your grandfather's workshop. Maybe this wasn't meant to be. Maybe you weren't ready. The desert wind erases your footprints as you leave.",
+      "image": "desert_sunset",
+      "choices": []
+    }
+  ],
+  "rewards": {
+    "xp": 100,
+    "items": [
+      "hull_system_l1",
+      "power_core_l1",
+      "propulsion_system_l1",
+      "workshop_access",
+      "ship_frame_basic"
+    ],
+    "reputation": 0,
+    "unlocks": [
+      "mission_first_salvage",
+      "mission_power_up",
+      "workshop_hub"
+    ]
+  },
+  "failure_consequences": {
+    "xp": 25,
+    "effects": ["missed_inheritance"]
+  }
+}
