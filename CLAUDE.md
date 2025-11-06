@@ -157,6 +157,57 @@ Read these before implementing:
    - Context management strategies
    - Caching and validation
 
+## Future Feature Documents
+
+These are planned enhancements beyond the core MVP. Consult when planning post-MVP development:
+
+**MVP Enhancement Features (Quick Wins):**
+1. **[docs/feature-crew-recruitment.md](docs/feature-crew-recruitment.md)** - Crew Recruitment System
+   - Recruit and develop crew members with unique skills and personalities
+   - AI-generated crew backstories and personal quests
+   - Crew relationships and morale system
+   - Integration with Life Support capacity
+
+2. **[docs/feature-captains-log.md](docs/feature-captains-log.md)** - Captain's Log System
+   - AI-generated mission journal entries
+   - Player voice detection (diplomatic, aggressive, cautious, etc.)
+   - Star Trek-style captain's log narration
+   - Exportable story chronicle
+
+3. **[docs/feature-ship-personality.md](docs/feature-ship-personality.md)** - Ship AI Personality & Computer Core Evolution
+   - AI companion that evolves with Computer Core upgrades
+   - Personality shaped by player choices
+   - Ethical dilemmas about AI sentience
+   - Gameplay assistance and advisory system
+
+**Post-MVP Features (Phase 2 Content):**
+4. **[docs/feature-first-contact-protocol.md](docs/feature-first-contact-protocol.md)** - First Contact Protocol System
+   - Structured diplomatic encounters with alien species
+   - AI-generated unique alien cultures
+   - Cultural customs and relationship building
+   - Prime Directive dilemmas
+
+5. **[docs/feature-exodus-timeline-mystery.md](docs/feature-exodus-timeline-mystery.md)** - The Exodus Timeline Mystery
+   - Central narrative mystery driving Phase 2 exploration
+   - Evidence collection and theory formation
+   - Gradual revelation of what happened to humanity
+   - Multiple possible truths and player theories
+
+6. **[docs/feature-away-team-missions.md](docs/feature-away-team-missions.md)** - Away Team Missions
+   - Tactical crew-based planetary missions
+   - Crew selection strategy and skill application
+   - Injury and permadeath mechanics
+   - Star Trek-style away team dynamics
+
+**Future Consideration:**
+7. **[docs/feature-backlog.md](docs/feature-backlog.md)** - Feature Ideas Backlog
+   - Salvage economy & faction system
+   - Environmental hazards & system dependencies
+   - Anomaly investigation system
+   - Ship classification specialization perks
+   - Temporal anomalies & time loop missions
+   - Legacy & New Game+ system
+
 ## Game Data Structures
 
 ### GameState (GDScript Dictionary)
