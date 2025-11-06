@@ -11,10 +11,11 @@
 2. [Technology Stack](#technology-stack)
 3. [Project Structure](#project-structure)
 4. [Data Models](#data-models)
-5. [AI Service Architecture](#ai-service-architecture)
-6. [Godot Integration](#godot-integration)
-7. [Save System](#save-system)
-8. [Development Workflow](#development-workflow)
+5. [Database Architecture](#database-architecture)
+6. [AI Service Architecture](#ai-service-architecture)
+7. [Godot Integration](#godot-integration)
+8. [Save System](#save-system)
+9. [Development Workflow](#development-workflow)
 
 ---
 
@@ -830,6 +831,97 @@ func initialize_ship_systems():
             "health": 100,
             "active": false
         }
+```
+
+---
+
+## Database Architecture
+
+### Dual Database Design
+
+Space Adventures uses a two-tier database architecture:
+
+1. **Global Database (PostgreSQL)** - Centralized settings and configuration
+2. **Local Database (SQLite per save slot)** - Player character and game state
+
+```
+GLOBAL (PostgreSQL)           LOCAL (SQLite per save)
+├─ Settings                   ├─ Player Character
+├─ API Keys (encrypted)       ├─ Ship State
+├─ Visual Preferences         ├─ Inventory (2-tier)
+├─ AI Provider Config         ├─ Mission Progress
+├─ Usage Tracking             ├─ Discovered Locations
+└─ User Preferences           └─ Story Choices
+```
+
+### Why Two Databases?
+
+- **Global settings persist across all save files** - Player doesn't reconfigure AI providers for each character
+- **Each save slot is independent** - Multiple characters with different progress
+- **API keys stored centrally and securely** - Encrypted once, used by all saves
+- **Per-save data is portable** - SQLite files can be backed up, shared, or transferred
+
+### Database Technologies
+
+**PostgreSQL (Global)**
+- Runs in Python FastAPI service
+- Accessed via SQLAlchemy ORM
+- Stores: settings, API keys, usage logs, visual presets
+
+**SQLite (Local)**
+- Embedded in Godot save files
+- One `.db` file per save slot
+- Stores: character data, ship config, inventory, mission progress
+
+### Complete Schemas
+
+Full database schemas with all tables, indexes, and views are documented in:
+**[docs/player-progression-system.md](player-progression-system.md#database-architecture)**
+
+Key tables include:
+- **Global**: `global_settings`, `api_keys`, `ai_usage_log`, `visual_presets`
+- **Local**: `player_character`, `ship_state`, `inventory_items`, `mission_progress`, `relationships`, `achievements`
+
+### Two-Tier Inventory System
+
+Player inventory is split into two locations:
+
+1. **Player Equipment (4 slots)** - What the player carries
+   - Tool, Armor, Accessory 1, Accessory 2
+   - Provides stat bonuses when equipped
+
+2. **Ship Storage (16-32 slots)** - Bulk storage aboard ship
+   - Base capacity: 16 slots
+   - Expandable with Life Support and Computer Core upgrades
+   - Support Vessel class gets +8 bonus slots
+
+Items are tracked in a single `inventory_items` table with `location` field:
+- `location = 'equipped'` - On player's person
+- `location = 'ship_storage'` - Stored aboard ship
+- `location = 'installed'` - Ship part currently installed
+
+Dynamic swapping allows player to move items between personal equipment and ship storage seamlessly.
+
+### Access Patterns
+
+**Python accessing PostgreSQL:**
+```python
+from sqlalchemy import create_engine
+engine = create_engine("postgresql://user:password@localhost/space_adventures")
+
+# Get global setting
+result = session.query(GlobalSettings).filter_by(setting_key="ai_provider").first()
+```
+
+**Godot accessing SQLite:**
+```gdscript
+var db = SQLite.new()
+db.path = "user://saves/save_slot_1.db"
+db.open_db()
+
+# Get player data
+db.query("SELECT * FROM player_character WHERE id = 1")
+var player = db.query_result[0]
 ```
 
 ---
