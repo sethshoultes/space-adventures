@@ -851,7 +851,8 @@ GLOBAL (PostgreSQL)           LOCAL (SQLite per save)
 ├─ Visual Preferences         ├─ Inventory (2-tier)
 ├─ AI Provider Config         ├─ Mission Progress
 ├─ Usage Tracking             ├─ Discovered Locations
-└─ User Preferences           └─ Story Choices
+└─ User Preferences           ├─ Story Choices
+                              └─ Conversation History
 ```
 
 ### Why Two Databases?
@@ -880,7 +881,7 @@ Full database schemas with all tables, indexes, and views are documented in:
 
 Key tables include:
 - **Global**: `global_settings`, `api_keys`, `ai_usage_log`, `visual_presets`
-- **Local**: `player_character`, `ship_state`, `inventory_items`, `mission_progress`, `relationships`, `achievements`
+- **Local**: `player_character`, `ship_state`, `inventory_items`, `mission_progress`, `relationships`, `achievements`, `conversation_sessions`, `conversation_messages`, `important_conversation_moments`, `companion_relationship_log`
 
 ### Two-Tier Inventory System
 
@@ -901,6 +902,26 @@ Items are tracked in a single `inventory_items` table with `location` field:
 - `location = 'installed'` - Ship part currently installed
 
 Dynamic swapping allows player to move items between personal equipment and ship storage seamlessly.
+
+### AI Chat & Conversation System Tables
+
+The AI-first chat system stores conversation history and relationship data in the local SQLite database (per save slot):
+
+**Conversation Tables:**
+- `conversation_sessions` - Chat session metadata
+- `conversation_messages` - All player and AI messages (Tier 1: Recent context)
+- `important_conversation_moments` - Flagged key moments (Tier 2: Long-term memory)
+- `companion_relationship_log` - Relationship score changes over time
+- `spontaneous_events_log` - History of AI-initiated events
+- `conversation_settings` - Per-save chat preferences
+
+**Key Features:**
+- **Three-tier memory**: Recent messages (10-50), important moments (20-100), summary context
+- **Multiple AI personalities**: ATLAS (ship computer), Storyteller (narrative), Guardian (tactical), Companion (evolves)
+- **Relationship tracking**: -100 to +100 score with 5 personality levels
+- **Spontaneous events**: Customizable 3-15 minute intervals
+
+For complete conversation system documentation, see **[docs/ai-chat-storytelling-system.md](ai-chat-storytelling-system.md)**.
 
 ### Access Patterns
 

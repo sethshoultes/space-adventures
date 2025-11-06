@@ -66,6 +66,33 @@
 │ □ Show damage numbers                                    │
 │ □ Confirm dangerous actions                              │
 │                                                           │
+│ AI Chat & Conversation                                   │
+│ ─────────────────────                                    │
+│ □ Enable AI chat system                                  │
+│ Chat hotkey: [C ▼]                                       │
+│                                                           │
+│ □ Enable spontaneous AI events                           │
+│ Event frequency: [Moderate ▼]                            │
+│   • Low: Every 8-15 minutes                              │
+│   • Moderate: Every 5-10 minutes                         │
+│   • High: Every 3-5 minutes                              │
+│   • Custom: Min [3] Max [10] minutes                     │
+│                                                           │
+│ Active AI personalities:                                 │
+│   ☑ ATLAS (Ship Computer)                                │
+│   ☑ Storyteller (Narrative Engine)                       │
+│   ☑ Guardian (Tactical AI)                               │
+│   ☑ Companion (Personal AI)                              │
+│                                                           │
+│ Conversation memory:                                     │
+│   Recent messages: [20 ▼] (10-50)                       │
+│   Important moments: [50 ▼] (20-100)                    │
+│                                                           │
+│ Spontaneous event types:                                 │
+│   ☑ Story suggestions  ☑ Tactical alerts                │
+│   ☑ Ship observations  ☑ Personal check-ins             │
+│   ☑ Mission opportunities                                │
+│                                                           │
 │ Accessibility                                            │
 │ ─────────────                                            │
 │ Text size: [Medium ▼]                                    │
@@ -318,6 +345,30 @@
     "colorblind_mode": "none",
     "high_contrast": false,
     "language": "en"
+  },
+
+  "conversation": {
+    "chat_enabled": true,
+    "chat_hotkey": "C",
+    "spontaneous_events_enabled": true,
+    "event_frequency": "moderate",
+    "custom_interval_min": 3,
+    "custom_interval_max": 10,
+    "active_personalities": {
+      "atlas": true,
+      "storyteller": true,
+      "guardian": true,
+      "companion": true
+    },
+    "recent_messages_count": 20,
+    "important_moments_count": 50,
+    "event_types": {
+      "story_suggestions": true,
+      "tactical_alerts": true,
+      "ship_observations": true,
+      "personal_checkins": true,
+      "mission_opportunities": true
+    }
   },
 
   "ai_providers": {
@@ -678,6 +729,29 @@ func load_default_settings():
             "text_size": "medium",
             "language": "en"
         },
+        "conversation": {
+            "chat_enabled": true,
+            "chat_hotkey": "C",
+            "spontaneous_events_enabled": true,
+            "event_frequency": "moderate",
+            "custom_interval_min": 3,
+            "custom_interval_max": 10,
+            "active_personalities": {
+                "atlas": true,
+                "storyteller": true,
+                "guardian": true,
+                "companion": true
+            },
+            "recent_messages_count": 20,
+            "important_moments_count": 50,
+            "event_types": {
+                "story_suggestions": true,
+                "tactical_alerts": true,
+                "ship_observations": true,
+                "personal_checkins": true,
+                "mission_opportunities": true
+            }
+        },
         "ai_providers": {
             "story_provider": {
                 "type": "claude",
@@ -896,6 +970,13 @@ The Space Adventures settings system provides:
 - Claude for story, Ollama for docs, GPT-3.5 for random content
 - Cost tracking and usage monitoring
 
+**✓ AI Chat & Conversation Settings**
+- Enable/disable AI chat system with customizable hotkey
+- Configure spontaneous AI events (3-15 minute intervals)
+- Select active AI personalities (ATLAS, Storyteller, Guardian, Companion)
+- Customize conversation memory (10-50 recent messages, 20-100 important moments)
+- Toggle specific event types (story suggestions, tactical alerts, etc.)
+
 **✓ Visual Style Customization**
 - 4 presets: Retro Pixel Art, Modern Illustrated, Photorealistic, ASCII Only
 - Custom style prompts for advanced users
@@ -924,6 +1005,7 @@ The Space Adventures settings system provides:
 **Document Status:** Complete
 **Related Documents:**
 - [ship-documentation.md](ship-documentation.md) - Detailed ship manual system
+- [ai-chat-storytelling-system.md](ai-chat-storytelling-system.md) - AI chat and conversation system
 - [technical-architecture.md](technical-architecture.md) - Implementation architecture
 - [ai-integration.md](ai-integration.md) - AI prompt templates
 
