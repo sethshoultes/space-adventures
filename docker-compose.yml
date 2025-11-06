@@ -1,32 +1,29 @@
 version: '3.8'
 
 services:
-  # Python AI Service
-  ai-service:
+  # ==============================================================================
+  # GATEWAY SERVICE - Port 8000
+  # Single entry point for all backend services
+  # ==============================================================================
+  gateway:
     build:
-      context: ./python
+      context: ./python/gateway
       dockerfile: Dockerfile
-    container_name: space-adventures-ai
+    container_name: space-adventures-gateway
     ports:
       - "8000:8000"
     environment:
-      - AI_PROVIDER=${AI_PROVIDER:-ollama}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama2}
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_DB=0
-      - API_HOST=0.0.0.0
-      - API_PORT=8000
-      - CACHE_ENABLED=true
-      - CACHE_TTL_SECONDS=86400
+      - AI_SERVICE_URL=http://ai-service:8001
+      - WHISPER_SERVICE_URL=http://whisper-service:8002
+      - IMAGE_SERVICE_URL=http://image-service:8003
+      - HOST=0.0.0.0
+      - PORT=8000
+      - LOG_LEVEL=info
     volumes:
-      - ./python:/app
-      - ./generated_images:/app/generated_images
-      - ai-cache:/app/.cache
+      - ./python/gateway:/app
+      - ./python/shared:/app/shared
     depends_on:
-      redis:
+      ai-service:
         condition: service_healthy
     networks:
       - space-adventures-network
@@ -38,7 +35,107 @@ services:
       retries: 3
       start_period: 40s
 
-  # Redis Cache & Session Store
+  # ==============================================================================
+  # AI SERVICE - Port 8001
+  # AI-powered content generation (missions, dialogue, chat)
+  # ==============================================================================
+  ai-service:
+    build:
+      context: ./python/ai-service
+      dockerfile: Dockerfile
+    container_name: space-adventures-ai
+    ports:
+      - "8001:8001"
+    environment:
+      # AI Providers
+      - AI_PROVIDER_STORY=${AI_PROVIDER_STORY:-ollama}
+      - AI_PROVIDER_QUICK=${AI_PROVIDER_QUICK:-ollama}
+      - AI_PROVIDER_RANDOM=${AI_PROVIDER_RANDOM:-ollama}
+
+      # API Keys
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+
+      # Ollama Configuration
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2:3b}
+
+      # Models
+      - CLAUDE_MODEL=${CLAUDE_MODEL:-claude-3-5-sonnet-20241022}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-3.5-turbo}
+
+      # Redis Cache
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - CACHE_ENABLED=true
+      - CACHE_TTL_HOURS=24
+
+      # AI Settings
+      - TEMPERATURE=0.8
+      - MAX_TOKENS=1500
+
+      # Server
+      - HOST=0.0.0.0
+      - PORT=8001
+      - LOG_LEVEL=info
+    volumes:
+      - ./python/ai-service:/app
+      - ./python/shared:/app/shared
+      - ai-cache:/app/.cache
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - space-adventures-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==============================================================================
+  # WHISPER SERVICE - Port 8002 (Optional)
+  # Voice-to-text transcription service
+  # ==============================================================================
+  whisper-service:
+    build:
+      context: ./python/whisper-service
+      dockerfile: Dockerfile
+    container_name: space-adventures-whisper
+    ports:
+      - "8002:8002"
+    environment:
+      - WHISPER_MODEL=${WHISPER_MODEL:-base}
+      - DEVICE=${DEVICE:-cpu}
+      - MAX_FILE_SIZE_MB=25
+      - SUPPORTED_FORMATS=wav,mp3,ogg,flac,m4a
+      - LANGUAGE=en
+      - HOST=0.0.0.0
+      - PORT=8002
+      - LOG_LEVEL=info
+    volumes:
+      - ./python/whisper-service:/app
+      - ./python/shared:/app/shared
+      - whisper-temp:/tmp/whisper_uploads
+    networks:
+      - space-adventures-network
+    restart: unless-stopped
+    profiles:
+      - voice  # Optional service - only start with: docker-compose --profile voice up
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s  # Longer startup for model loading
+
+  # ==============================================================================
+  # REDIS - Cache & Session Store
+  # Used by AI service for response caching
+  # ==============================================================================
   redis:
     image: redis:7-alpine
     container_name: space-adventures-redis
@@ -57,7 +154,10 @@ services:
       timeout: 3s
       retries: 3
 
-  # Optional: Redis Commander (Web UI for Redis)
+  # ==============================================================================
+  # REDIS COMMANDER - Redis Web UI (Debug only)
+  # Access at http://localhost:8081
+  # ==============================================================================
   redis-commander:
     image: rediscommander/redis-commander:latest
     container_name: space-adventures-redis-ui
@@ -73,11 +173,17 @@ services:
     profiles:
       - debug
 
+# ==============================================================================
+# NETWORKS
+# ==============================================================================
 networks:
   space-adventures-network:
     driver: bridge
     name: space-adventures-net
 
+# ==============================================================================
+# VOLUMES
+# ==============================================================================
 volumes:
   redis-data:
     driver: local
@@ -85,3 +191,6 @@ volumes:
   ai-cache:
     driver: local
     name: space-adventures-ai-cache
+  whisper-temp:
+    driver: local
+    name: space-adventures-whisper-temp

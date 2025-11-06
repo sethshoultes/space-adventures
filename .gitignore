@@ -22,9 +22,23 @@ build/
 *.env
 !.env.example
 
-# AI Cache
+# AI Cache & Databases
 python/cache.db
 python/src/cache/*.db
+python/*/cache/
+python/*/*.db
+python/*/*.sqlite
+python/*/*.sqlite3
+*.db
+*.sqlite
+*.sqlite3
+
+# Service-specific caches
+python/ai-service/.cache/
+python/whisper-service/.cache/
+
+# Generated images (if using image service)
+generated_images/
 
 # Godot
 .import/
@@ -35,9 +49,10 @@ data_*/
 *.translation
 .godot/
 
-# Save files (optional - uncomment if you don't want to commit saves)
-# godot/saves/*.json
-# !godot/saves/.gitkeep
+# Save files (user data - don't commit)
+godot/saves/*.json
+godot/saves/*.save
+!godot/saves/.gitkeep
 
 # IDE
 .vscode/
@@ -79,3 +94,10 @@ temp/
 docs/_build/
 site/
 .claude/settings.local.json
+
+# Docker volumes (managed by Docker)
+docker-volumes/
+
+# Whisper temp files
+python/whisper-service/temp/
+python/whisper-service/uploads/
