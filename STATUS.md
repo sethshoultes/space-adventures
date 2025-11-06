@@ -1,24 +1,31 @@
 # Project Status
 
-**Last Updated:** 2024-11-06 (Corrected after codebase review)
+**Last Updated:** 2024-11-06 (Hull system implemented!)
 **Current Milestone:** Milestone 1 - Proof of Concept
-**Overall Progress:** 45% (Phase 1 Weeks 1-3 complete, game implementation pending)
+**Overall Progress:** 50% (Phase 1 complete + Hull system done!)
 
 ---
 
 ## 🎯 Current Task
 
-**Ready to begin Milestone 1 game system implementation**
+**Implementing Ship Systems (1/3 complete)**
 
-**What Was Just Completed:**
-- ✅ AI-agent-as-developer workflow infrastructure (STATUS, ROADMAP, AI-AGENT-GUIDE, etc.)
-- ✅ Learning documentation system (docs/03-learnings/)
-- ✅ Corrected documentation to reflect actual codebase state
+**Just Completed:**
+- ✅ Hull System (Level 0-5) fully implemented
+  - Base ShipSystem class created
+  - HullSystem with proper specs from design doc
+  - GameState HP/power calculations fixed
+  - Test integration in main_menu
+- ✅ Fixed GameState to use correct values from ship-systems.md
+  - Hull HP: [0, 50, 100, 200, 350, 500]
+  - Power generation: [0, 100, 200, 400, 700, 1000]
+  - Power consumption: Proper per-system per-level values
 
-**Next Task:** Implement Hull System (Level 0→1)
-- See ROADMAP.md for complete checklist
-- Read /docs/03-game-design/ship-systems/ship-systems.md for specs
-- Create godot/scripts/systems/hull_system.gd
+**Next Task:** Implement Power Core System (Level 0→1)
+- Create godot/scripts/systems/power_system.gd
+- Extend ShipSystem base class
+- Use power generation specs from design doc
+- Test power generation and consumption
 
 ---
 
@@ -78,10 +85,10 @@
 
 **Milestone 1 - Remaining Work:**
 
-❌ **Ship Systems (0/3 implemented)**
-- Hull System (Level 0→1) - NOT STARTED
-- Power Core System (Level 0→1) - NOT STARTED
-- Propulsion System (Level 0→1) - NOT STARTED
+**Ship Systems (1/3 implemented)** 🔨
+- ✅ Hull System (Level 0-5) - COMPLETE!
+- ❌ Power Core System (Level 0→1) - NEXT
+- ❌ Propulsion System (Level 0→1) - After Power Core
 
 ❌ **Content (0/1 missions)**
 - Tutorial mission (hand-written) - NOT STARTED

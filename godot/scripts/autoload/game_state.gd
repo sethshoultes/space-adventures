@@ -210,17 +210,21 @@ func repair_system(system_name: String, repair: int) -> void:
 
 ## Recalculate ship stats based on installed systems
 func _recalculate_ship_stats() -> void:
-	# Calculate max hull HP based on hull system level
+	# Calculate max hull HP based on hull system level (from ship-systems.md spec)
 	var hull_system = ship.systems.hull
-	ship.max_hull_hp = hull_system.level * 100
+	const HULL_HP_BY_LEVEL = [0, 50, 100, 200, 350, 500]
+	ship.max_hull_hp = HULL_HP_BY_LEVEL[hull_system.level] if hull_system.level < 6 else 0
 
 	# Initialize hull HP if this is first installation
 	if ship.hull_hp == 0 and ship.max_hull_hp > 0:
 		ship.hull_hp = ship.max_hull_hp
+	# Cap existing HP to new max if downgraded
+	elif ship.hull_hp > ship.max_hull_hp:
+		ship.hull_hp = ship.max_hull_hp
 
-	# Calculate power generation from power core
+	# Calculate power generation from power core (from ship-systems.md spec)
 	var power_system = ship.systems.power
-	const POWER_BY_LEVEL = [0, 100, 150, 250, 400, 600]
+	const POWER_BY_LEVEL = [0, 100, 200, 400, 700, 1000]
 	ship.power_total = POWER_BY_LEVEL[power_system.level] if power_system.level < 6 else 0
 
 	# Calculate power consumption from all active systems
@@ -231,12 +235,31 @@ func _recalculate_ship_stats() -> void:
 
 ## Calculate total power consumption
 func _calculate_power_consumption() -> int:
+	# Power costs by system and level from ship-systems.md spec
+	# Format: system_name: [L1, L2, L3, L4, L5]
+	const POWER_COSTS = {
+		"hull": [0, 0, 0, 0, 10],  # Level 5 only (regeneration)
+		"power": [0, 0, 0, 0, 0],  # Generates power, doesn't consume
+		"propulsion": [10, 15, 25, 40, 60],
+		"warp": [20, 30, 50, 80, 120],
+		"life_support": [5, 10, 15, 25, 35],
+		"computer": [5, 10, 20, 35, 50],
+		"sensors": [5, 10, 20, 35, 50],
+		"shields": [15, 25, 40, 60, 85],
+		"weapons": [10, 20, 35, 55, 80],
+		"communications": [5, 8, 12, 18, 25]
+	}
+
 	var total = 0
 	for system_name in ship.systems:
 		var system = ship.systems[system_name]
-		if system.active and system_name != "power" and system_name != "hull":
-			# Simple calculation: 10 * level for each active system
-			total += system.level * 10
+		if system.active and system.level > 0:
+			if POWER_COSTS.has(system_name):
+				var costs = POWER_COSTS[system_name]
+				var level_index = system.level - 1  # Array is 0-indexed
+				if level_index >= 0 and level_index < costs.size():
+					total += costs[level_index]
+
 	return total
 
 ## Update ship class based on system configuration

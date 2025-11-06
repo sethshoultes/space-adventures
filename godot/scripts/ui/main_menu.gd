@@ -234,6 +234,77 @@ func _on_test_save_button_pressed() -> void:
 		log_output("  Missions: %d" % save_info.completed_missions)
 		log_output("  Playtime: %s" % SaveManager.format_playtime(save_info.playtime_seconds))
 
+func _on_test_hull_system_button_pressed() -> void:
+	log_output("\n[b]=== Testing Hull System ===[/b]")
+
+	# Create Hull system instance
+	var hull = HullSystem.new()
+	log_output("Created Hull system instance")
+
+	# Test Level 0 (no hull)
+	log_output("\n[b]Test: Level 0 (No Hull)[/b]")
+	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
+	log_output("  Status: %s" % hull.get_status())
+	log_output("  Active: %s" % ("Yes" if hull.active else "No"))
+
+	# Upgrade to Level 1
+	log_output("\n[b]Test: Upgrade to Level 1 (Salvaged Hull)[/b]")
+	hull.upgrade()
+	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
+	log_output("  Status: %s" % hull.get_status())
+	log_output("  Active: %s" % ("Yes" if hull.active else "No"))
+	log_output("  Kinetic Armor: %.0f%%" % (hull.armor_kinetic * 100))
+	log_output("  Power Cost: %d PU" % hull.get_power_cost())
+	log_output("  [color=green]✓[/color] Expected: 50 HP, 5% armor, 0 PU")
+
+	# Test damage
+	log_output("\n[b]Test: Take 20 kinetic damage[/b]")
+	var reduced_damage = hull.take_hull_damage(20, "kinetic")
+	log_output("  Damage after armor: %d (reduced from 20)" % reduced_damage)
+	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
+	log_output("  Expected reduction: ~5% = 19 damage")
+
+	# Test repair
+	log_output("\n[b]Test: Repair 10 HP[/b]")
+	hull.repair(10)
+	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
+
+	# Upgrade to Level 2
+	log_output("\n[b]Test: Upgrade to Level 2 (Reinforced Structure)[/b]")
+	hull.upgrade()
+	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
+	log_output("  Kinetic Armor: %.0f%%" % (hull.armor_kinetic * 100))
+	log_output("  [color=green]✓[/color] Expected: 100 HP, 15% armor")
+
+	# Upgrade to Level 3
+	log_output("\n[b]Test: Upgrade to Level 3 (Composite Armor)[/b]")
+	hull.upgrade()
+	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
+	log_output("  Kinetic Armor: %.0f%%" % (hull.armor_kinetic * 100))
+	log_output("  Energy Armor: %.0f%%" % (hull.armor_energy * 100))
+	log_output("  Radiation Resist: %.0f%%" % (hull.radiation_resist * 100))
+	log_output("  [color=green]✓[/color] Expected: 200 HP, 25% kinetic, 10% energy, 10% radiation")
+
+	# Test energy damage
+	log_output("\n[b]Test: Take 30 energy damage[/b]")
+	var energy_reduced = hull.take_hull_damage(30, "energy")
+	log_output("  Damage after armor: %d (reduced from 30)" % energy_reduced)
+	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
+	log_output("  Expected reduction: ~10% = 27 damage")
+
+	# Test GameState integration
+	log_output("\n[b]Test: GameState Integration[/b]")
+	log_output("  GameState max_hull_hp: %d" % GameState.ship.max_hull_hp)
+	log_output("  GameState systems[hull].level: %d" % GameState.ship.systems.hull.level)
+	log_output("  [color=green]✓[/color] Expected: 200 HP, Level 3")
+
+	# Test detailed stats
+	log_output("\n[b]Hull Stats:[/b]")
+	var stats = hull.get_stats_string()
+	log_output(stats)
+
+	log_output("\n[color=green][b]✓ Hull System Tests Complete![/b][/color]")
+
 func _on_quit_button_pressed() -> void:
 	log_output("\n[b]Quitting...[/b]")
 	get_tree().quit()
