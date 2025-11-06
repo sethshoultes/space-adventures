@@ -1,32 +1,38 @@
 # Project Status
 
-**Last Updated:** 2024-11-06 (Power Core system implemented!)
+**Last Updated:** 2024-11-06 (All 3 core ship systems complete!)
 **Current Milestone:** Milestone 1 - Proof of Concept
-**Overall Progress:** 55% (Phase 1 complete + Hull & Power Core done!)
+**Overall Progress:** 60% (Phase 1 complete + All 3 core ship systems done!)
 
 ---
 
 ## 🎯 Current Task
 
-**Implementing Ship Systems (2/3 complete)**
+**Ship Systems Complete! (3/3) ✅**
 
 **Just Completed:**
-- ✅ Power Core System (Level 0-5) fully implemented
-  - PowerSystem with exact specs from design doc
-  - Power generation: [0, 100, 200, 400, 700, 1000]
-  - Efficiency levels: [0%, 80%, 85%, 90%, 93%, 98%]
-  - Power cost reduction: [0%, 0%, 10%, 15%, 20%, 25%]
-  - Emergency reserve (Level 4: 100 PU one-time boost)
-  - Power regeneration (Level 5: 5 PU/turn)
-  - GameState power_total calculation working
+- ✅ Propulsion System (Level 0-5) fully implemented
+  - PropulsionSystem with exact specs from design doc
+  - Speed multipliers: [0x, 1x, 2x, 4x, 7x, 12x]
+  - Dodge bonuses: [0%, 5%, 10%, 18%, 28%, 40%]
+  - Power costs: [0, 10, 15, 25, 40, 60] PU
+  - Special abilities:
+    - Level 3: Evasive Maneuvers (1/encounter)
+    - Level 4: Emergency Burn (2/encounter)
+    - Level 5: Perfect maneuverability + collision immunity
+  - GameState power consumption integration
   - Test integration in main_menu
 
-**Next Task:** Implement Propulsion System (Level 0→1)
-- Create godot/scripts/systems/propulsion_system.gd
-- Extend ShipSystem base class
-- Power costs: [10, 15, 25, 40, 60]
-- Speed and agility mechanics
-- Test with power budget
+**All 3 Core Ship Systems Complete:**
+- ✅ Hull System - Physical integrity (0-500 HP, armor)
+- ✅ Power Core System - Energy generation (0-1000 PU, efficiency)
+- ✅ Propulsion System - Speed & agility (0x-12x, dodge)
+
+**Next Task:** Create Tutorial Mission (hand-written JSON)
+- Create godot/assets/data/missions/mission_tutorial.json
+- Write first mission introducing ship systems
+- 3-4 stages with meaningful choices
+- Test with AIService mission loading
 
 ---
 
@@ -86,10 +92,10 @@
 
 **Milestone 1 - Remaining Work:**
 
-**Ship Systems (2/3 implemented)** 🔨
+**Ship Systems (3/3 implemented)** ✅ COMPLETE!
 - ✅ Hull System (Level 0-5) - COMPLETE!
 - ✅ Power Core System (Level 0-5) - COMPLETE!
-- ❌ Propulsion System (Level 0→1) - NEXT
+- ✅ Propulsion System (Level 0-5) - COMPLETE!
 
 ❌ **Content (0/1 missions)**
 - Tutorial mission (hand-written) - NOT STARTED
@@ -162,7 +168,7 @@
 ### Milestone 1: Proof of Concept (Current)
 **Goal:** Build basic game loop to validate fun factor
 
-**Progress:** 55% (Phase 1 complete + 2/3 ship systems done)
+**Progress:** 60% (Phase 1 complete + All 3 ship systems done!)
 
 **Completed:**
 - [x] Infrastructure setup (Docker, services, NCC-1701 ports) ✅
@@ -170,12 +176,13 @@
 - [x] Godot foundation (5 singletons, test scene) ✅
 - [x] Documentation organization (32 files, AI agent workflow) ✅
 - [x] Testing infrastructure (guides, integration docs) ✅
-- [x] Hull System (Level 0-5) ✅
-- [x] Power Core System (Level 0-5) ✅
+- [x] Ship Systems (3/3 complete) ✅
+  - [x] Hull System (Level 0-5) - 0-500 HP, armor
+  - [x] Power Core System (Level 0-5) - 0-1000 PU generation
+  - [x] Propulsion System (Level 0-5) - 0x-12x speed, dodge bonuses
 
 **Remaining:**
-- [ ] **NEXT:** Propulsion system implementation (godot/scripts/systems/propulsion_system.gd)
-- [ ] Tutorial mission (hand-written JSON)
+- [ ] **NEXT:** Tutorial mission (hand-written JSON)
 - [ ] Basic Workshop UI scene
 - [ ] Auto-save triggers
 - [ ] Test: Complete game loop (15 min playthrough)

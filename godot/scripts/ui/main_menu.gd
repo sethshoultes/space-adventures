@@ -388,6 +388,93 @@ func _on_test_power_system_button_pressed() -> void:
 
 	log_output("\n[color=green][b]✓ Power Core System Tests Complete![/b][/color]")
 
+func _on_test_propulsion_system_button_pressed() -> void:
+	log_output("\n[b]=== Testing Propulsion System ===[/b]")
+
+	# Create Propulsion instance
+	var propulsion = PropulsionSystem.new()
+	log_output("Created Propulsion System instance")
+
+	# Test Level 0 (no propulsion)
+	log_output("\n[b]Test: Level 0 (No Propulsion)[/b]")
+	log_output("  Speed: %.0fx" % propulsion.get_speed())
+	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
+	log_output("  Status: %s" % propulsion.get_status())
+
+	# Upgrade to Level 1
+	log_output("\n[b]Test: Upgrade to Level 1 (Chemical Thrusters)[/b]")
+	propulsion.upgrade()
+	log_output("  Speed: %.0fx" % propulsion.get_speed())
+	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
+	log_output("  Power Cost: %d PU" % propulsion.get_power_cost())
+	log_output("  [color=green]✓[/color] Expected: 1x speed, 5% dodge, 10 PU")
+
+	# Upgrade to Level 2
+	log_output("\n[b]Test: Upgrade to Level 2 (Ion Drive)[/b]")
+	propulsion.upgrade()
+	log_output("  Speed: %.0fx" % propulsion.get_speed())
+	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
+	log_output("  Power Cost: %d PU" % propulsion.get_power_cost())
+	log_output("  [color=green]✓[/color] Expected: 2x speed, 10% dodge, 15 PU")
+
+	# Upgrade to Level 3
+	log_output("\n[b]Test: Upgrade to Level 3 (Plasma Engine)[/b]")
+	propulsion.upgrade()
+	log_output("  Speed: %.0fx" % propulsion.get_speed())
+	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
+	log_output("  Power Cost: %d PU" % propulsion.get_power_cost())
+	log_output("  Evasive Maneuvers: %s" % ("Available" if propulsion.can_use_evasive_maneuvers() else "None"))
+	log_output("  [color=green]✓[/color] Expected: 4x speed, 18% dodge, 25 PU, Evasive Maneuvers")
+
+	# Test evasive maneuver
+	log_output("\n[b]Test: Use Evasive Maneuver[/b]")
+	var evasive_used = propulsion.use_evasive_maneuver()
+	log_output("  Used: %s" % ("Yes" if evasive_used else "No"))
+	log_output("  Can use again: %s" % ("Yes" if propulsion.can_use_evasive_maneuvers() else "No"))
+	propulsion.reset_evasive_maneuvers()
+	log_output("  After reset: %s" % ("Available" if propulsion.can_use_evasive_maneuvers() else "None"))
+
+	# Upgrade to Level 4
+	log_output("\n[b]Test: Upgrade to Level 4 (Gravitic Drive)[/b]")
+	propulsion.upgrade()
+	log_output("  Speed: %.0fx" % propulsion.get_speed())
+	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
+	log_output("  Power Cost: %d PU" % propulsion.get_power_cost())
+	log_output("  Emergency Burns: %s" % ("Available (2)" if propulsion.can_use_emergency_burn() else "None"))
+	log_output("  [color=green]✓[/color] Expected: 7x speed, 28% dodge, 40 PU, 2 Emergency Burns")
+
+	# Test emergency burns
+	log_output("\n[b]Test: Use Emergency Burns[/b]")
+	propulsion.use_emergency_burn()
+	log_output("  Used 1st: Remaining: %s" % ("1" if propulsion.can_use_emergency_burn() else "0"))
+	propulsion.use_emergency_burn()
+	log_output("  Used 2nd: Remaining: %s" % ("0"))
+	propulsion.reset_emergency_burns()
+	log_output("  After reset: Available (2)")
+
+	# Upgrade to Level 5
+	log_output("\n[b]Test: Upgrade to Level 5 (Inertial Dampener)[/b]")
+	propulsion.upgrade()
+	log_output("  Speed: %.0fx" % propulsion.get_speed())
+	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
+	log_output("  Power Cost: %d PU" % propulsion.get_power_cost())
+	log_output("  Perfect Maneuverability: %s" % ("Yes" if propulsion.has_perfect_maneuverability() else "No"))
+	log_output("  Collision Immunity: %s" % ("Yes" if propulsion.is_collision_immune() else "No"))
+	log_output("  [color=green]✓[/color] Expected: 12x speed, 40% dodge, 60 PU, perfect control + collision immunity")
+
+	# Test GameState integration
+	log_output("\n[b]Test: GameState Integration[/b]")
+	log_output("  GameState power_consumption: %d PU" % GameState.ship.power_consumption)
+	log_output("  GameState systems[propulsion].level: %d" % GameState.ship.systems.propulsion.level)
+	log_output("  [color=green]✓[/color] Expected: 60 PU consumption (propulsion), Level 5")
+
+	# Test detailed stats
+	log_output("\n[b]Propulsion Stats:[/b]")
+	var stats = propulsion.get_stats_string()
+	log_output(stats)
+
+	log_output("\n[color=green][b]✓ Propulsion System Tests Complete![/b][/color]")
+
 func _on_quit_button_pressed() -> void:
 	log_output("\n[b]Quitting...[/b]")
 	get_tree().quit()
