@@ -217,6 +217,57 @@ Comprehensive design documents are in the `docs/` folder:
 | [**Ship Documentation**](docs/ship-documentation.md) | AI-generated ship manuals, task queue system |
 | [**Settings System**](docs/settings-system.md) | Multi-provider AI config, visual styles, preferences |
 
+### Deployment & Operations
+| Document | Description |
+|----------|-------------|
+| [**CI/CD & Deployment**](docs/ci-cd-deployment.md) | Complete CI/CD pipeline, Git workflow, environment setup |
+
+---
+
+## 🚀 CI/CD & Deployment
+
+This project uses **GitHub Actions** for automated CI/CD with three environments:
+
+### Environments
+
+| Environment | Branch | URL | Auto-Deploy |
+|-------------|--------|-----|-------------|
+| **Development** | `develop` | https://dev.space-adventures.example.com | ✅ Yes |
+| **Staging** | `main` | https://staging.space-adventures.example.com | ⚠️ Manual approval |
+| **Production** | Tagged (`v*`) | https://space-adventures.example.com | ⚠️ Manual approval |
+
+### Git Workflow (Git Flow)
+
+```
+feature/new-feature ──┐
+bugfix/fix-issue   ───┼──> develop ──> main ──> v1.0.0 (tag)
+hotfix/urgent      ───┘       │          │          │
+                              ▼          ▼          ▼
+                             DEV     STAGING     PROD
+```
+
+### Quick Start
+
+**Development:**
+```bash
+docker-compose -f docker-compose.dev.yml up -d
+# Includes: Hot reload, debug tools, pgAdmin, Redis Commander
+```
+
+**Staging:**
+```bash
+docker-compose -f docker-compose.staging.yml up -d
+# Production-like environment for testing
+```
+
+**Production:**
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+# Optimized for performance, includes monitoring & backups
+```
+
+📖 **[Full CI/CD Documentation](docs/ci-cd-deployment.md)** - Git branching, deployment process, monitoring, backup/recovery
+
 ---
 
 ## 🛠️ Development

@@ -1,0 +1,152 @@
+version: '3.8'
+
+# Development Environment Configuration
+# Hot-reload enabled, debug tools, verbose logging
+
+services:
+  ai-service:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+      target: development
+    container_name: space-adventures-ai-dev
+    ports:
+      - "8000:8000"
+      - "5678:5678"  # debugpy for remote debugging
+    environment:
+      - ENVIRONMENT=development
+      - AI_PROVIDER=${AI_PROVIDER:-ollama}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama2}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - CACHE_ENABLED=true
+      - CACHE_TTL_SECONDS=3600
+      - LOG_LEVEL=DEBUG
+      - RELOAD=true  # Hot reload for development
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=space_adventures_dev
+      - POSTGRES_USER=dev_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dev_password}
+    volumes:
+      - ./python:/app  # Mount source for hot reload
+      - ./generated_images:/app/generated_images
+      - ai-cache-dev:/app/.cache
+      - ./logs:/app/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - space-adventures-dev
+    restart: unless-stopped
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: space-adventures-postgres-dev
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=space_adventures_dev
+      - POSTGRES_USER=dev_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dev_password}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data
+      - ./database/init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - space-adventures-dev
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev_user -d space_adventures_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: space-adventures-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data-dev:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf --loglevel debug
+    networks:
+      - space-adventures-dev
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Redis Commander - Web UI for Redis
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: space-adventures-redis-ui-dev
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - space-adventures-dev
+    restart: unless-stopped
+
+  # pgAdmin - PostgreSQL Web UI
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: space-adventures-pgadmin-dev
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=dev@space-adventures.local
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD:-admin}
+      - PGADMIN_CONFIG_SERVER_MODE=False
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - space-adventures-dev
+    restart: unless-stopped
+    volumes:
+      - pgadmin-data-dev:/var/lib/pgadmin
+
+  # Mailhog - Email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: space-adventures-mailhog-dev
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - space-adventures-dev
+    restart: unless-stopped
+
+networks:
+  space-adventures-dev:
+    driver: bridge
+    name: space-adventures-dev-net
+
+volumes:
+  postgres-data-dev:
+    driver: local
+    name: space-adventures-postgres-dev
+  redis-data-dev:
+    driver: local
+    name: space-adventures-redis-dev
+  ai-cache-dev:
+    driver: local
+    name: space-adventures-ai-cache-dev
+  pgadmin-data-dev:
+    driver: local
+    name: space-adventures-pgadmin-dev

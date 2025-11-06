@@ -1,0 +1,284 @@
+version: '3.8'
+
+# Production Environment Configuration
+# Optimized for performance, security, and reliability
+
+services:
+  ai-service:
+    image: ghcr.io/${GITHUB_REPOSITORY}:production-latest
+    container_name: space-adventures-ai-prod
+    environment:
+      - ENVIRONMENT=production
+      - AI_PROVIDER=${AI_PROVIDER}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - CACHE_ENABLED=true
+      - CACHE_TTL_SECONDS=86400
+      - LOG_LEVEL=WARNING
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=space_adventures_prod
+      - POSTGRES_USER=prod_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=production
+      - SENTRY_TRACES_SAMPLE_RATE=0.1
+      - SECRET_KEY=${SECRET_KEY}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+    volumes:
+      - ./generated_images:/app/generated_images
+      - ai-cache-prod:/app/.cache
+      - ./logs:/app/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - space-adventures-prod
+    restart: always
+    deploy:
+      replicas: 2  # Run 2 instances for high availability
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '2.0'
+          memory: 4G
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: space-adventures-postgres-prod
+    environment:
+      - POSTGRES_DB=space_adventures_prod
+      - POSTGRES_USER=prod_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C.UTF-8
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data-prod:/var/lib/postgresql/data
+      - ./database/backups:/backups
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    networks:
+      - space-adventures-prod
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prod_user -d space_adventures_prod"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # Read-only PostgreSQL replica for scaling reads
+  postgres-replica:
+    image: postgres:15-alpine
+    container_name: space-adventures-postgres-replica
+    environment:
+      - POSTGRES_DB=space_adventures_prod
+      - POSTGRES_USER=prod_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-replica-data:/var/lib/postgresql/data
+    depends_on:
+      - postgres
+    networks:
+      - space-adventures-prod
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+
+  redis:
+    image: redis:7-alpine
+    container_name: space-adventures-redis-prod
+    volumes:
+      - redis-data-prod:/data
+      - ./redis.prod.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - space-adventures-prod
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  # Redis Sentinel for high availability
+  redis-sentinel:
+    image: redis:7-alpine
+    container_name: space-adventures-redis-sentinel
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    volumes:
+      - ./redis.sentinel.conf:/usr/local/etc/redis/sentinel.conf
+    depends_on:
+      - redis
+    networks:
+      - space-adventures-prod
+    restart: always
+
+  # Nginx reverse proxy with SSL
+  nginx:
+    image: nginx:alpine
+    container_name: space-adventures-nginx-prod
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./nginx/logs:/var/log/nginx
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - ai-service
+    networks:
+      - space-adventures-prod
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # Automated backup service
+  backup:
+    image: postgres:15-alpine
+    container_name: space-adventures-backup-prod
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=space_adventures_prod
+      - POSTGRES_USER=prod_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - BACKUP_RETENTION_DAYS=30
+      - S3_BUCKET=${S3_BACKUP_BUCKET}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    volumes:
+      - ./database/backups:/backups
+      - ./scripts/backup-prod.sh:/backup.sh
+    depends_on:
+      - postgres
+    networks:
+      - space-adventures-prod
+    entrypoint: /bin/sh -c "chmod +x /backup.sh && crond -f -l 2"
+
+  # Prometheus monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: space-adventures-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+    networks:
+      - space-adventures-prod
+    restart: always
+
+  # Grafana dashboards
+  grafana:
+    image: grafana/grafana:latest
+    container_name: space-adventures-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_SERVER_ROOT_URL=https://monitoring.space-adventures.example.com
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/dashboards:/etc/grafana/provisioning/dashboards
+    depends_on:
+      - prometheus
+    networks:
+      - space-adventures-prod
+    restart: always
+
+networks:
+  space-adventures-prod:
+    driver: bridge
+    name: space-adventures-prod-net
+
+volumes:
+  postgres-data-prod:
+    driver: local
+    name: space-adventures-postgres-prod
+  postgres-replica-data:
+    driver: local
+    name: space-adventures-postgres-replica
+  redis-data-prod:
+    driver: local
+    name: space-adventures-redis-prod
+  ai-cache-prod:
+    driver: local
+    name: space-adventures-ai-cache-prod
+  prometheus-data:
+    driver: local
+    name: space-adventures-prometheus
+  grafana-data:
+    driver: local
+    name: space-adventures-grafana
