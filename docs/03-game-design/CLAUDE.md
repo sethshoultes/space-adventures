@@ -8,6 +8,7 @@
 - **core-systems/** - Fundamental mechanics and progression
 - **ship-systems/** - 10 ship systems and classification
 - **content-systems/** - Missions and crew management
+- **future-features/** - Planned enhancements for future phases (7 feature docs)
 
 ### Key Files by Subdirectory
 
@@ -24,6 +25,15 @@
 **content-systems/**
 - mission-framework.md - Mission structure and JSON schema
 - crew-companion-system.md - Crew management mechanics
+
+**future-features/**
+- feature-captains-log.md - AI journey journal (Phase 1 Extension)
+- feature-ship-personality.md - Evolving AI companion (Phase 1 Extension)
+- feature-first-contact-protocol.md - Alien diplomacy (Phase 2)
+- feature-away-team-missions.md - Squad planet missions (Phase 2)
+- feature-crew-recruitment.md - Crew management (Phase 2)
+- feature-exodus-timeline-mystery.md - Mystery story (Phase 2)
+- feature-backlog.md - Unprioritized ideas (Phase 3+)
 
 ## When to Use This Directory
 
@@ -59,6 +69,14 @@
 3. Test progression feels good
 4. Adjust if needed
 5. Update documentation
+
+### Task: Plan future feature implementation
+1. Read future-features/README.md for overview
+2. Review specific feature document completely
+3. Check phase alignment with current development
+4. Assess dependencies on existing systems
+5. Break down into implementation tasks
+6. Estimate timeline and complexity
 
 ## Relationships
 

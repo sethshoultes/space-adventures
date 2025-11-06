@@ -13,6 +13,9 @@ The 10 core ship systems and ship classification.
 ### [content-systems/](./content-systems/)
 Mission framework and crew management.
 
+### [future-features/](./future-features/)
+Planned features and enhancements for future development phases.
+
 ## Overview
 
 This directory contains all game design documentation for Space Adventures. It defines the rules, mechanics, and content structure that make up the game experience.
@@ -32,6 +35,13 @@ This directory contains all game design documentation for Space Adventures. It d
 ### Content & Missions
 - **[Mission Framework](./content-systems/mission-framework.md)** - Mission structure and types
 - **[Crew System](./content-systems/crew-companion-system.md)** - Crew management
+
+### Future Features
+- **[Future Features Index](./future-features/)** - Planned enhancements and future phases
+- **[Captain's Log](./future-features/feature-captains-log.md)** - AI-powered journey journal (Phase 1 Extension)
+- **[Ship Personality](./future-features/feature-ship-personality.md)** - Evolving AI companion (Phase 1 Extension)
+- **[First Contact Protocol](./future-features/feature-first-contact-protocol.md)** - Alien diplomacy (Phase 2)
+- **[Feature Backlog](./future-features/feature-backlog.md)** - Unprioritized ideas
 
 ## Game Overview
 
