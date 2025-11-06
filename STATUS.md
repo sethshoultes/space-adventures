@@ -1,31 +1,32 @@
 # Project Status
 
-**Last Updated:** 2024-11-06 (Hull system implemented!)
+**Last Updated:** 2024-11-06 (Power Core system implemented!)
 **Current Milestone:** Milestone 1 - Proof of Concept
-**Overall Progress:** 50% (Phase 1 complete + Hull system done!)
+**Overall Progress:** 55% (Phase 1 complete + Hull & Power Core done!)
 
 ---
 
 ## 🎯 Current Task
 
-**Implementing Ship Systems (1/3 complete)**
+**Implementing Ship Systems (2/3 complete)**
 
 **Just Completed:**
-- ✅ Hull System (Level 0-5) fully implemented
-  - Base ShipSystem class created
-  - HullSystem with proper specs from design doc
-  - GameState HP/power calculations fixed
-  - Test integration in main_menu
-- ✅ Fixed GameState to use correct values from ship-systems.md
-  - Hull HP: [0, 50, 100, 200, 350, 500]
+- ✅ Power Core System (Level 0-5) fully implemented
+  - PowerSystem with exact specs from design doc
   - Power generation: [0, 100, 200, 400, 700, 1000]
-  - Power consumption: Proper per-system per-level values
+  - Efficiency levels: [0%, 80%, 85%, 90%, 93%, 98%]
+  - Power cost reduction: [0%, 0%, 10%, 15%, 20%, 25%]
+  - Emergency reserve (Level 4: 100 PU one-time boost)
+  - Power regeneration (Level 5: 5 PU/turn)
+  - GameState power_total calculation working
+  - Test integration in main_menu
 
-**Next Task:** Implement Power Core System (Level 0→1)
-- Create godot/scripts/systems/power_system.gd
+**Next Task:** Implement Propulsion System (Level 0→1)
+- Create godot/scripts/systems/propulsion_system.gd
 - Extend ShipSystem base class
-- Use power generation specs from design doc
-- Test power generation and consumption
+- Power costs: [10, 15, 25, 40, 60]
+- Speed and agility mechanics
+- Test with power budget
 
 ---
 
@@ -85,10 +86,10 @@
 
 **Milestone 1 - Remaining Work:**
 
-**Ship Systems (1/3 implemented)** 🔨
+**Ship Systems (2/3 implemented)** 🔨
 - ✅ Hull System (Level 0-5) - COMPLETE!
-- ❌ Power Core System (Level 0→1) - NEXT
-- ❌ Propulsion System (Level 0→1) - After Power Core
+- ✅ Power Core System (Level 0-5) - COMPLETE!
+- ❌ Propulsion System (Level 0→1) - NEXT
 
 ❌ **Content (0/1 missions)**
 - Tutorial mission (hand-written) - NOT STARTED
@@ -161,7 +162,7 @@
 ### Milestone 1: Proof of Concept (Current)
 **Goal:** Build basic game loop to validate fun factor
 
-**Progress:** 45% (Phase 1 Weeks 1-4 complete, game implementation pending)
+**Progress:** 55% (Phase 1 complete + 2/3 ship systems done)
 
 **Completed:**
 - [x] Infrastructure setup (Docker, services, NCC-1701 ports) ✅
@@ -169,11 +170,11 @@
 - [x] Godot foundation (5 singletons, test scene) ✅
 - [x] Documentation organization (32 files, AI agent workflow) ✅
 - [x] Testing infrastructure (guides, integration docs) ✅
+- [x] Hull System (Level 0-5) ✅
+- [x] Power Core System (Level 0-5) ✅
 
 **Remaining:**
-- [ ] **NEXT:** Hull system implementation (godot/scripts/systems/hull_system.gd)
-- [ ] Power Core system implementation
-- [ ] Propulsion system implementation
+- [ ] **NEXT:** Propulsion system implementation (godot/scripts/systems/propulsion_system.gd)
 - [ ] Tutorial mission (hand-written JSON)
 - [ ] Basic Workshop UI scene
 - [ ] Auto-save triggers

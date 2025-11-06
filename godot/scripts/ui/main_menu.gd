@@ -305,6 +305,89 @@ func _on_test_hull_system_button_pressed() -> void:
 
 	log_output("\n[color=green][b]✓ Hull System Tests Complete![/b][/color]")
 
+func _on_test_power_system_button_pressed() -> void:
+	log_output("\n[b]=== Testing Power Core System ===[/b]")
+
+	# Create Power Core instance
+	var power = PowerSystem.new()
+	log_output("Created Power Core instance")
+
+	# Test Level 0 (no power)
+	log_output("\n[b]Test: Level 0 (No Power)[/b]")
+	log_output("  Power Output: %d PU" % power.get_power_output())
+	log_output("  Status: %s" % power.get_status())
+	log_output("  Active: %s" % ("Yes" if power.active else "No"))
+
+	# Upgrade to Level 1
+	log_output("\n[b]Test: Upgrade to Level 1 (Fusion Cell)[/b]")
+	power.upgrade()
+	log_output("  Power Output: %d PU" % power.get_power_output())
+	log_output("  Efficiency: %.0f%%" % power.get_efficiency_percent())
+	log_output("  Power Cost Reduction: %.0f%%" % power.get_cost_reduction_percent())
+	log_output("  [color=green]✓[/color] Expected: 100 PU, 80% efficiency, 0% reduction")
+
+	# Upgrade to Level 2
+	log_output("\n[b]Test: Upgrade to Level 2 (Deuterium Reactor)[/b]")
+	power.upgrade()
+	log_output("  Power Output: %d PU" % power.get_power_output())
+	log_output("  Efficiency: %.0f%%" % power.get_efficiency_percent())
+	log_output("  Power Cost Reduction: %.0f%%" % power.get_cost_reduction_percent())
+	log_output("  [color=green]✓[/color] Expected: 200 PU, 85% efficiency, 10% reduction")
+
+	# Upgrade to Level 3
+	log_output("\n[b]Test: Upgrade to Level 3 (M/AM Core)[/b]")
+	power.upgrade()
+	log_output("  Power Output: %d PU" % power.get_power_output())
+	log_output("  Efficiency: %.0f%%" % power.get_efficiency_percent())
+	log_output("  Power Cost Reduction: %.0f%%" % power.get_cost_reduction_percent())
+	log_output("  [color=green]✓[/color] Expected: 400 PU, 90% efficiency, 15% reduction")
+
+	# Upgrade to Level 4
+	log_output("\n[b]Test: Upgrade to Level 4 (Advanced M/AM)[/b]")
+	power.upgrade()
+	log_output("  Power Output: %d PU" % power.get_power_output())
+	log_output("  Efficiency: %.0f%%" % power.get_efficiency_percent())
+	log_output("  Power Cost Reduction: %.0f%%" % power.get_cost_reduction_percent())
+	log_output("  Emergency Reserve: %d PU" % power.emergency_reserve)
+	log_output("  [color=green]✓[/color] Expected: 700 PU, 93% efficiency, 20% reduction, 100 PU reserve")
+
+	# Test emergency reserve
+	log_output("\n[b]Test: Use Emergency Reserve[/b]")
+	var reserve_used = power.use_emergency_reserve()
+	log_output("  Reserve used: %d PU" % reserve_used)
+	log_output("  Remaining reserve: %d PU" % power.emergency_reserve)
+	log_output("  [color=green]✓[/color] Expected: 100 PU used, 0 PU remaining")
+
+	# Upgrade to Level 5
+	log_output("\n[b]Test: Upgrade to Level 5 (Zero-Point Energy)[/b]")
+	power.upgrade()
+	log_output("  Power Output: %d PU" % power.get_power_output())
+	log_output("  Efficiency: %.0f%%" % power.get_efficiency_percent())
+	log_output("  Power Cost Reduction: %.0f%%" % power.get_cost_reduction_percent())
+	log_output("  Power Regen: %d PU/turn" % power.power_regen_per_turn)
+	log_output("  [color=green]✓[/color] Expected: 1000 PU, 98% efficiency, 25% reduction, 5 PU/turn")
+
+	# Test power regeneration
+	log_output("\n[b]Test: Power Regeneration[/b]")
+	var regen = power.regenerate_power()
+	log_output("  Regenerated: %d PU" % regen)
+	log_output("  [color=green]✓[/color] Expected: 5 PU per turn")
+
+	# Test GameState integration
+	log_output("\n[b]Test: GameState Integration[/b]")
+	log_output("  GameState power_total: %d PU" % GameState.ship.power_total)
+	log_output("  GameState power_available: %d PU" % GameState.ship.power_available)
+	log_output("  GameState power_consumption: %d PU" % GameState.ship.power_consumption)
+	log_output("  GameState systems[power].level: %d" % GameState.ship.systems.power.level)
+	log_output("  [color=green]✓[/color] Expected: 1000 PU total, Level 5")
+
+	# Test detailed stats
+	log_output("\n[b]Power Core Stats:[/b]")
+	var stats = power.get_stats_string()
+	log_output(stats)
+
+	log_output("\n[color=green][b]✓ Power Core System Tests Complete![/b][/color]")
+
 func _on_quit_button_pressed() -> void:
 	log_output("\n[b]Quitting...[/b]")
 	get_tree().quit()
