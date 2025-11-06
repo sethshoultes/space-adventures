@@ -124,6 +124,77 @@ func _on_test_chat_button_pressed() -> void:
 		log_output("[color=red]✗[/color] Chat failed: %s" % result.error)
 		EventBus.error("Chat Failed", result.error)
 
+func _on_test_mission_button_pressed() -> void:
+	log_output("\n[b]Testing mission generation...[/b]")
+
+	if not ServiceManager.is_service_available("ai"):
+		log_output("[color=red]✗[/color] AI service not available")
+		EventBus.error("Service Unavailable", "AI service is not running. Start Docker services.")
+		return
+
+	log_output("Generating medium difficulty mission...")
+
+	var result = await AIService.generate_mission("medium", "salvage", "Old Earth Ruins")
+
+	if result.success:
+		log_output("[color=green]✓[/color] Mission generation successful!")
+
+		if result.data.has("mission"):
+			var mission = result.data.mission
+			log_output("\n[b]Generated Mission:[/b]")
+			log_output("  Title: %s" % mission.get("title", "Unknown"))
+			log_output("  Type: %s" % mission.get("type", "Unknown"))
+			log_output("  Difficulty: %s" % mission.get("difficulty", "Unknown"))
+			log_output("  Location: %s" % mission.get("location", "Unknown"))
+
+			if mission.has("description"):
+				log_output("  Description: %s" % mission.description)
+
+			if mission.has("stages"):
+				log_output("  Stages: %d" % mission.stages.size())
+
+		if result.data.has("cached") and result.data.cached:
+			log_output("[color=yellow](Cached response)[/color]")
+
+		if result.data.has("generation_time_ms"):
+			log_output("  Generation time: %.2fms" % result.data.generation_time_ms)
+	else:
+		log_output("[color=red]✗[/color] Mission generation failed: %s" % result.error)
+		EventBus.error("Mission Generation Failed", result.error)
+
+func _on_test_dialogue_button_pressed() -> void:
+	log_output("\n[b]Testing dialogue generation...[/b]")
+
+	if not ServiceManager.is_service_available("ai"):
+		log_output("[color=red]✗[/color] AI service not available")
+		EventBus.error("Service Unavailable", "AI service is not running. Start Docker services.")
+		return
+
+	log_output("Generating NPC dialogue...")
+
+	var result = await AIService.generate_dialogue(
+		"Jax Morgan",
+		"Salvage Yard Owner",
+		"Player arrives at salvage yard looking for ship parts",
+		"asks about available hull components"
+	)
+
+	if result.success:
+		log_output("[color=green]✓[/color] Dialogue generation successful!")
+
+		if result.data.has("dialogue"):
+			log_output("\n[b]Generated Dialogue:[/b]")
+			log_output("[color=cyan]Jax Morgan:[/color] %s" % result.data.dialogue)
+
+		if result.data.has("cached") and result.data.cached:
+			log_output("[color=yellow](Cached response)[/color]")
+
+		if result.data.has("generation_time_ms"):
+			log_output("  Generation time: %.2fms" % result.data.generation_time_ms)
+	else:
+		log_output("[color=red]✗[/color] Dialogue generation failed: %s" % result.error)
+		EventBus.error("Dialogue Generation Failed", result.error)
+
 func _on_test_save_button_pressed() -> void:
 	log_output("\n[b]Testing save/load system...[/b]")
 

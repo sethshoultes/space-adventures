@@ -64,6 +64,14 @@ text = "Test Service Connection"
 layout_mode = 2
 text = "Test AI Chat"
 
+[node name="TestMissionButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Test Mission Generation"
+
+[node name="TestDialogueButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Test Dialogue Generation"
+
 [node name="TestSaveButton" type="Button" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "Test Save/Load"
@@ -98,5 +106,7 @@ scroll_following = true
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/TestServiceButton" to="." method="_on_test_service_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/TestChatButton" to="." method="_on_test_chat_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/TestMissionButton" to="." method="_on_test_mission_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/TestDialogueButton" to="." method="_on_test_dialogue_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/TestSaveButton" to="." method="_on_test_save_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
