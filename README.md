@@ -16,6 +16,8 @@
 - **🔧 Ship Building**: 10 core ship systems to find, install, and upgrade
 - **🎮 Meaningful Choices**: Every decision matters - multiple approaches to challenges
 - **🤖 AI-Powered Narrative**: Dynamic missions and encounters using ChatGPT or Ollama
+- **🎙️ Voice Input (Optional)**: Speak to your ship's computer using Whisper AI transcription
+- **💬 AI Chat System**: Multiple AI personalities (Ship Computer, Storyteller, Tactical, Companion)
 - **📖 Deep Story**: Hand-crafted story missions mixed with AI-generated content
 - **💾 Persistent Progress**: Save your journey and continue anytime
 - **🎨 Retro-Tech Aesthetic**: Mix of ASCII schematics, pixel art, and clean UI
@@ -212,6 +214,8 @@ Comprehensive design documents are in the `docs/` folder:
 ### AI & Content
 | Document | Description |
 |----------|-------------|
+| [**AI Chat & Storytelling**](docs/ai-chat-storytelling-system.md) | AI-first chat system, multiple personalities, spontaneous events |
+| [**Whisper Voice Transcription**](docs/whisper-voice-transcription.md) | Voice-to-text using Whisper AI (optional feature) |
 | [**AI Integration**](docs/ai-integration.md) | AI prompts, templates, integration patterns |
 | [**Visual Features**](docs/visual-features.md) | AI image generation, galaxy maps, Stable Diffusion |
 | [**Ship Documentation**](docs/ship-documentation.md) | AI-generated ship manuals, task queue system |

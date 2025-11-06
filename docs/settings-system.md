@@ -1006,6 +1006,7 @@ The Space Adventures settings system provides:
 **Related Documents:**
 - [ship-documentation.md](ship-documentation.md) - Detailed ship manual system
 - [ai-chat-storytelling-system.md](ai-chat-storytelling-system.md) - AI chat and conversation system
+- [whisper-voice-transcription.md](whisper-voice-transcription.md) - Voice-to-text transcription system
 - [technical-architecture.md](technical-architecture.md) - Implementation architecture
 - [ai-integration.md](ai-integration.md) - AI prompt templates
 

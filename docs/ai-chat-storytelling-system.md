@@ -2905,7 +2905,7 @@ func _build_context() -> Dictionary:
 This AI Chat & Storytelling System creates an **AI-first experience** where:
 
 ✅ **Multiple AI Personalities** - Ship Computer, Storyteller, Tactical AI, Companion (each with distinct voice and purpose)
-✅ **Natural Conversation** - Ask questions AND give commands via chat
+✅ **Natural Conversation** - Ask questions AND give commands via chat or voice (see [whisper-voice-transcription.md](whisper-voice-transcription.md))
 ✅ **Proactive AI** - Initiates conversations based on events (every 3-10 minutes, customizable)
 ✅ **Relationship Development** - AI personality evolves through 4 levels based on shared experiences
 ✅ **Memory System** - Remembers last 10-20 messages + important moments (customizable)
@@ -2913,10 +2913,16 @@ This AI Chat & Storytelling System creates an **AI-first experience** where:
 ✅ **Chat Overlay** - Accessible anywhere with C key or button
 ✅ **Command Parsing** - Natural language commands execute game actions
 ✅ **Spontaneous Events** - Context-aware AI suggestions and encounters
+✅ **Voice Input (Optional)** - Speak to your ship's computer using Whisper AI transcription
 
 **Total System Features:** 50+ documented systems with full implementation code
 
 ---
 
 **Document Complete**
-**Last Updated:** November 6, 2025
+**Related Documents:**
+- [whisper-voice-transcription.md](whisper-voice-transcription.md) - Voice-to-text transcription (optional)
+- [settings-system.md](settings-system.md) - Settings and configuration
+- [technical-architecture.md](technical-architecture.md) - Implementation architecture
+
+**Last Updated:** November 5, 2025
