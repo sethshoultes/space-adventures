@@ -171,27 +171,60 @@ func _display_result(result: Dictionary) -> void:
 	var consequence = result.get("consequence", {})
 	var result_message = consequence.get("text", "")
 
-	# Show result text
-	if result_message != "":
-		result_text.text = "[i]%s[/i]" % result_message
-		result_text.visible = true
-
 	# Check if mission continues or ends
 	if consequence.has("next_stage"):
-		# Continue to next stage automatically after delay
+		# Fade out old stage content to avoid confusion during transition
+		stage_title.modulate.a = 0.5
+		description.modulate.a = 0.5
+
+		# Show result text prominently
+		if result_message != "":
+			result_text.text = "[i]%s[/i]" % result_message
+			result_text.visible = true
+
+		# Hide choices during transition
 		choices_label.visible = false
+
+		# Wait for player to read result
 		await get_tree().create_timer(2.0).timeout
+
+		# Hide result text before loading new stage (clean slate)
+		result_text.visible = false
+
+		# Restore opacity for new content
+		stage_title.modulate.a = 1.0
+		description.modulate.a = 1.0
+
+		# Load new stage with fresh content
 		_load_current_stage()
 
 	elif consequence.has("mission_complete") or consequence.get("mission_complete", false):
+		# Show result if present
+		if result_message != "":
+			result_text.text = "[i]%s[/i]" % result_message
+			result_text.visible = true
+			await get_tree().create_timer(2.0).timeout
+
 		# Mission completed
 		_show_mission_complete()
 
 	elif consequence.has("mission_failed"):
+		# Show result if present
+		if result_message != "":
+			result_text.text = "[i]%s[/i]" % result_message
+			result_text.visible = true
+			await get_tree().create_timer(2.0).timeout
+
 		# Mission failed
 		_show_mission_failed(consequence.get("reason", "Mission failed"))
 
 	else:
+		# Show result if present
+		if result_message != "":
+			result_text.text = "[i]%s[/i]" % result_message
+			result_text.visible = true
+			await get_tree().create_timer(2.0).timeout
+
 		# No next stage specified - assume mission complete
 		_show_mission_complete()
 
