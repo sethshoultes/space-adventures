@@ -243,6 +243,45 @@ func auto_save() -> bool:
 	print("SaveManager: Auto-save complete")
 	return true
 
+## Auto-load - Load the auto-save file if it exists
+func auto_load() -> bool:
+	var auto_save_path = SAVE_DIR + "autosave" + SAVE_FILE_EXTENSION
+
+	# Check if auto-save exists
+	if not FileAccess.file_exists(auto_save_path):
+		print("SaveManager: No auto-save file found")
+		return false
+
+	# Read file
+	var file = FileAccess.open(auto_save_path, FileAccess.READ)
+	if file == null:
+		push_error("SaveManager: Failed to open auto-save file")
+		return false
+
+	var json_string = file.get_as_text()
+	file.close()
+
+	# Parse JSON
+	var json = JSON.new()
+	var parse_result = json.parse(json_string)
+	if parse_result != OK:
+		push_error("SaveManager: Failed to parse auto-save JSON: " + json.get_error_message())
+		return false
+
+	var save_data = json.data
+
+	# Validate structure
+	if not save_data.has("game_state"):
+		push_error("SaveManager: Invalid auto-save structure")
+		return false
+
+	# Load game state
+	var game_state = save_data.game_state
+	GameState.from_dict(game_state)
+
+	print("SaveManager: Auto-save loaded successfully")
+	return true
+
 ## Format playtime for display
 func format_playtime(seconds: float) -> String:
 	var hours = int(seconds) / 3600

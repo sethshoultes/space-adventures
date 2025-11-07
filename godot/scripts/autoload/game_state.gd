@@ -79,7 +79,13 @@ var _playtime_offset: float = 0.0  # For tracking current session
 func _ready() -> void:
 	print("GameState initialized")
 	print("Version: ", VERSION)
-	_initialize_game()
+
+	# Try to load auto-save first
+	if SaveManager.auto_load():
+		print("GameState: Auto-save loaded successfully")
+	else:
+		print("GameState: No auto-save found, starting new game")
+		_initialize_game()
 
 func _process(delta: float) -> void:
 	# Track playtime
