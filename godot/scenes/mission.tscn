@@ -1,0 +1,152 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8j7nmr3qw2k5"]
+
+[ext_resource type="Script" path="res://scripts/ui/mission.gd" id="1_mission"]
+
+[node name="Mission" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mission")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.1, 0.15, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="MissionTitle" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Mission Title"
+horizontal_alignment = 1
+
+[node name="Location" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Location"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="StageContent" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StageText" type="VBoxContainer" parent="MarginContainer/VBoxContainer/StageContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="StageTitle" type="Label" parent="MarginContainer/VBoxContainer/StageContent/StageText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Stage Title"
+
+[node name="Description" type="RichTextLabel" parent="MarginContainer/VBoxContainer/StageContent/StageText"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "Stage description will appear here..."
+fit_content = true
+
+[node name="ResultText" type="RichTextLabel" parent="MarginContainer/VBoxContainer/StageContent/StageText"]
+visible = false
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.8, 0.9, 1, 1)
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+text = "Result of your choice..."
+fit_content = true
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ChoicesLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "What do you do?"
+
+[node name="Choices" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Choice1" type="Button" parent="MarginContainer/VBoxContainer/Choices"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Choice 1"
+
+[node name="Choice2" type="Button" parent="MarginContainer/VBoxContainer/Choices"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Choice 2"
+
+[node name="Choice3" type="Button" parent="MarginContainer/VBoxContainer/Choices"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Choice 3"
+
+[node name="Choice4" type="Button" parent="MarginContainer/VBoxContainer/Choices"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Choice 4"
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Actions" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ContinueButton" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "CONTINUE"
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ExitButton" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Exit Mission"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Choices/Choice1" to="." method="_on_choice_pressed" binds= [0]]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Choices/Choice2" to="." method="_on_choice_pressed" binds= [1]]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Choices/Choice3" to="." method="_on_choice_pressed" binds= [2]]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Choices/Choice4" to="." method="_on_choice_pressed" binds= [3]]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/ContinueButton" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/ExitButton" to="." method="_on_exit_pressed"]

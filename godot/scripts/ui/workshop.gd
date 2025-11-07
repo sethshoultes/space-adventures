@@ -196,8 +196,19 @@ func _on_save_pressed() -> void:
 		# TODO: Show error UI
 
 func _on_missions_pressed() -> void:
-	print("Missions button pressed (not yet implemented)")
-	# TODO: Change scene to mission selection
+	print("Launching tutorial mission")
+
+	# Start the tutorial mission
+	var mission_started = MissionManager.start_mission("tutorial_first_salvage")
+
+	if mission_started:
+		# Auto-save before starting mission
+		SaveManager.auto_save()
+
+		# Load mission scene
+		get_tree().change_scene_to_file("res://scenes/mission.tscn")
+	else:
+		print("Failed to start mission")
 
 func _on_main_menu_pressed() -> void:
 	print("Returning to main menu")
