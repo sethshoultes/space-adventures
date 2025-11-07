@@ -598,14 +598,84 @@ func from_dict(data: Dictionary) -> void:
 	if data.get("version") != VERSION:
 		push_warning("Save file version mismatch: %s vs %s" % [data.get("version"), VERSION])
 
-	player = data.get("player", player).duplicate(true)
-	ship = data.get("ship", ship).duplicate(true)
+	# Load data with migration support (merge with defaults to handle new fields)
+	var loaded_player = data.get("player", {})
+	player = _migrate_player_data(loaded_player)
+
+	var loaded_ship = data.get("ship", {})
+	ship = _migrate_ship_data(loaded_ship)
+
 	inventory = data.get("inventory", []).duplicate(true)
-	progress = data.get("progress", progress).duplicate(true)
+
+	var loaded_progress = data.get("progress", {})
+	progress = _migrate_progress_data(loaded_progress)
 
 	_playtime_offset = progress.playtime_seconds
 
 	print("GameState loaded from save")
+
+## Migrate player data to ensure all required fields exist
+func _migrate_player_data(loaded: Dictionary) -> Dictionary:
+	"""Merge loaded player data with default structure to handle version changes"""
+	var default_player = {
+		"name": "Player",
+		"level": 1,
+		"xp": 0,
+		"xp_to_next_level": 200,
+		"rank": "Cadet",
+		"credits": 0,
+		"skill_points": 0,
+		"skills": {
+			"engineering": 0,
+			"diplomacy": 0,
+			"combat": 0,
+			"science": 0
+		}
+	}
+
+	# Merge: loaded values override defaults, but defaults fill in missing fields
+	for key in default_player:
+		if not loaded.has(key):
+			loaded[key] = default_player[key]
+
+	# Ensure skills dictionary has all skills
+	if loaded.has("skills"):
+		for skill in default_player.skills:
+			if not loaded.skills.has(skill):
+				loaded.skills[skill] = 0
+
+	return loaded.duplicate(true)
+
+## Migrate ship data to ensure all required fields exist
+func _migrate_ship_data(loaded: Dictionary) -> Dictionary:
+	"""Merge loaded ship data with default structure"""
+	# Start with current ship structure (has all systems)
+	var migrated = ship.duplicate(true)
+
+	# Override with loaded values
+	for key in loaded:
+		migrated[key] = loaded[key]
+
+	return migrated
+
+## Migrate progress data to ensure all required fields exist
+func _migrate_progress_data(loaded: Dictionary) -> Dictionary:
+	"""Merge loaded progress data with default structure"""
+	var default_progress = {
+		"phase": 1,
+		"completed_missions": [],
+		"discovered_locations": [],
+		"major_choices": [],
+		"discovered_parts": [],  # Economy system addition
+		"playtime_seconds": 0.0
+	}
+
+	# Merge: loaded values override defaults
+	for key in default_progress:
+		if not loaded.has(key):
+			loaded[key] = default_progress[key]
+
+	return loaded.duplicate(true)
 
 ## Reset to new game state
 func reset_to_new_game() -> void:
