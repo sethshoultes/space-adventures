@@ -106,7 +106,10 @@ func from_dict(data: Dictionary) -> void:
 	health = data.get("health", 100)
 	max_health = data.get("max_health", 100)
 	active = data.get("active", false)
-	installed_part_id = data.get("installed_part", "")
+
+	# Handle null installed_part from GameState
+	var part = data.get("installed_part")
+	installed_part_id = part if part != null else ""
 
 ## Get description for current level
 func get_description() -> String:
