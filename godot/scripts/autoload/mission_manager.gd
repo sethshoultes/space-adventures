@@ -221,7 +221,7 @@ func _resolve_choice(choice: Dictionary) -> Dictionary:
 	var success_chance = choice.get("success_chance", 100)
 
 	# Skill-based check
-	if success_chance == "skill_based":
+	if success_chance is String and success_chance == "skill_based":
 		if choice.has("requirements") and choice.requirements.has("skill"):
 			var skill_name = choice.requirements.skill
 			var required_level = choice.requirements.get("skill_level", 0)
@@ -236,7 +236,7 @@ func _resolve_choice(choice: Dictionary) -> Dictionary:
 				"consequence": consequence
 			}
 	# Percentage-based check
-	elif success_chance is int:
+	elif success_chance is int or success_chance is float:
 		var roll = randi() % 100
 		var success = roll < success_chance
 		var consequence = choice.consequences.success if success else choice.consequences.get("failure", {})
