@@ -74,11 +74,12 @@
   - Signal-based architecture for decoupled AI system
   - Future-ready for multi-AI discussions and chat interface
 
-- ✅ **Critical Bug Fixes** (4 major issues resolved):
+- ✅ **Critical Bug Fixes** (5 major issues resolved):
   1. **Autoload Parsing Error** - Fixed project.godot INI formatting (broken [display] section)
   2. **Broken Adaptive Layout** - Switched from custom_minimum_size to size_flags_stretch_ratio
   3. **Choice Selection Crash** - Added missing await for async _display_result()
   4. **Race Condition** - Added stage validation to prevent stale AI interjections
+  5. **Magentic UI Overlay Bug** - Added size_flags_stretch_ratio to NarrativeContainer for proper 50/50 split
 
 - ✅ **Narrative Flow Improvements**
   - Fade-and-replace transitions (old content dims to 50% during result display)
@@ -273,6 +274,20 @@
 ---
 
 ## ✅ Recent Completions
+
+### 2025-01-07: Critical Bug Fixes - Save Migration & Magentic UI Layout
+- **Save File Migration Bug** (commit c1e164f)
+  - Fixed workshop crash when loading old save files
+  - Root cause: Old saves missing economy fields (credits, skill_points, discovered_parts)
+  - Added 3 migration functions to merge old data with new structure
+  - All old saves now load successfully with defaults (0 credits, 0 skill_points)
+
+- **Magentic UI Overlay Bug** (commit ecebd31)
+  - Fixed ATLAS AI panel overlaying narrative instead of side-by-side positioning
+  - Root cause: NarrativeContainer had no explicit size_flags_stretch_ratio
+  - Added size_flags_stretch_ratio = 1.0 to NarrativeContainer
+  - HBoxContainer now properly splits space 50/50 when AI panel visible
+  - Adaptive layout working correctly: narrative compresses, AI panel slides in from right
 
 ### 2025-01-07: Hybrid Economy System - Phases 1-6 (COMPLETE!)
 - **Phase 1: Data Files** (7 JSON files, 39 parts defined)
