@@ -17,6 +17,8 @@ var player: Dictionary = {
 	"xp": 0,
 	"xp_to_next_level": 200,
 	"rank": "Cadet",
+	"credits": 0,  # Player's currency
+	"skill_points": 0,  # Unspent skill points from leveling
 	"skills": {
 		"engineering": 0,
 		"diplomacy": 0,
@@ -65,6 +67,7 @@ var progress: Dictionary = {
 	"phase": 1,  # 1 = Earthbound (Phase 1), 2 = Space (Phase 2)
 	"completed_missions": [],  # Array of mission IDs
 	"discovered_locations": [],  # Array of location names
+	"discovered_parts": [],  # Array of part_id strings (unlocked for use)
 	"major_choices": [],  # Array of choice dictionaries
 	"playtime_seconds": 0.0,
 	"game_started": 0.0  # Unix timestamp
@@ -118,22 +121,39 @@ func _create_system(system_name: String, level: int) -> Dictionary:
 
 ## Add XP to player and check for level up
 func add_xp(amount: int, source: String = "") -> void:
-	var old_level = player.level
 	player.xp += amount
 	EventBus.xp_gained.emit(amount, source)
 
-	# Check for level up
+	# Check for level up (can level up multiple times)
 	while player.xp >= player.xp_to_next_level:
 		player.xp -= player.xp_to_next_level
 		player.level += 1
+
+		# Award skill points (from PartRegistry economy config)
+		var skill_points_gained = 2  # Default
+		if has_node("/root/PartRegistry"):
+			skill_points_gained = PartRegistry.get_skill_points_per_level()
+
+		player.skill_points += skill_points_gained
+
+		# Update XP needed for next level
 		player.xp_to_next_level = _calculate_next_level_xp(player.level)
-		EventBus.level_up.emit(player.level, old_level)
-		print("Player leveled up! New level: %d" % player.level)
+
+		# Emit level up signal
+		EventBus.level_up.emit(player.level, skill_points_gained)
+		print("Player leveled up! New level: %d, gained %d skill points" % [player.level, skill_points_gained])
 
 	_update_player_rank()
 
-## Calculate XP needed for next level (exponential curve)
+## Calculate XP needed for next level (uses PartRegistry XP curve)
 func _calculate_next_level_xp(current_level: int) -> int:
+	# Use PartRegistry economy config if available
+	if has_node("/root/PartRegistry"):
+		var xp_required = PartRegistry.get_xp_for_level(current_level)
+		if xp_required > 0:
+			return xp_required
+
+	# Fallback to hardcoded exponential curve
 	return int(200 * pow(1.5, current_level - 1))
 
 ## Update player rank based on level
@@ -165,6 +185,70 @@ func increase_skill(skill_name: String, amount: int) -> void:
 	var old_value = player.skills[skill_name]
 	player.skills[skill_name] += amount
 	EventBus.skill_increased.emit(skill_name, player.skills[skill_name], old_value)
+
+# ============================================================================
+# ECONOMY FUNCTIONS
+# ============================================================================
+
+## Add credits to player's balance
+func add_credits(amount: int) -> void:
+	if amount < 0:
+		push_warning("GameState.add_credits: Amount should be positive (%d)" % amount)
+		return
+
+	player.credits += amount
+	EventBus.credits_changed.emit(player.credits)
+	print("Credits added: +%d (Total: %d)" % [amount, player.credits])
+
+## Spend credits if player can afford it
+## Returns true if successful, false if insufficient funds
+func spend_credits(amount: int) -> bool:
+	if amount < 0:
+		push_error("GameState.spend_credits: Amount must be positive (%d)" % amount)
+		return false
+
+	if player.credits < amount:
+		print("Insufficient credits: Need %d, have %d" % [amount, player.credits])
+		return false
+
+	player.credits -= amount
+	EventBus.credits_changed.emit(player.credits)
+	print("Credits spent: -%d (Remaining: %d)" % [amount, player.credits])
+	return true
+
+## Check if player can afford a purchase
+func can_afford(amount: int) -> bool:
+	return player.credits >= amount
+
+# ============================================================================
+# SKILL POINTS
+# ============================================================================
+
+## Allocate a skill point to increase a skill by 1
+## Returns true if successful, false if no skill points available
+func allocate_skill_point(skill_name: String) -> bool:
+	if not player.skills.has(skill_name):
+		push_error("Unknown skill: " + skill_name)
+		return false
+
+	if player.skill_points <= 0:
+		print("No skill points available to allocate")
+		return false
+
+	player.skill_points -= 1
+	player.skills[skill_name] += 1
+
+	EventBus.skill_allocated.emit(skill_name, player.skills[skill_name])
+	print("Skill point allocated: %s +1 (Total: %d, Points remaining: %d)" % [
+		skill_name,
+		player.skills[skill_name],
+		player.skill_points
+	])
+	return true
+
+## Get number of unspent skill points
+func get_available_skill_points() -> int:
+	return player.skill_points
 
 # ============================================================================
 # SHIP FUNCTIONS
@@ -315,10 +399,43 @@ func get_operational_systems() -> Array:
 # INVENTORY FUNCTIONS
 # ============================================================================
 
-## Add item to inventory
+## Add item to inventory (supports stacking by part_id)
 func add_item(item: Dictionary) -> void:
+	var part_id = item.get("part_id", "")
+	var quantity = item.get("quantity", 1)
+
+	# Validate part_id if present
+	if part_id != "" and has_node("/root/PartRegistry"):
+		if not PartRegistry.validate_part_id(part_id):
+			push_error("GameState.add_item: Invalid part_id: " + part_id)
+			return
+
+	# Check weight capacity before adding
+	if not can_carry_item(part_id, quantity):
+		EventBus.inventory_full.emit()
+		push_warning("GameState.add_item: Inventory full, cannot add item")
+		return
+
+	# If item has a part_id, try to stack with existing item
+	if part_id != "":
+		for existing_item in inventory:
+			if existing_item.get("part_id", "") == part_id:
+				# Stack with existing item
+				existing_item.quantity = existing_item.get("quantity", 1) + quantity
+				EventBus.item_added.emit(item)
+				print("Item stacked: %s x%d (Total: x%d)" % [
+					part_id,
+					quantity,
+					existing_item.quantity
+				])
+				return
+
+	# Not stackable or first instance - add new item
+	if not item.has("quantity"):
+		item.quantity = quantity
 	inventory.append(item)
 	EventBus.item_added.emit(item)
+	print("Item added: %s x%d" % [part_id if part_id != "" else item.get("id", "unknown"), quantity])
 
 ## Remove item from inventory
 func remove_item(item_id: String) -> bool:
@@ -336,6 +453,100 @@ func get_item(item_id: String) -> Dictionary:
 		if item.get("id") == item_id:
 			return item
 	return {}
+
+## Get count of a specific part in inventory
+func get_part_count(part_id: String) -> int:
+	var total = 0
+	for item in inventory:
+		if item.get("part_id", "") == part_id:
+			total += item.get("quantity", 1)
+	return total
+
+## Consume items for upgrades (removes parts from inventory)
+## Returns true if successful, false if not enough parts
+func consume_item(part_id: String, quantity: int = 1) -> bool:
+	if quantity <= 0:
+		push_error("GameState.consume_item: Quantity must be positive")
+		return false
+
+	var available = get_part_count(part_id)
+	if available < quantity:
+		print("Not enough parts: Need %d, have %d" % [quantity, available])
+		return false
+
+	# Remove parts from inventory (LIFO - last in, first out)
+	var remaining = quantity
+	for i in range(inventory.size() - 1, -1, -1):  # Iterate backwards
+		if remaining <= 0:
+			break
+
+		var item = inventory[i]
+		if item.get("part_id", "") == part_id:
+			var item_quantity = item.get("quantity", 1)
+
+			if item_quantity <= remaining:
+				# Remove entire stack
+				remaining -= item_quantity
+				inventory.remove_at(i)
+				EventBus.item_removed.emit(item)
+			else:
+				# Reduce stack
+				item.quantity -= remaining
+				remaining = 0
+
+	print("Parts consumed: %s x%d" % [part_id, quantity])
+	return true
+
+## Get total weight of inventory
+func get_total_inventory_weight() -> float:
+	var total_weight = 0.0
+
+	if not has_node("/root/PartRegistry"):
+		# Fallback: use weight field if present
+		for item in inventory:
+			var weight = item.get("weight", 1.0)
+			var quantity = item.get("quantity", 1)
+			total_weight += weight * quantity
+		return total_weight
+
+	# Use PartRegistry for accurate weights
+	for item in inventory:
+		var part_id = item.get("part_id", "")
+		var quantity = item.get("quantity", 1)
+
+		if part_id != "":
+			var part = PartRegistry.get_part(part_id)
+			if not part.is_empty():
+				total_weight += part.get("weight", 1.0) * quantity
+		else:
+			# Non-part item, use weight field
+			total_weight += item.get("weight", 1.0) * quantity
+
+	return total_weight
+
+## Get current inventory capacity in kg
+func get_inventory_capacity() -> float:
+	if not has_node("/root/PartRegistry"):
+		# Fallback: basic capacity
+		return 100.0 + (50.0 * ship.systems.hull.level)
+
+	# Use PartRegistry formula
+	return PartRegistry.calculate_inventory_capacity(ship.systems.hull.level)
+
+## Check if player can carry additional items
+func can_carry_item(part_id: String, quantity: int = 1) -> bool:
+	var current_weight = get_total_inventory_weight()
+	var capacity = get_inventory_capacity()
+
+	# Calculate weight of item to add
+	var item_weight = 1.0  # Default
+	if part_id != "" and has_node("/root/PartRegistry"):
+		var part = PartRegistry.get_part(part_id)
+		if not part.is_empty():
+			item_weight = part.get("weight", 1.0)
+
+	var total_weight_after = current_weight + (item_weight * quantity)
+	return total_weight_after <= capacity
 
 # ============================================================================
 # PROGRESS FUNCTIONS
@@ -400,6 +611,8 @@ func reset_to_new_game() -> void:
 		"xp": 0,
 		"xp_to_next_level": 200,
 		"rank": "Cadet",
+		"credits": 0,
+		"skill_points": 0,
 		"skills": {
 			"engineering": 0,
 			"diplomacy": 0,
@@ -426,6 +639,7 @@ func reset_to_new_game() -> void:
 		"phase": 1,
 		"completed_missions": [],
 		"discovered_locations": [],
+		"discovered_parts": [],
 		"major_choices": [],
 		"playtime_seconds": 0.0,
 		"game_started": Time.get_unix_time_from_system()

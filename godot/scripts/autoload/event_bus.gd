@@ -53,13 +53,26 @@ signal ship_power_changed(available: int, total: int, consumption: int)
 signal xp_gained(amount: int, source: String)
 
 ## Emitted when player levels up
-signal level_up(new_level: int, old_level: int)
+signal level_up(new_level: int, skill_points_gained: int)
 
 ## Emitted when player rank changes
 signal rank_changed(new_rank: String, old_rank: String)
 
 ## Emitted when a skill increases
 signal skill_increased(skill_name: String, new_value: int, old_value: int)
+
+## Emitted when a skill point is allocated
+signal skill_allocated(skill_name: String, new_value: int)
+
+# ============================================================================
+# ECONOMY EVENTS
+# ============================================================================
+
+## Emitted when player's credits change
+signal credits_changed(new_amount: int)
+
+## Emitted when a part is discovered (unlocked for use)
+signal part_discovered(part_id: String, part_name: String)
 
 # ============================================================================
 # INVENTORY EVENTS
@@ -76,6 +89,9 @@ signal item_equipped(item: Dictionary, slot: String)
 
 ## Emitted when an item is unequipped
 signal item_unequipped(item: Dictionary, slot: String)
+
+## Emitted when inventory reaches capacity
+signal inventory_full()
 
 # ============================================================================
 # AI CHAT EVENTS

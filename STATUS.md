@@ -1,16 +1,32 @@
 # Project Status
 
-**Last Updated:** 2025-01-07 (Magentic UI Complete! Scrolling Narrative Log Implemented!)
+**Last Updated:** 2025-01-07 (Hybrid Economy System - Phase 3 Complete!)
 **Current Milestone:** Milestone 1 - Proof of Concept
-**Overall Progress:** 95% (Mission System + Magentic UI complete, ready for final testing!)
+**Overall Progress:** 70% (Economy system in progress, data foundation complete!)
 
 ---
 
 ## 🎯 Current Task
 
-**Mission System + Magentic UI Complete! ✅**
+**Hybrid Economy System Implementation (3/9 Phases Complete)** ✅
 
-**Just Completed - Magentic Multi-AI Adaptive UI System:**
+**Just Completed - Phase 3: GameState Updates:**
+- ✅ Credits system (add_credits, spend_credits, can_afford)
+- ✅ Skill points allocation system
+- ✅ Enhanced inventory with stacking and weight management
+- ✅ XP/leveling integration with PartRegistry
+- ✅ EventBus signals for economy events
+- ✅ 649 lines GameState, all tests passing
+
+**Phase 1 & 2 Complete - Data Foundation:**
+- ✅ PartRegistry singleton (720+ lines) - O(1) data access
+- ✅ 39 parts defined (5 systems: hull, power, propulsion, warp, life_support)
+- ✅ JSON data files (parts/*.json, systems/ship_systems.json, economy_config.json)
+- ✅ Story-driven part unlock system
+- ✅ Rarity tiers (common/uncommon/rare) with cost multipliers
+- ✅ Complete API (30+ methods for queries, costs, discovery)
+
+**Previous Work - Magentic Multi-AI Adaptive UI System:**
 - ✅ **Phase 1: Foundation & Architecture** (500+ lines documentation)
   - Complete architecture specification (docs/02-developer-guides/architecture/magentic-ui-architecture.md)
   - 4 AI Personalities: ATLAS (ship AI), Companion (emotional support), MENTOR (strategic), CHIEF (engineering)
@@ -63,14 +79,26 @@
 - ✅ 1 second pause between stages (readable, not rushed)
 - ✅ Professional narrative game standard
 
-**Next Task:** Full Mission Playthrough Testing
-- Test complete tutorial mission with scrolling log
-- Verify ATLAS interjections fire correctly
-- Test all choice paths and consequences
-- Confirm rewards install ship systems
-- Validate AI panel adaptive layout
-- Test scrolling up to re-read history
-- Verify stardate separators display correctly
+**Next Tasks - Economy System Phases 4-9:**
+1. **Phase 4: Ship System Upgrade Refactor** (2-3 hours)
+   - Update all ship system upgrade logic to use PartRegistry costs
+   - Check credits AND parts before allowing upgrades
+   - Consume credits + parts on successful upgrade
+   - Remove hardcoded upgrade costs
+
+2. **Phase 5: Workshop UI Updates** (2-3 hours)
+   - Add player status panel (credits, XP, level, skill points)
+   - Show upgrade costs from PartRegistry (credits + required part)
+   - Add inventory panel/modal to view parts
+   - Add skill allocation popup (automatic on level-up)
+   - Disable upgrade buttons if can't afford
+
+3. **Phase 6: MissionManager Updates** (1 hour)
+   - Update mission rewards to grant credits + parts
+   - Handle part discovery unlocks via story_unlock field
+   - Update mission complete screen to show all rewards
+
+4. **Phases 7-9:** EventBus updates, testing, documentation
 
 ---
 
@@ -99,14 +127,16 @@
 - ~1,500 lines production code
 
 ✅ **Phase 1, Week 3: Godot Foundation (100%)**
-- 7 autoload singletons (2,200+ lines GDScript):
+- 9 autoload singletons (3,600+ lines GDScript):
   - **ServiceManager** - HTTP client, health checks, NCC-1701 integration
-  - **GameState** - Player, ship, inventory, progress tracking
+  - **GameState** - Player, ship, inventory, progress tracking (with economy system)
   - **SaveManager** - JSON save/load, 5 slots + autosave
-  - **EventBus** - 50+ signals for decoupled architecture
+  - **EventBus** - 55+ signals for decoupled architecture
   - **AIService** - Mission, chat, dialogue generation
-  - **AIPersonalityManager** - Multi-AI personality system (NEW)
-  - **AdaptiveLayoutManager** - Context-aware UI layouts (NEW)
+  - **MissionManager** - Mission flow, rewards, progression
+  - **AIPersonalityManager** - Multi-AI personality system
+  - **AdaptiveLayoutManager** - Context-aware UI layouts
+  - **PartRegistry** - Data-driven parts/systems/economy (NEW)
 - main_menu.tscn test scene with working integration
 - workshop.tscn fully functional
 - mission.tscn with scrolling narrative log
@@ -206,6 +236,29 @@
 
 ## ✅ Recent Completions
 
+### 2025-01-07: Hybrid Economy System - Phases 1-3
+- **Phase 1: Data Files** (7 JSON files, 39 parts defined)
+  - Created parts/*.json (hull, power, propulsion, warp, life_support)
+  - Created systems/ship_systems.json (10 systems, upgrade costs, stats)
+  - Created economy/economy_config.json (XP curve, inventory rules, tutorial rewards)
+  - Rarity tiers: common/uncommon/rare with stat/cost multipliers
+
+- **Phase 2: PartRegistry Singleton** (720+ lines)
+  - Complete data loading and caching system
+  - 30+ API methods (get_part, get_upgrade_cost, discover_part, etc.)
+  - O(1) lookup performance with dictionaries
+  - Story-driven part unlock system
+  - Integration with economy config
+
+- **Phase 3: GameState Updates** (649 lines, 8 new functions)
+  - Credits system (add_credits, spend_credits, can_afford)
+  - Skill points allocation (allocate_skill_point)
+  - Enhanced inventory (stacking, weight limits, capacity)
+  - XP/leveling integration with PartRegistry
+  - 5 new EventBus signals (credits_changed, level_up, skill_allocated, part_discovered, inventory_full)
+
+- **Result:** Data-driven economy foundation complete, ready for system integration
+
 ### 2025-01-07: Magentic UI System & Scrolling Narrative Log
 - Implemented complete Magentic UI foundation (Phase 1)
 - Integrated AIPanel into mission system (Phase 2)
@@ -245,7 +298,7 @@
 ### Milestone 1: Proof of Concept (Current)
 **Goal:** Build basic game loop to validate fun factor
 
-**Progress:** 95% (Magentic UI complete, ready for final testing!)
+**Progress:** 70% (Economy system phases 1-3 complete, UI integration next!)
 
 **Completed:**
 - [x] Infrastructure setup (Docker, services, NCC-1701 ports) ✅
@@ -281,30 +334,42 @@
   - [x] Context-aware interjections
   - [x] Adaptive two-panel layout
   - [x] Smooth transitions
+- [x] Hybrid Economy System (Phases 1-3/9) ✅
+  - [x] PartRegistry singleton (720+ lines)
+  - [x] 39 parts defined (5 systems, 3 rarity tiers)
+  - [x] JSON data files (parts, systems, economy config)
+  - [x] Credits system in GameState
+  - [x] Skill points allocation system
+  - [x] Enhanced inventory (stacking, weight, capacity)
+  - [x] XP/leveling with PartRegistry integration
+  - [x] Story-driven part unlocks
 
 **Remaining:**
-- [ ] **NEXT:** Complete mission playthrough testing
-- [ ] Bug fixes and polish (if needed)
-- [ ] Final validation
+- [ ] **NEXT:** Economy System Phases 4-6 (system integration, UI updates, mission rewards)
+- [ ] Complete remaining 5 part files (computer, sensors, shields, weapons, communications)
+- [ ] Economy System Phases 7-9 (testing, validation, documentation)
+- [ ] Final mission playthrough testing
+- [ ] Bug fixes and polish
 
-**Estimated Completion:** This week (final testing phase)
+**Estimated Completion:** 2-3 more sessions (system integration + testing)
 
 ---
 
 ## 💡 Notes for Next Session
 
 **Key Files to Reference:**
-- `/ROADMAP.md` - Detailed milestone checklist
-- `/AI-AGENT-GUIDE.md` - Development guidelines
-- `/docs/02-developer-guides/architecture/magentic-ui-architecture.md` - Magentic UI specs
-- `/docs/03-game-design/ship-systems/ship-systems.md` - Ship system specs
-- `/docs/02-developer-guides/architecture/INTEGRATION-GUIDE.md` - Integration patterns
+- `/docs/02-developer-guides/systems/ECONOMY-IMPLEMENTATION-CHECKLIST.md` - Master checklist (Phases 4-9 remaining)
+- `/docs/02-developer-guides/systems/MIGRATION-PLAN.md` - Step-by-step migration guide
+- `/docs/02-developer-guides/systems/PART-REGISTRY-ARCHITECTURE.md` - API documentation
+- `/docs/02-developer-guides/systems/DATA-SCHEMA-SPECIFICATIONS.md` - JSON schemas
+- `/docs/06-technical-reference/PART-REGISTRY-API-REFERENCE.md` - Complete API reference
 
-**Testing Focus:**
-- Verify scrolling narrative log works perfectly
-- Test ATLAS interjections fire at correct times
-- Confirm adaptive UI transitions smooth
-- Validate full game loop (Workshop → Mission → Rewards → Workshop)
+**Implementation Focus (Phase 4 Next):**
+- Update ship system upgrade logic to use PartRegistry.get_upgrade_cost()
+- Check credits AND parts before allowing upgrades
+- Consume GameState.spend_credits() and GameState.consume_item() on upgrade
+- Remove hardcoded cost calculations from ship system classes
+- Files to modify: `godot/scripts/systems/ship_system.gd` and subclasses
 
 **Development Philosophy:**
 - Learning > Shipping
