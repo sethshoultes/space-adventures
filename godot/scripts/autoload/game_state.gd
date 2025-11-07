@@ -462,6 +462,10 @@ func get_part_count(part_id: String) -> int:
 			total += item.get("quantity", 1)
 	return total
 
+## Check if player has at least one of a specific part
+func has_part(part_id: String) -> bool:
+	return get_part_count(part_id) > 0
+
 ## Consume items for upgrades (removes parts from inventory)
 ## Returns true if successful, false if not enough parts
 func consume_item(part_id: String, quantity: int = 1) -> bool:

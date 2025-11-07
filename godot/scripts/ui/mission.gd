@@ -350,10 +350,20 @@ func _append_mission_complete() -> void:
 	if mission.has("rewards"):
 		text += "[b]Rewards:[/b]\n"
 		if mission.rewards.has("xp"):
-			text += "• %d XP\n" % mission.rewards.xp
+			text += "• +%d XP\n" % mission.rewards.xp
+		if mission.rewards.has("credits"):
+			text += "• +%d CR\n" % mission.rewards.credits
 		if mission.rewards.has("items"):
-			for item_id in mission.rewards.items:
-				text += "• %s\n" % _format_item_name(item_id)
+			for item in mission.rewards.items:
+				text += "• %s\n" % _format_item_reward(item)
+		if mission.rewards.has("discovered_parts"):
+			text += "\n[b]Parts Discovered:[/b]\n"
+			for part_id in mission.rewards.discovered_parts:
+				var part_data = PartRegistry.get_part(part_id)
+				if not part_data.is_empty():
+					text += "• [color=yellow]%s[/color]\n" % part_data.name
+				else:
+					text += "• [color=yellow]%s[/color]\n" % part_id
 
 	complete_label.text = text
 	completion_entry.add_child(complete_label)
@@ -419,7 +429,7 @@ func _append_mission_failed(reason: String) -> void:
 	print("Mission: Mission failed - %s" % reason)
 
 func _format_item_name(item_id: String) -> String:
-	"""Format item ID into readable name"""
+	"""Format item ID into readable name (legacy function)"""
 
 	if item_id.begins_with("hull_system_"):
 		var level = item_id.substr(-1)
@@ -432,6 +442,36 @@ func _format_item_name(item_id: String) -> String:
 		return "Propulsion System Level %s" % level
 	else:
 		return item_id.replace("_", " ").capitalize()
+
+func _format_item_reward(item) -> String:
+	"""Format item reward (supports both String and Dictionary formats)"""
+
+	if item is String:
+		# Old format: item_id as string
+		return _format_item_name(item)
+	elif item is Dictionary:
+		# New format: {part_id: String, quantity: int}
+		var part_id = item.get("part_id", item.get("item_id", ""))
+		var quantity = item.get("quantity", 1)
+
+		if part_id == "":
+			return "Unknown Item"
+
+		# Get part data from PartRegistry
+		var part_data = PartRegistry.get_part(part_id)
+		if not part_data.is_empty():
+			if quantity > 1:
+				return "%s x%d" % [part_data.name, quantity]
+			else:
+				return part_data.name
+		else:
+			# Fallback to formatting the part_id
+			if quantity > 1:
+				return "%s x%d" % [_format_item_name(part_id), quantity]
+			else:
+				return _format_item_name(part_id)
+	else:
+		return "Unknown Item"
 
 func _on_exit_pressed() -> void:
 	"""Exit mission and return to main menu/workshop"""

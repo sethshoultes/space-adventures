@@ -340,14 +340,15 @@
   ],
   "rewards": {
     "xp": 100,
+    "credits": 300,
     "items": [
-      "hull_system_l1",
-      "power_core_l1",
-      "propulsion_system_l1",
-      "workshop_access",
-      "ship_frame_basic"
+      {"part_id": "hull_scrap_plates_l1_common", "quantity": 1},
+      {"part_id": "power_fusion_cell_l1_common", "quantity": 1}
     ],
-    "reputation": 0,
+    "discovered_parts": [
+      "hull_scrap_plates_l1_common",
+      "power_fusion_cell_l1_common"
+    ],
     "unlocks": [
       "mission_first_salvage",
       "mission_power_up",

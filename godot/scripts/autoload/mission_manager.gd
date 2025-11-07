@@ -283,14 +283,9 @@ func _complete_mission(success: bool = true) -> void:
 
 	print("MissionManager: Mission completed - %s" % current_mission.title)
 
-	# Award mission XP
-	if current_mission.has("rewards") and current_mission.rewards.has("xp"):
-		GameState.add_xp(current_mission.rewards.xp, "mission_completion")
-
-	# Award items/systems
-	if current_mission.has("rewards") and current_mission.rewards.has("items"):
-		for item_id in current_mission.rewards.items:
-			_award_item(item_id)
+	# Award mission rewards
+	if current_mission.has("rewards"):
+		_award_rewards(current_mission.rewards)
 
 	# Mark mission as completed
 	GameState.complete_mission(current_mission.mission_id)
@@ -340,6 +335,75 @@ func _award_item(item_id: String) -> void:
 		var item = {"id": item_id, "name": item_id, "type": "generic"}
 		GameState.add_item(item)
 		print("MissionManager: Awarded item: " + item_id)
+
+## Award all rewards (credits, XP, parts, discoveries)
+func _award_rewards(rewards: Dictionary) -> void:
+	"""Award mission rewards to player"""
+
+	# Award XP (existing functionality)
+	if rewards.has("xp"):
+		GameState.add_xp(rewards.xp, "mission_completion")
+
+	# Award Credits (NEW)
+	if rewards.has("credits"):
+		var credits = rewards.credits
+		GameState.add_credits(credits)
+		print("MissionManager: Awarded %d credits" % credits)
+
+	# Award Items/Parts (UPDATED)
+	if rewards.has("items"):
+		for item in rewards.items:
+			# Support both old format (String) and new format (Dictionary)
+			var part_id: String = ""
+			var quantity: int = 1
+
+			if item is String:
+				# Old format: item_id as string
+				_award_item(item)
+				continue
+			elif item is Dictionary:
+				# New format: {part_id: String, quantity: int}
+				part_id = item.get("part_id", item.get("item_id", ""))
+				quantity = item.get("quantity", 1)
+			else:
+				push_warning("MissionManager: Invalid item format in mission rewards")
+				continue
+
+			if part_id == "":
+				continue
+
+			# Validate part exists in PartRegistry
+			var part_data = PartRegistry.get_part(part_id)
+			if part_data.is_empty():
+				push_warning("MissionManager: Invalid part_id in mission rewards: %s" % part_id)
+				continue
+
+			# Add to inventory
+			for i in range(quantity):
+				var item_dict = {
+					"part_id": part_id,
+					"id": part_id,
+					"name": part_data.name,
+					"type": part_data.get("type", "part"),
+					"weight": part_data.weight,
+					"rarity": part_data.rarity,
+					"level": part_data.level
+				}
+				GameState.add_item(item_dict)
+
+			print("MissionManager: Awarded %dx %s" % [quantity, part_data.name])
+
+	# Discover Parts (NEW) - Story-driven unlocks
+	if rewards.has("discovered_parts"):
+		for part_id in rewards.discovered_parts:
+			if PartRegistry.is_part_unlocked(part_id):
+				continue  # Already discovered
+
+			PartRegistry.discover_part(part_id)
+			var part_data = PartRegistry.get_part(part_id)
+			if not part_data.is_empty():
+				print("MissionManager: Discovered new part: %s" % part_data.name)
+				# EventBus.part_discovered is emitted by PartRegistry.discover_part()
 
 ## Get list of available missions (player can start)
 func get_available_missions() -> Array:

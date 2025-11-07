@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0",
+  "system_type": "warp",
+  "parts": [
+    {
+      "id": "warp_basic_core_l1_common",
+      "name": "Basic Warp Core",
+      "description": "Your ticket off Earth. Barely faster than light, but it counts.",
+      "system_type": "warp",
+      "level": 1,
+      "rarity": "common",
+      "weight": 30.0,
+      "stats": {
+        "warp_factor": 1,
+        "range_ly": 2,
+        "power_cost": 20
+      },
+      "discovered": true,
+      "story_unlock": "mission_starship_graveyard"
+    },
+    {
+      "id": "warp_enhanced_coils_l1_uncommon",
+      "name": "Enhanced Warp Coils",
+      "description": "Better field geometry increases efficiency and range.",
+      "system_type": "warp",
+      "level": 1,
+      "rarity": "uncommon",
+      "weight": 28.0,
+      "stats": {
+        "warp_factor": 1,
+        "range_ly": 3,
+        "power_cost": 18
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "warp_w3_drive_l2_common",
+      "name": "Warp 3 Drive System",
+      "description": "Now we're traveling. The close sectors open up to you.",
+      "system_type": "warp",
+      "level": 2,
+      "rarity": "common",
+      "weight": 40.0,
+      "stats": {
+        "warp_factor": 3,
+        "range_ly": 10,
+        "power_cost": 30
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "warp_optimized_w3_l2_uncommon",
+      "name": "Optimized Warp 3 System",
+      "description": "Refined dilithium matrix extends range without increasing power draw.",
+      "system_type": "warp",
+      "level": 2,
+      "rarity": "uncommon",
+      "weight": 38.0,
+      "stats": {
+        "warp_factor": 3,
+        "range_ly": 15,
+        "power_cost": 28
+      },
+      "discovered": false,
+      "story_unlock": "mission_crystal_caves"
+    },
+    {
+      "id": "warp_w5_drive_l3_common",
+      "name": "Warp 5 Drive System",
+      "description": "Standard deep-space warp drive. The galaxy is yours.",
+      "system_type": "warp",
+      "level": 3,
+      "rarity": "common",
+      "weight": 50.0,
+      "stats": {
+        "warp_factor": 5,
+        "range_ly": 50,
+        "power_cost": 50
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "warp_enhanced_w5_l3_uncommon",
+      "name": "Enhanced Warp 5 Drive",
+      "description": "Variable geometry nacelles improve efficiency across the warp spectrum.",
+      "system_type": "warp",
+      "level": 3,
+      "rarity": "uncommon",
+      "weight": 48.0,
+      "stats": {
+        "warp_factor": 5,
+        "range_ly": 75,
+        "power_cost": 45
+      },
+      "discovered": false,
+      "story_unlock": null
+    }
+  ]
+}

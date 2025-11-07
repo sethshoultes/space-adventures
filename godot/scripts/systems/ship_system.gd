@@ -47,8 +47,34 @@ func upgrade() -> bool:
 		push_warning("System %s already at max level" % system_name)
 		return false
 
+	# Check if player has required resources
+	if not can_upgrade():
+		push_warning("Cannot upgrade %s: insufficient resources" % system_name)
+		return false
+
+	# Get upgrade cost from PartRegistry
+	var cost = get_upgrade_cost()
+	if cost.is_empty() or not cost.get("success", false):
+		push_error("Failed to get upgrade cost for %s to level %d" % [system_name, level + 1])
+		return false
+
+	# Consume credits
+	if not GameState.spend_credits(cost.credits):
+		push_error("Failed to spend credits for %s upgrade" % system_name)
+		return false
+
+	# Consume part
+	if not GameState.consume_item(cost.part_id, 1):
+		push_error("Failed to consume part %s for %s upgrade" % [cost.part_id, system_name])
+		# Refund credits
+		GameState.add_credits(cost.credits)
+		return false
+
+	# Perform upgrade
 	set_level(level + 1)
 	EventBus.system_upgraded.emit(system_name, level)
+
+	print("Upgraded %s to level %d (cost: %d CR + %s)" % [system_name, level, cost.credits, cost.part_name])
 	return true
 
 ## Take damage
@@ -119,7 +145,30 @@ func get_description() -> String:
 
 ## Can this system be upgraded? (override for resource checks)
 func can_upgrade() -> bool:
-	return level < max_levels
+	if level >= max_levels:
+		return false
+
+	# Get upgrade cost from PartRegistry
+	var cost = get_upgrade_cost()
+	if cost.is_empty() or not cost.get("success", false):
+		return false
+
+	# Check if player has credits
+	if not cost.get("affordable", false):
+		return false
+
+	# Check if player has required part
+	if not cost.get("have_part", false):
+		return false
+
+	return true
+
+## Get cost to upgrade to next level (from PartRegistry)
+func get_upgrade_cost() -> Dictionary:
+	if level >= max_levels:
+		return {}
+
+	return PartRegistry.get_upgrade_cost(system_name, level + 1, "")
 
 ## Get status string
 func get_status() -> String:

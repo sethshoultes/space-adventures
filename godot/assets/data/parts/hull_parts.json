@@ -1,0 +1,150 @@
+{
+  "version": "1.0.0",
+  "system_type": "hull",
+  "parts": [
+    {
+      "id": "hull_scrap_plates_l1_common",
+      "name": "Scrap Hull Plates",
+      "description": "Salvaged metal plates welded together. It'll hold... probably.",
+      "system_type": "hull",
+      "level": 1,
+      "rarity": "common",
+      "weight": 25.0,
+      "stats": {
+        "max_hp": 50,
+        "armor_kinetic": 5,
+        "armor_energy": 0
+      },
+      "discovered": true,
+      "story_unlock": "tutorial_first_salvage"
+    },
+    {
+      "id": "hull_reinforced_plates_l1_uncommon",
+      "name": "Reinforced Hull Plates",
+      "description": "Proper spacecraft-grade plating. Pre-exodus manufacturing quality.",
+      "system_type": "hull",
+      "level": 1,
+      "rarity": "uncommon",
+      "weight": 22.0,
+      "stats": {
+        "max_hp": 60,
+        "armor_kinetic": 7,
+        "armor_energy": 2
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "hull_composite_armor_l1_rare",
+      "name": "Composite Armor Plating",
+      "description": "Military-grade composite armor. Whoever had this knew combat was coming.",
+      "system_type": "hull",
+      "level": 1,
+      "rarity": "rare",
+      "weight": 20.0,
+      "stats": {
+        "max_hp": 75,
+        "armor_kinetic": 10,
+        "armor_energy": 5
+      },
+      "discovered": false,
+      "story_unlock": "mission_military_depot"
+    },
+    {
+      "id": "hull_reinforced_structure_l2_common",
+      "name": "Reinforced Hull Structure",
+      "description": "Structural beams and stress-rated plating. A proper starship hull.",
+      "system_type": "hull",
+      "level": 2,
+      "rarity": "common",
+      "weight": 30.0,
+      "stats": {
+        "max_hp": 100,
+        "armor_kinetic": 15,
+        "armor_energy": 5
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "hull_ablative_coating_l2_uncommon",
+      "name": "Ablative-Coated Hull",
+      "description": "Heat-dispersing coating that sacrifices layers to absorb energy impacts.",
+      "system_type": "hull",
+      "level": 2,
+      "rarity": "uncommon",
+      "weight": 28.0,
+      "stats": {
+        "max_hp": 120,
+        "armor_kinetic": 18,
+        "armor_energy": 10
+      },
+      "discovered": false,
+      "story_unlock": "mission_research_facility"
+    },
+    {
+      "id": "hull_hardened_alloy_l2_rare",
+      "name": "Hardened Alloy Hull",
+      "description": "Exotic alloy combination creates exceptional protection without excess weight.",
+      "system_type": "hull",
+      "level": 2,
+      "rarity": "rare",
+      "weight": 25.0,
+      "stats": {
+        "max_hp": 140,
+        "armor_kinetic": 22,
+        "armor_energy": 12
+      },
+      "discovered": false,
+      "story_unlock": "mission_crashed_cruiser"
+    },
+    {
+      "id": "hull_composite_alloy_l3_common",
+      "name": "Composite Alloy Hull",
+      "description": "Advanced alloy combining strength and flexibility. Standard for deep-space vessels.",
+      "system_type": "hull",
+      "level": 3,
+      "rarity": "common",
+      "weight": 35.0,
+      "stats": {
+        "max_hp": 200,
+        "armor_kinetic": 25,
+        "armor_energy": 10
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "hull_layered_defense_l3_uncommon",
+      "name": "Layered Defense Hull",
+      "description": "Multiple armor layers with void spaces. Dissipates impact energy through structure.",
+      "system_type": "hull",
+      "level": 3,
+      "rarity": "uncommon",
+      "weight": 32.0,
+      "stats": {
+        "max_hp": 230,
+        "armor_kinetic": 30,
+        "armor_energy": 15
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "hull_reactive_armor_l3_rare",
+      "name": "Reactive Armor Plating",
+      "description": "Explosive-reactive armor that detonates outward to deflect incoming fire.",
+      "system_type": "hull",
+      "level": 3,
+      "rarity": "rare",
+      "weight": 30.0,
+      "stats": {
+        "max_hp": 250,
+        "armor_kinetic": 35,
+        "armor_energy": 15
+      },
+      "discovered": false,
+      "story_unlock": "mission_pirate_stronghold"
+    }
+  ]
+}

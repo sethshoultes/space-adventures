@@ -1,0 +1,289 @@
+{
+  "version": "1.0.0",
+  "systems": [
+    {
+      "system_name": "hull",
+      "display_name": "Hull & Structure",
+      "description": "Physical integrity and damage resistance",
+      "max_level": 5,
+      "milestone_1_max_level": 3,
+      "compatible_parts": [
+        "hull_scrap_plates_l1_common",
+        "hull_reinforced_plates_l1_uncommon",
+        "hull_composite_armor_l1_rare",
+        "hull_reinforced_structure_l2_common",
+        "hull_ablative_coating_l2_uncommon",
+        "hull_hardened_alloy_l2_rare",
+        "hull_composite_alloy_l3_common",
+        "hull_layered_defense_l3_uncommon",
+        "hull_reactive_armor_l3_rare"
+      ],
+      "power_costs": [0, 0, 0, 0, 10],
+      "stats_per_level": [
+        {"max_hp": 0, "armor_kinetic": 0, "armor_energy": 0},
+        {"max_hp": 50, "armor_kinetic": 5, "armor_energy": 0},
+        {"max_hp": 100, "armor_kinetic": 15, "armor_energy": 5},
+        {"max_hp": 200, "armor_kinetic": 25, "armor_energy": 10},
+        {"max_hp": 350, "armor_kinetic": 35, "armor_energy": 20},
+        {"max_hp": 500, "armor_kinetic": 45, "armor_energy": 30}
+      ],
+      "upgrade_costs": {
+        "1": {"credits": 100, "part_id": "hull_scrap_plates_l1_common"},
+        "2": {"credits": 200, "part_id": "hull_reinforced_structure_l2_common"},
+        "3": {"credits": 300, "part_id": "hull_composite_alloy_l3_common"},
+        "4": {"credits": 500, "part_id": null},
+        "5": {"credits": 800, "part_id": null}
+      }
+    },
+    {
+      "system_name": "power",
+      "display_name": "Power Core",
+      "description": "Energy generation for all ship systems",
+      "max_level": 5,
+      "milestone_1_max_level": 3,
+      "compatible_parts": [
+        "power_fusion_cell_l1_common",
+        "power_enhanced_fusion_l1_uncommon",
+        "power_compact_reactor_l1_rare",
+        "power_deuterium_reactor_l2_common",
+        "power_antimatter_core_l2_uncommon",
+        "power_stable_mam_l2_rare",
+        "power_advanced_mam_l3_common",
+        "power_optimized_core_l3_uncommon",
+        "power_zero_point_tap_l3_rare"
+      ],
+      "power_costs": [0, 0, 0, 0, 0],
+      "stats_per_level": [
+        {"power_output": 0, "efficiency": 0},
+        {"power_output": 100, "efficiency": 80},
+        {"power_output": 200, "efficiency": 85},
+        {"power_output": 400, "efficiency": 90},
+        {"power_output": 700, "efficiency": 92},
+        {"power_output": 1000, "efficiency": 95}
+      ],
+      "upgrade_costs": {
+        "1": {"credits": 150, "part_id": "power_fusion_cell_l1_common"},
+        "2": {"credits": 250, "part_id": "power_deuterium_reactor_l2_common"},
+        "3": {"credits": 400, "part_id": "power_advanced_mam_l3_common"},
+        "4": {"credits": 700, "part_id": null},
+        "5": {"credits": 1200, "part_id": null}
+      }
+    },
+    {
+      "system_name": "propulsion",
+      "display_name": "Propulsion (Impulse)",
+      "description": "Sub-light maneuvering and combat agility",
+      "max_level": 5,
+      "milestone_1_max_level": 3,
+      "compatible_parts": [
+        "propulsion_chemical_thrusters_l1_common",
+        "propulsion_ion_drive_l1_uncommon",
+        "propulsion_hybrid_engine_l1_rare",
+        "propulsion_plasma_engine_l2_common",
+        "propulsion_magnetic_nozzle_l2_uncommon",
+        "propulsion_vectored_thrust_l2_rare",
+        "propulsion_gravitic_drive_l3_common",
+        "propulsion_enhanced_gravitic_l3_uncommon",
+        "propulsion_inertial_dampener_l3_rare"
+      ],
+      "power_costs": [10, 15, 25, 40, 60],
+      "stats_per_level": [
+        {"speed": 0, "agility": 0},
+        {"speed": 1.0, "agility": 5},
+        {"speed": 2.0, "agility": 10},
+        {"speed": 4.0, "agility": 18},
+        {"speed": 7.0, "agility": 28},
+        {"speed": 10.0, "agility": 40}
+      ],
+      "upgrade_costs": {
+        "1": {"credits": 100, "part_id": "propulsion_chemical_thrusters_l1_common"},
+        "2": {"credits": 200, "part_id": "propulsion_plasma_engine_l2_common"},
+        "3": {"credits": 350, "part_id": "propulsion_gravitic_drive_l3_common"},
+        "4": {"credits": 600, "part_id": null},
+        "5": {"credits": 1000, "part_id": null}
+      }
+    },
+    {
+      "system_name": "warp",
+      "display_name": "Warp Drive",
+      "description": "Faster-than-light travel capability",
+      "max_level": 5,
+      "milestone_1_max_level": 3,
+      "compatible_parts": [
+        "warp_basic_core_l1_common",
+        "warp_enhanced_coils_l1_uncommon",
+        "warp_w3_drive_l2_common",
+        "warp_optimized_w3_l2_uncommon",
+        "warp_w5_drive_l3_common",
+        "warp_enhanced_w5_l3_uncommon"
+      ],
+      "power_costs": [20, 30, 50, 80, 120],
+      "stats_per_level": [
+        {"warp_factor": 0, "range_ly": 0},
+        {"warp_factor": 1, "range_ly": 2},
+        {"warp_factor": 3, "range_ly": 10},
+        {"warp_factor": 5, "range_ly": 50},
+        {"warp_factor": 7, "range_ly": 200},
+        {"warp_factor": 9, "range_ly": 1000}
+      ],
+      "upgrade_costs": {
+        "1": {"credits": 200, "part_id": "warp_basic_core_l1_common"},
+        "2": {"credits": 400, "part_id": "warp_w3_drive_l2_common"},
+        "3": {"credits": 800, "part_id": "warp_w5_drive_l3_common"},
+        "4": {"credits": 1500, "part_id": null},
+        "5": {"credits": 2500, "part_id": null}
+      }
+    },
+    {
+      "system_name": "life_support",
+      "display_name": "Life Support",
+      "description": "Crew survival and environmental systems",
+      "max_level": 5,
+      "milestone_1_max_level": 3,
+      "compatible_parts": [
+        "life_support_basic_recycler_l1_common",
+        "life_support_improved_recycler_l1_uncommon",
+        "life_support_climate_control_l2_common",
+        "life_support_advanced_climate_l2_uncommon",
+        "life_support_bio_recycling_l3_common",
+        "life_support_enhanced_bio_l3_uncommon"
+      ],
+      "power_costs": [5, 10, 15, 25, 40],
+      "stats_per_level": [
+        {"crew_capacity": 0, "radiation_protection": 0},
+        {"crew_capacity": 1, "radiation_protection": 10},
+        {"crew_capacity": 4, "radiation_protection": 30},
+        {"crew_capacity": 10, "radiation_protection": 50},
+        {"crew_capacity": 25, "radiation_protection": 75},
+        {"crew_capacity": 50, "radiation_protection": 100}
+      ],
+      "upgrade_costs": {
+        "1": {"credits": 100, "part_id": "life_support_basic_recycler_l1_common"},
+        "2": {"credits": 200, "part_id": "life_support_climate_control_l2_common"},
+        "3": {"credits": 350, "part_id": "life_support_bio_recycling_l3_common"},
+        "4": {"credits": 600, "part_id": null},
+        "5": {"credits": 1000, "part_id": null}
+      }
+    },
+    {
+      "system_name": "computer",
+      "display_name": "Computer Core",
+      "description": "Ship AI and automation systems",
+      "max_level": 5,
+      "milestone_1_max_level": 3,
+      "compatible_parts": [],
+      "power_costs": [5, 10, 15, 25, 40],
+      "stats_per_level": [
+        {"processing_power": 0, "accuracy_bonus": 0},
+        {"processing_power": 1, "accuracy_bonus": 0},
+        {"processing_power": 2, "accuracy_bonus": 5},
+        {"processing_power": 4, "accuracy_bonus": 10},
+        {"processing_power": 8, "accuracy_bonus": 15},
+        {"processing_power": 16, "accuracy_bonus": 20}
+      ],
+      "upgrade_costs": {
+        "1": {"credits": 150, "part_id": null},
+        "2": {"credits": 300, "part_id": null},
+        "3": {"credits": 500, "part_id": null},
+        "4": {"credits": 900, "part_id": null},
+        "5": {"credits": 1500, "part_id": null}
+      }
+    },
+    {
+      "system_name": "sensors",
+      "display_name": "Sensors",
+      "description": "Detection and scanning systems",
+      "max_level": 5,
+      "milestone_1_max_level": 3,
+      "compatible_parts": [],
+      "power_costs": [5, 10, 15, 25, 40],
+      "stats_per_level": [
+        {"range_au": 0, "detection_quality": 0},
+        {"range_au": 1, "detection_quality": 1},
+        {"range_au": 5, "detection_quality": 2},
+        {"range_au": 20, "detection_quality": 4},
+        {"range_au": 100, "detection_quality": 6},
+        {"range_au": 500, "detection_quality": 10}
+      ],
+      "upgrade_costs": {
+        "1": {"credits": 100, "part_id": null},
+        "2": {"credits": 250, "part_id": null},
+        "3": {"credits": 450, "part_id": null},
+        "4": {"credits": 800, "part_id": null},
+        "5": {"credits": 1400, "part_id": null}
+      }
+    },
+    {
+      "system_name": "shields",
+      "display_name": "Shields",
+      "description": "Energy-based damage mitigation",
+      "max_level": 5,
+      "milestone_1_max_level": 3,
+      "compatible_parts": [],
+      "power_costs": [15, 25, 40, 60, 90],
+      "stats_per_level": [
+        {"shield_hp": 0, "damage_reduction": 0, "recharge_rate": 0},
+        {"shield_hp": 50, "damage_reduction": 25, "recharge_rate": 5},
+        {"shield_hp": 100, "damage_reduction": 35, "recharge_rate": 10},
+        {"shield_hp": 200, "damage_reduction": 45, "recharge_rate": 20},
+        {"shield_hp": 400, "damage_reduction": 55, "recharge_rate": 35},
+        {"shield_hp": 800, "damage_reduction": 65, "recharge_rate": 50}
+      ],
+      "upgrade_costs": {
+        "1": {"credits": 200, "part_id": null},
+        "2": {"credits": 400, "part_id": null},
+        "3": {"credits": 700, "part_id": null},
+        "4": {"credits": 1200, "part_id": null},
+        "5": {"credits": 2000, "part_id": null}
+      }
+    },
+    {
+      "system_name": "weapons",
+      "display_name": "Weapons",
+      "description": "Offensive combat systems",
+      "max_level": 5,
+      "milestone_1_max_level": 3,
+      "compatible_parts": [],
+      "power_costs": [10, 20, 35, 55, 85],
+      "stats_per_level": [
+        {"damage_min": 0, "damage_max": 0, "accuracy": 0},
+        {"damage_min": 15, "damage_max": 25, "accuracy": 70},
+        {"damage_min": 30, "damage_max": 50, "accuracy": 75},
+        {"damage_min": 60, "damage_max": 100, "accuracy": 80},
+        {"damage_min": 120, "damage_max": 200, "accuracy": 85},
+        {"damage_min": 250, "damage_max": 400, "accuracy": 90}
+      ],
+      "upgrade_costs": {
+        "1": {"credits": 150, "part_id": null},
+        "2": {"credits": 350, "part_id": null},
+        "3": {"credits": 650, "part_id": null},
+        "4": {"credits": 1100, "part_id": null},
+        "5": {"credits": 1800, "part_id": null}
+      }
+    },
+    {
+      "system_name": "communications",
+      "display_name": "Communications",
+      "description": "Long-range communications and diplomacy",
+      "max_level": 5,
+      "milestone_1_max_level": 3,
+      "compatible_parts": [],
+      "power_costs": [5, 10, 15, 25, 40],
+      "stats_per_level": [
+        {"range_class": "none", "diplomacy_bonus": 0},
+        {"range_class": "short", "diplomacy_bonus": 0},
+        {"range_class": "system", "diplomacy_bonus": 5},
+        {"range_class": "galaxy", "diplomacy_bonus": 10},
+        {"range_class": "galaxy", "diplomacy_bonus": 15},
+        {"range_class": "unlimited", "diplomacy_bonus": 20}
+      ],
+      "upgrade_costs": {
+        "1": {"credits": 100, "part_id": null},
+        "2": {"credits": 250, "part_id": null},
+        "3": {"credits": 450, "part_id": null},
+        "4": {"credits": 800, "part_id": null},
+        "5": {"credits": 1400, "part_id": null}
+      }
+    }
+  ]
+}

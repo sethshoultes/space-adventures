@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0",
+  "system_type": "life_support",
+  "parts": [
+    {
+      "id": "life_support_basic_recycler_l1_common",
+      "name": "Basic Air Recycler",
+      "description": "Keeps you breathing. That's about it.",
+      "system_type": "life_support",
+      "level": 1,
+      "rarity": "common",
+      "weight": 10.0,
+      "stats": {
+        "crew_capacity": 1,
+        "radiation_protection": 10,
+        "power_cost": 5
+      },
+      "discovered": true,
+      "story_unlock": "tutorial_first_salvage"
+    },
+    {
+      "id": "life_support_improved_recycler_l1_uncommon",
+      "name": "Improved Air Recycler",
+      "description": "Filters more efficiently. You can actually smell clean air.",
+      "system_type": "life_support",
+      "level": 1,
+      "rarity": "uncommon",
+      "weight": 9.0,
+      "stats": {
+        "crew_capacity": 2,
+        "radiation_protection": 15,
+        "power_cost": 5
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "life_support_climate_control_l2_common",
+      "name": "Climate Control System",
+      "description": "Temperature and humidity regulation. Much more comfortable.",
+      "system_type": "life_support",
+      "level": 2,
+      "rarity": "common",
+      "weight": 18.0,
+      "stats": {
+        "crew_capacity": 4,
+        "radiation_protection": 30,
+        "power_cost": 10
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "life_support_advanced_climate_l2_uncommon",
+      "name": "Advanced Climate Control",
+      "description": "Individual environmental zones. Everyone gets their perfect temperature.",
+      "system_type": "life_support",
+      "level": 2,
+      "rarity": "uncommon",
+      "weight": 16.0,
+      "stats": {
+        "crew_capacity": 6,
+        "radiation_protection": 40,
+        "power_cost": 10
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "life_support_bio_recycling_l3_common",
+      "name": "Advanced Bio-Recycling",
+      "description": "Closed-loop life support. Months of self-sufficiency.",
+      "system_type": "life_support",
+      "level": 3,
+      "rarity": "common",
+      "weight": 25.0,
+      "stats": {
+        "crew_capacity": 10,
+        "radiation_protection": 50,
+        "power_cost": 15
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "life_support_enhanced_bio_l3_uncommon",
+      "name": "Enhanced Bio-Recycling",
+      "description": "Hydroponics integration. Fresh food and perfect atmosphere.",
+      "system_type": "life_support",
+      "level": 3,
+      "rarity": "uncommon",
+      "weight": 23.0,
+      "stats": {
+        "crew_capacity": 15,
+        "radiation_protection": 60,
+        "power_cost": 15
+      },
+      "discovered": false,
+      "story_unlock": null
+    }
+  ]
+}

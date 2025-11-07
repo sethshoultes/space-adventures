@@ -1,0 +1,69 @@
+{
+  "version": "1.0.0",
+  "starting_state": {
+    "credits": 0,
+    "parts": [],
+    "discovered_parts": []
+  },
+  "tutorial_rewards": {
+    "credits": 300,
+    "parts": [
+      {
+        "part_id": "hull_scrap_plates_l1_common",
+        "quantity": 1,
+        "choice": "hull"
+      },
+      {
+        "part_id": "power_fusion_cell_l1_common",
+        "quantity": 1,
+        "choice": "power"
+      }
+    ],
+    "choice_required": true,
+    "choice_type": "one_of"
+  },
+  "upgrade_cost_formula": {
+    "description": "Base cost from ship_systems.json, multiplied by rarity multiplier",
+    "rarity_multipliers": {
+      "common": 1.0,
+      "uncommon": 1.5,
+      "rare": 2.0
+    }
+  },
+  "xp_curve": {
+    "description": "XP required to reach each level (index 0 = level 1)",
+    "levels": [0, 100, 250, 450, 700, 1000]
+  },
+  "skill_points": {
+    "per_level": 2,
+    "starting_points": 0,
+    "max_skill_level": 10
+  },
+  "level_cap": {
+    "milestone_1": 5,
+    "milestone_2": 10,
+    "milestone_3": 20
+  },
+  "inventory": {
+    "base_capacity_kg": 100,
+    "capacity_per_hull_level": 50,
+    "formula": "100 + (50 * hull_level)"
+  },
+  "mission_reward_ranges": {
+    "easy": {
+      "credits": [50, 150],
+      "xp": [50, 100],
+      "parts": ["common"]
+    },
+    "medium": {
+      "credits": [150, 300],
+      "xp": [100, 200],
+      "parts": ["common", "uncommon"]
+    },
+    "hard": {
+      "credits": [300, 500],
+      "xp": [200, 350],
+      "parts": ["uncommon", "rare"]
+    }
+  }
+}

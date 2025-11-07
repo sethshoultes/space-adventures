@@ -1,0 +1,141 @@
+{
+  "version": "1.0.0",
+  "system_type": "power",
+  "parts": [
+    {
+      "id": "power_fusion_cell_l1_common",
+      "name": "Fusion Cell",
+      "description": "Basic fusion power cell. Enough to get your systems running.",
+      "system_type": "power",
+      "level": 1,
+      "rarity": "common",
+      "weight": 20.0,
+      "stats": {
+        "power_output": 100,
+        "efficiency": 80
+      },
+      "discovered": true,
+      "story_unlock": "tutorial_first_salvage"
+    },
+    {
+      "id": "power_enhanced_fusion_l1_uncommon",
+      "name": "Enhanced Fusion Cell",
+      "description": "Upgraded fusion cell with better magnetic containment.",
+      "system_type": "power",
+      "level": 1,
+      "rarity": "uncommon",
+      "weight": 18.0,
+      "stats": {
+        "power_output": 120,
+        "efficiency": 85
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "power_compact_reactor_l1_rare",
+      "name": "Compact Reactor Core",
+      "description": "Miniaturized reactor technology. Efficient and powerful.",
+      "system_type": "power",
+      "level": 1,
+      "rarity": "rare",
+      "weight": 15.0,
+      "stats": {
+        "power_output": 150,
+        "efficiency": 90
+      },
+      "discovered": false,
+      "story_unlock": "mission_abandoned_station"
+    },
+    {
+      "id": "power_deuterium_reactor_l2_common",
+      "name": "Deuterium Reactor",
+      "description": "Standard deuterium-fueled reactor. Reliable and proven technology.",
+      "system_type": "power",
+      "level": 2,
+      "rarity": "common",
+      "weight": 28.0,
+      "stats": {
+        "power_output": 200,
+        "efficiency": 85
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "power_antimatter_core_l2_uncommon",
+      "name": "Matter/Antimatter Core",
+      "description": "Containment breach is catastrophic, but the power output is incredible.",
+      "system_type": "power",
+      "level": 2,
+      "rarity": "uncommon",
+      "weight": 25.0,
+      "stats": {
+        "power_output": 250,
+        "efficiency": 88
+      },
+      "discovered": false,
+      "story_unlock": "mission_research_facility"
+    },
+    {
+      "id": "power_stable_mam_l2_rare",
+      "name": "Stable M/AM Reactor",
+      "description": "Advanced magnetic bottles eliminate the danger. All the power, none of the risk.",
+      "system_type": "power",
+      "level": 2,
+      "rarity": "rare",
+      "weight": 22.0,
+      "stats": {
+        "power_output": 280,
+        "efficiency": 92
+      },
+      "discovered": false,
+      "story_unlock": "mission_quantum_lab"
+    },
+    {
+      "id": "power_advanced_mam_l3_common",
+      "name": "Advanced M/AM Reactor",
+      "description": "The workhorse of modern starships. Proven antimatter technology.",
+      "system_type": "power",
+      "level": 3,
+      "rarity": "common",
+      "weight": 35.0,
+      "stats": {
+        "power_output": 400,
+        "efficiency": 90
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "power_optimized_core_l3_uncommon",
+      "name": "Optimized Antimatter Core",
+      "description": "Refined reaction chambers and perfect magnetic geometry. Peak efficiency.",
+      "system_type": "power",
+      "level": 3,
+      "rarity": "uncommon",
+      "weight": 32.0,
+      "stats": {
+        "power_output": 450,
+        "efficiency": 93
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "power_zero_point_tap_l3_rare",
+      "name": "Zero-Point Energy Tap",
+      "description": "Experimental quantum technology. Draws power from vacuum fluctuations.",
+      "system_type": "power",
+      "level": 3,
+      "rarity": "rare",
+      "weight": 28.0,
+      "stats": {
+        "power_output": 500,
+        "efficiency": 95
+      },
+      "discovered": false,
+      "story_unlock": "mission_quantum_lab"
+    }
+  ]
+}

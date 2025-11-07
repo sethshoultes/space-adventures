@@ -26,6 +26,7 @@ EventBus="*res://scripts/autoload/event_bus.gd"
 MissionManager="*res://scripts/autoload/mission_manager.gd"
 AIPersonalityManager="*res://scripts/autoload/ai_personality_manager.gd"
 AdaptiveLayoutManager="*res://scripts/autoload/adaptive_layout_manager.gd"
+PartRegistry="*res://scripts/autoload/part_registry.gd"
 
 [display]
 

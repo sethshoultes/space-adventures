@@ -1,0 +1,150 @@
+{
+  "version": "1.0.0",
+  "system_type": "propulsion",
+  "parts": [
+    {
+      "id": "propulsion_chemical_thrusters_l1_common",
+      "name": "Chemical Thrusters",
+      "description": "Old reliable. Chemical rockets for basic maneuvering.",
+      "system_type": "propulsion",
+      "level": 1,
+      "rarity": "common",
+      "weight": 15.0,
+      "stats": {
+        "speed": 1.0,
+        "agility": 5,
+        "power_cost": 10
+      },
+      "discovered": true,
+      "story_unlock": "tutorial_first_salvage"
+    },
+    {
+      "id": "propulsion_ion_drive_l1_uncommon",
+      "name": "Ion Drive",
+      "description": "Electric propulsion. Slow acceleration but very efficient.",
+      "system_type": "propulsion",
+      "level": 1,
+      "rarity": "uncommon",
+      "weight": 14.0,
+      "stats": {
+        "speed": 1.3,
+        "agility": 7,
+        "power_cost": 8
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "propulsion_hybrid_engine_l1_rare",
+      "name": "Hybrid Propulsion",
+      "description": "Chemical thrust with ion efficiency. Best of both worlds.",
+      "system_type": "propulsion",
+      "level": 1,
+      "rarity": "rare",
+      "weight": 12.0,
+      "stats": {
+        "speed": 1.5,
+        "agility": 10,
+        "power_cost": 9
+      },
+      "discovered": false,
+      "story_unlock": "mission_engine_depot"
+    },
+    {
+      "id": "propulsion_plasma_engine_l2_common",
+      "name": "Plasma Engine",
+      "description": "Standard plasma propulsion. Fast and responsive.",
+      "system_type": "propulsion",
+      "level": 2,
+      "rarity": "common",
+      "weight": 20.0,
+      "stats": {
+        "speed": 2.0,
+        "agility": 10,
+        "power_cost": 15
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "propulsion_magnetic_nozzle_l2_uncommon",
+      "name": "Magnetic Nozzle Drive",
+      "description": "Magnetically-accelerated plasma. Exceptional maneuverability.",
+      "system_type": "propulsion",
+      "level": 2,
+      "rarity": "uncommon",
+      "weight": 18.0,
+      "stats": {
+        "speed": 2.5,
+        "agility": 18,
+        "power_cost": 14
+      },
+      "discovered": false,
+      "story_unlock": "mission_racer_cache"
+    },
+    {
+      "id": "propulsion_vectored_thrust_l2_rare",
+      "name": "Vectored Thrust System",
+      "description": "Omnidirectional thrust vectoring. Turn without losing momentum.",
+      "system_type": "propulsion",
+      "level": 2,
+      "rarity": "rare",
+      "weight": 16.0,
+      "stats": {
+        "speed": 2.8,
+        "agility": 25,
+        "power_cost": 13
+      },
+      "discovered": false,
+      "story_unlock": "mission_experimental_lab"
+    },
+    {
+      "id": "propulsion_gravitic_drive_l3_common",
+      "name": "Gravitic Drive",
+      "description": "Gravity manipulation for propulsion. Impossibly agile.",
+      "system_type": "propulsion",
+      "level": 3,
+      "rarity": "common",
+      "weight": 28.0,
+      "stats": {
+        "speed": 4.0,
+        "agility": 18,
+        "power_cost": 25
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "propulsion_enhanced_gravitic_l3_uncommon",
+      "name": "Enhanced Gravitic Drive",
+      "description": "Optimized gravity field generators. Smooth, powerful, and responsive.",
+      "system_type": "propulsion",
+      "level": 3,
+      "rarity": "uncommon",
+      "weight": 25.0,
+      "stats": {
+        "speed": 4.5,
+        "agility": 30,
+        "power_cost": 23
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "propulsion_inertial_dampener_l3_rare",
+      "name": "Inertial Dampener Drive",
+      "description": "Negates inertia. Stop on a dime, turn impossibly fast.",
+      "system_type": "propulsion",
+      "level": 3,
+      "rarity": "rare",
+      "weight": 22.0,
+      "stats": {
+        "speed": 5.0,
+        "agility": 40,
+        "power_cost": 22
+      },
+      "discovered": false,
+      "story_unlock": "mission_experimental_lab"
+    }
+  ]
+}
