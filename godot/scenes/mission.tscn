@@ -128,13 +128,6 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="ContinueButton" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 20
-text = "CONTINUE"
-
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/Actions"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -148,5 +141,4 @@ text = "Exit Mission"
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Choices/Choice2" to="." method="_on_choice_pressed" binds= [1]]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Choices/Choice3" to="." method="_on_choice_pressed" binds= [2]]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Choices/Choice4" to="." method="_on_choice_pressed" binds= [3]]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/ContinueButton" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/ExitButton" to="." method="_on_exit_pressed"]

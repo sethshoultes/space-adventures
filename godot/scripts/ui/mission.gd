@@ -16,12 +16,10 @@ extends Control
 	$MarginContainer/VBoxContainer/Choices/Choice3,
 	$MarginContainer/VBoxContainer/Choices/Choice4
 ]
-@onready var continue_button: Button = $MarginContainer/VBoxContainer/Actions/ContinueButton
 @onready var exit_button: Button = $MarginContainer/VBoxContainer/Actions/ExitButton
 
 # Current state
 var current_choices: Array = []
-var waiting_for_continue: bool = false
 
 func _ready() -> void:
 	print("Mission scene initialized")
@@ -54,16 +52,12 @@ func _load_current_stage() -> void:
 	stage_title.text = stage.get("title", "")
 	description.text = stage.get("description", "")
 
-	# Hide result text
-	result_text.visible = false
+	# Keep result text visible for continuity, let it fade naturally
+	# (Will be hidden on next choice)
 
 	# Load choices
 	current_choices = stage.get("choices", [])
 	_display_choices()
-
-	# Reset continue button
-	continue_button.visible = false
-	waiting_for_continue = false
 
 	print("Mission: Loaded stage '%s' with %d choices" % [stage.get("stage_id", ""), current_choices.size()])
 
@@ -133,6 +127,9 @@ func _on_choice_pressed(choice_index: int) -> void:
 	var choice = current_choices[choice_index]
 	print("Mission: Player chose: %s" % choice.get("text", ""))
 
+	# Hide previous result text (if any)
+	result_text.visible = false
+
 	# Disable all choice buttons
 	for button in choice_buttons:
 		button.disabled = true
@@ -160,10 +157,10 @@ func _display_result(result: Dictionary) -> void:
 
 	# Check if mission continues or ends
 	if consequence.has("next_stage"):
-		# Continue to next stage
-		waiting_for_continue = true
-		continue_button.visible = true
+		# Continue to next stage automatically after delay
 		choices_label.visible = false
+		await get_tree().create_timer(2.0).timeout
+		_load_current_stage()
 
 	elif consequence.has("mission_complete") or consequence.get("mission_complete", false):
 		# Mission completed
@@ -239,15 +236,6 @@ func _format_item_name(item_id: String) -> String:
 		return "Propulsion System Level %s" % level
 	else:
 		return item_id.replace("_", " ").capitalize()
-
-func _on_continue_pressed() -> void:
-	"""Continue to next stage"""
-
-	if not waiting_for_continue:
-		return
-
-	print("Mission: Continuing to next stage")
-	_load_current_stage()
 
 func _on_exit_pressed() -> void:
 	"""Exit mission and return to main menu/workshop"""
