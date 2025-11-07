@@ -27,6 +27,12 @@ signal mission_failed(mission_id: String, reason: String)
 ## Emitted when a ship system is installed or upgraded
 signal system_installed(system_name: String, level: int)
 
+## Emitted when a ship system is upgraded to a new level
+signal system_upgraded(system_name: String, new_level: int)
+
+## Emitted when a ship system is destroyed (health reaches 0)
+signal system_destroyed(system_name: String)
+
 ## Emitted when a ship system is damaged
 signal system_damaged(system_name: String, damage_amount: int, new_health: int)
 
