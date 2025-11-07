@@ -157,10 +157,13 @@ func _on_choice_pressed(choice_index: int) -> void:
 
 	if result.is_empty():
 		push_error("Mission: Failed to process choice")
+		# Re-enable buttons so player can try again
+		for button in choice_buttons:
+			button.disabled = false
 		return
 
-	# Display result
-	_display_result(result)
+	# Display result (await because it has async operations)
+	await _display_result(result)
 
 func _display_result(result: Dictionary) -> void:
 	"""Display the result of a choice"""
@@ -410,15 +413,11 @@ func _adjust_layout_for_ai_panel(show_panel: bool) -> void:
 	tween.set_trans(Tween.TRANS_CUBIC)
 
 	if show_panel:
-		# Compress narrative to 50% width (size_flags_stretch_ratio)
-		# Note: HBoxContainer with size_flags_horizontal = 3 means it will shrink
-		# when AIPanel becomes visible with its fixed width of 600px
+		# Show AI panel and tween to 50% width using stretch_ratio
 		ai_panel.visible = true
-		ai_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		tween.tween_property(ai_panel, "custom_minimum_size:x", 600, 0.4)
+		tween.tween_property(ai_panel, "size_flags_stretch_ratio", 1.0, 0.4)
 	else:
-		# Restore narrative to full width
-		tween.tween_property(ai_panel, "custom_minimum_size:x", 0, 0.4)
+		# Shrink AI panel to 0% width, then hide
+		tween.tween_property(ai_panel, "size_flags_stretch_ratio", 0.0, 0.4)
 		await tween.finished
 		ai_panel.visible = false
-		ai_panel.size_flags_horizontal = 0
