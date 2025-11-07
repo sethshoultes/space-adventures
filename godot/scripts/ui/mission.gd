@@ -24,6 +24,7 @@ extends Control
 # Current state
 var current_choices: Array = []
 var ai_panel_visible: bool = false
+var current_stage_id: String = ""  # Track current stage to prevent stale interjections
 
 func _ready() -> void:
 	print("Mission scene initialized")
@@ -59,6 +60,9 @@ func _load_current_stage() -> void:
 		_return_to_menu()
 		return
 
+	# Update current stage tracking (prevents stale interjections)
+	current_stage_id = stage.get("stage_id", "")
+
 	# Display stage info
 	stage_title.text = stage.get("title", "")
 	description.text = stage.get("description", "")
@@ -70,7 +74,7 @@ func _load_current_stage() -> void:
 	current_choices = stage.get("choices", [])
 	_display_choices()
 
-	print("Mission: Loaded stage '%s' with %d choices" % [stage.get("stage_id", ""), current_choices.size()])
+	print("Mission: Loaded stage '%s' with %d choices" % [current_stage_id, current_choices.size()])
 
 	# Check for AI interjection triggers
 	_check_ai_interjections(stage)
@@ -284,6 +288,8 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 		"arrival":
 			# ATLAS comments on the museum's active power systems
 			await get_tree().create_timer(2.0).timeout
+			if current_stage_id != stage_id:
+				return  # Stage changed, don't fire stale interjection
 			AIPersonalityManager.ai_interject(
 				"atlas",
 				"Captain, I'm detecting active power signatures from the museum. Solar arrays functioning at 78% efficiency. Interior systems still operational. This facility has remarkable longevity—most pre-exodus infrastructure collapsed decades ago.",
@@ -294,6 +300,8 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 			# ATLAS analyzes the scavengers
 			if "encountered_scavengers" in effects:
 				await get_tree().create_timer(1.5).timeout
+				if current_stage_id != stage_id:
+					return
 				AIPersonalityManager.ai_interject(
 					"atlas",
 					"Bioscan complete. Two humans, armed but showing non-aggressive postures. Plasma cutter: tool, not weapon. Sidearm: defensive carry. Heart rates elevated but not combat-ready. Probability of peaceful resolution: 67%.",
@@ -304,6 +312,8 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 			# ATLAS provides technical insight on security system
 			if "gathered_intel" in effects:
 				await get_tree().create_timer(1.0).timeout
+				if current_stage_id != stage_id:
+					return
 				AIPersonalityManager.ai_interject(
 					"atlas",
 					"Security grid analysis: Pre-exodus museum automation, surprisingly intact. If you can access a maintenance terminal, I can interface with their systems. Service robots, door controls, possibly environmental systems. Recommend attempting computer access.",
@@ -313,6 +323,8 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 		"workshop_open":
 			# ATLAS assesses the ship frame
 			await get_tree().create_timer(2.5).timeout
+			if current_stage_id != stage_id:
+				return
 			AIPersonalityManager.ai_interject(
 				"atlas",
 				"Structural scan complete. Ship frame: titanium-aluminum alloy, stress fractures within acceptable parameters. Designed for light exploration. Hull hard points: 10 systems. Power routing: functional. This frame can support Level 3 systems across all categories. Your grandfather chose well.",
@@ -322,6 +334,8 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 		"workshop_claimed":
 			# ATLAS confirms systems operational
 			await get_tree().create_timer(2.0).timeout
+			if current_stage_id != stage_id:
+				return
 			AIPersonalityManager.ai_interject(
 				"atlas",
 				"All systems installed successfully. Hull: 50 HP nominal. Power core: 100 PU output steady. Propulsion: thrusters responsive. Computer core: ... that would be me. Welcome aboard, Captain. I've initialized ship protocols. We're ready for your first flight.",
@@ -331,6 +345,8 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 		"mission_complete":
 			# ATLAS celebrates completion
 			await get_tree().create_timer(1.0).timeout
+			if current_stage_id != stage_id:
+				return
 			AIPersonalityManager.ai_interject(
 				"atlas",
 				"Mission complete, Captain. Your grandfather would be proud. Ship classification: Scout, Level 1. Current capabilities: limited. But every starship begins with a single flight. Where shall we go next?",

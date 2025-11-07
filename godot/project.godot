@@ -25,7 +25,9 @@ AIService="*res://scripts/autoload/ai_service.gd"
 EventBus="*res://scripts/autoload/event_bus.gd"
 MissionManager="*res://scripts/autoload/mission_manager.gd"
 AIPersonalityManager="*res://scripts/autoload/ai_personality_manager.gd"
-AdaptiveLayoutManager="*res://scripts/autoload/adaptive_layout_manager.gd"[display]
+AdaptiveLayoutManager="*res://scripts/autoload/adaptive_layout_manager.gd"
+
+[display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080

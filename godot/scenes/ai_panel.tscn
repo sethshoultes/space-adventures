@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://bx7k9qw3m8n1p"]
+[gd_scene load_steps=2 format=3 uid="uid://bx7laqw3m8n1p"]
 
 [ext_resource type="Script" path="res://scripts/ui/ai_panel.gd" id="1_ai_panel"]
 
