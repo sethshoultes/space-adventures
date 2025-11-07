@@ -27,6 +27,7 @@ var current_stage_id: String = ""
 var stage_count: int = 0  # For stardate generation
 var base_stardate: float = 2247.05  # Starting stardate
 var is_first_stage: bool = true  # First stage has no separator
+var scroll_indicator: Button = null  # Manual scroll button indicator
 
 func _ready() -> void:
 	print("Mission scene initialized - Scrolling narrative log mode")
@@ -130,12 +131,11 @@ func _append_stage_to_log(stage: Dictionary) -> void:
 	# Add to narrative log
 	narrative_log.add_child(stage_entry)
 
-	# Auto-scroll to bottom after short delay (let layout update)
+	# No auto-scroll - let player control pacing
 	await get_tree().process_frame
-	narrative_scroll.scroll_vertical = narrative_scroll.get_v_scroll_bar().max_value
 
 func _append_result_to_log(result_message: String) -> void:
-	"""Append result text to the last stage entry"""
+	"""Append result text to the last stage entry and show scroll indicator"""
 
 	if result_message == "":
 		return
@@ -158,9 +158,11 @@ func _append_result_to_log(result_message: String) -> void:
 	result_label.text = "[i]%s[/i]" % result_message
 	last_entry.add_child(result_label)
 
-	# Auto-scroll to bottom
+	# Add scroll indicator inline
+	_add_scroll_indicator(last_entry)
+
+	# No auto-scroll - let player control pacing
 	await get_tree().process_frame
-	narrative_scroll.scroll_vertical = narrative_scroll.get_v_scroll_bar().max_value
 
 func _dim_previous_stages() -> void:
 	"""Dim all stages except the last one to 80% opacity"""
@@ -487,6 +489,98 @@ func _return_to_menu() -> void:
 
 	# Return to workshop (where missions are launched from)
 	get_tree().change_scene_to_file("res://scenes/workshop.tscn")
+
+## Manual Scroll Pacing System
+
+func _add_scroll_indicator(parent: VBoxContainer) -> void:
+	"""Add inline scroll indicator button after result text"""
+
+	# Remove previous indicator if it exists
+	if scroll_indicator != null and is_instance_valid(scroll_indicator):
+		scroll_indicator.queue_free()
+		scroll_indicator = null
+
+	# Add spacing
+	var spacer = Control.new()
+	spacer.custom_minimum_size = Vector2(0, 20)
+	parent.add_child(spacer)
+
+	# Create scroll indicator button
+	scroll_indicator = Button.new()
+	scroll_indicator.text = "▼ Scroll Down ▼"
+	scroll_indicator.add_theme_font_size_override("font_size", 16)
+	scroll_indicator.add_theme_color_override("font_color", Color(0.7, 0.9, 1.0, 1.0))
+	scroll_indicator.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0, 1.0))
+	scroll_indicator.flat = true
+	scroll_indicator.custom_minimum_size = Vector2(200, 40)
+	scroll_indicator.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+
+	# Connect button click
+	scroll_indicator.pressed.connect(_on_scroll_indicator_pressed)
+
+	# Add to parent
+	parent.add_child(scroll_indicator)
+
+	# Monitor scroll to hide indicator when scrolled past
+	_start_scroll_monitoring()
+
+func _on_scroll_indicator_pressed() -> void:
+	"""Scroll to next stage when indicator button is clicked"""
+
+	# Smooth scroll to bottom
+	var tween = create_tween()
+	tween.set_ease(Tween.EASE_OUT)
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(narrative_scroll, "scroll_vertical",
+		narrative_scroll.get_v_scroll_bar().max_value, 0.5)
+
+	# Hide indicator after scroll
+	await tween.finished
+	_hide_scroll_indicator()
+
+func _start_scroll_monitoring() -> void:
+	"""Monitor scroll position to hide indicator when scrolled past"""
+
+	if scroll_indicator == null or not is_instance_valid(scroll_indicator):
+		return
+
+	# Connect to scroll bar changes
+	var scroll_bar = narrative_scroll.get_v_scroll_bar()
+	if not scroll_bar.value_changed.is_connected(_on_scroll_changed):
+		scroll_bar.value_changed.connect(_on_scroll_changed)
+
+func _on_scroll_changed(value: float) -> void:
+	"""Hide scroll indicator when player scrolls past it"""
+
+	if scroll_indicator == null or not is_instance_valid(scroll_indicator):
+		return
+
+	# Get scroll indicator position
+	var indicator_pos = scroll_indicator.global_position.y
+	var scroll_bottom = narrative_scroll.global_position.y + narrative_scroll.size.y
+
+	# Hide if indicator is above visible area (scrolled past)
+	if indicator_pos < scroll_bottom - 100:  # 100px threshold
+		_hide_scroll_indicator()
+
+func _hide_scroll_indicator() -> void:
+	"""Remove scroll indicator from UI"""
+
+	if scroll_indicator != null and is_instance_valid(scroll_indicator):
+		scroll_indicator.queue_free()
+		scroll_indicator = null
+
+func _input(event: InputEvent) -> void:
+	"""Handle keyboard input for manual scrolling"""
+
+	# Only handle when indicator is visible
+	if scroll_indicator == null or not is_instance_valid(scroll_indicator):
+		return
+
+	# Down arrow key triggers scroll
+	if event.is_action_pressed("ui_down"):
+		_on_scroll_indicator_pressed()
+		accept_event()  # Consume the event
 
 ## AI Interjection System
 
