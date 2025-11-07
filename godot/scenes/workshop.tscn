@@ -53,6 +53,80 @@ theme_override_font_sizes/font_size = 32
 text = "USS Unnamed Vessel"
 horizontal_alignment = 2
 
+[node name="PlayerStatusPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PlayerStatusPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="CreditsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer/CreditsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "CREDITS"
+
+[node name="CreditsLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer/CreditsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "0 CR"
+
+[node name="LevelContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer/LevelContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "LEVEL"
+
+[node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer/LevelContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="XPContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer/XPContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "EXPERIENCE"
+
+[node name="XPLabel" type="Label" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer/XPContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "0 / 200 XP"
+
+[node name="XPProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer/XPContainer"]
+layout_mode = 2
+max_value = 1.0
+value = 0.0
+show_percentage = false
+
+[node name="SkillPointsButton" type="Button" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Skill Points: 0"
+
+[node name="InventoryButton" type="Button" parent="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "INVENTORY"
+
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
@@ -142,12 +216,16 @@ theme_override_font_sizes/font_size = 14
 text = "Ship frame only, not spaceworthy."
 autowrap_mode = 3
 
+[node name="CostLabel" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/HullSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Cost: 100 CR + Part"
+
 [node name="UpgradeButton" type="Button" parent="MarginContainer/VBoxContainer/SystemsContainer/HullSystem/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "UPGRADE
-(Cost: 100)"
+theme_override_font_sizes/font_size = 18
+text = "UPGRADE"
 
 [node name="PowerSystem" type="PanelContainer" parent="MarginContainer/VBoxContainer/SystemsContainer"]
 layout_mode = 2
@@ -183,12 +261,16 @@ theme_override_font_sizes/font_size = 14
 text = "Ship is dead in space."
 autowrap_mode = 3
 
+[node name="CostLabel" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/PowerSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Cost: 150 CR + Part"
+
 [node name="UpgradeButton" type="Button" parent="MarginContainer/VBoxContainer/SystemsContainer/PowerSystem/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "UPGRADE
-(Cost: 150)"
+theme_override_font_sizes/font_size = 18
+text = "UPGRADE"
 
 [node name="PropulsionSystem" type="PanelContainer" parent="MarginContainer/VBoxContainer/SystemsContainer"]
 layout_mode = 2
@@ -224,12 +306,16 @@ theme_override_font_sizes/font_size = 14
 text = "No propulsion system installed."
 autowrap_mode = 3
 
+[node name="CostLabel" type="Label" parent="MarginContainer/VBoxContainer/SystemsContainer/PropulsionSystem/MarginContainer/HBoxContainer/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Cost: 100 CR + Part"
+
 [node name="UpgradeButton" type="Button" parent="MarginContainer/VBoxContainer/SystemsContainer/PropulsionSystem/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "UPGRADE
-(Cost: 100)"
+theme_override_font_sizes/font_size = 18
+text = "UPGRADE"
 
 [node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -257,9 +343,168 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "MAIN MENU"
 
+[node name="InventoryPopup" type="PopupPanel" parent="."]
+initial_position = 1
+size = Vector2i(800, 600)
+
+[node name="MarginContainer" type="MarginContainer" parent="InventoryPopup"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 796.0
+offset_bottom = 596.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="InventoryPopup/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Header" type="HBoxContainer" parent="InventoryPopup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="InventoryPopup/MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+text = "INVENTORY"
+
+[node name="WeightLabel" type="Label" parent="InventoryPopup/MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Weight: 0.0 / 100.0 kg"
+
+[node name="HSeparator" type="HSeparator" parent="InventoryPopup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="InventoryPopup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InventoryList" type="VBoxContainer" parent="InventoryPopup/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+
+[node name="CloseButton" type="Button" parent="InventoryPopup/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "CLOSE"
+
+[node name="SkillAllocationPopup" type="PopupPanel" parent="."]
+initial_position = 1
+size = Vector2i(600, 500)
+
+[node name="MarginContainer" type="MarginContainer" parent="SkillAllocationPopup"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 596.0
+offset_bottom = 496.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SkillAllocationPopup/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="SkillAllocationPopup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Allocate Skill Points (0 available)"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="SkillAllocationPopup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="EngineeringRow" type="HBoxContainer" parent="SkillAllocationPopup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SkillLabel" type="Label" parent="SkillAllocationPopup/MarginContainer/VBoxContainer/EngineeringRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "Engineering: 0"
+
+[node name="AllocateButton" type="Button" parent="SkillAllocationPopup/MarginContainer/VBoxContainer/EngineeringRow"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "+1"
+
+[node name="DiplomacyRow" type="HBoxContainer" parent="SkillAllocationPopup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SkillLabel" type="Label" parent="SkillAllocationPopup/MarginContainer/VBoxContainer/DiplomacyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "Diplomacy: 0"
+
+[node name="AllocateButton" type="Button" parent="SkillAllocationPopup/MarginContainer/VBoxContainer/DiplomacyRow"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "+1"
+
+[node name="CombatRow" type="HBoxContainer" parent="SkillAllocationPopup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SkillLabel" type="Label" parent="SkillAllocationPopup/MarginContainer/VBoxContainer/CombatRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "Combat: 0"
+
+[node name="AllocateButton" type="Button" parent="SkillAllocationPopup/MarginContainer/VBoxContainer/CombatRow"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "+1"
+
+[node name="ScienceRow" type="HBoxContainer" parent="SkillAllocationPopup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SkillLabel" type="Label" parent="SkillAllocationPopup/MarginContainer/VBoxContainer/ScienceRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "Science: 0"
+
+[node name="AllocateButton" type="Button" parent="SkillAllocationPopup/MarginContainer/VBoxContainer/ScienceRow"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "+1"
+
+[node name="HSeparator2" type="HSeparator" parent="SkillAllocationPopup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="SkillAllocationPopup/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "DONE"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer/SkillPointsButton" to="." method="_on_skill_points_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/PlayerStatusPanel/MarginContainer/HBoxContainer/InventoryButton" to="." method="_on_inventory_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/SystemsContainer/HullSystem/MarginContainer/HBoxContainer/UpgradeButton" to="." method="_on_hull_upgrade_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/SystemsContainer/PowerSystem/MarginContainer/HBoxContainer/UpgradeButton" to="." method="_on_power_upgrade_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/SystemsContainer/PropulsionSystem/MarginContainer/HBoxContainer/UpgradeButton" to="." method="_on_propulsion_upgrade_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/SaveButton" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/MissionsButton" to="." method="_on_missions_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/MainMenuButton" to="." method="_on_main_menu_pressed"]
+[connection signal="pressed" from="InventoryPopup/MarginContainer/VBoxContainer/CloseButton" to="." method="_on_inventory_close_pressed"]
+[connection signal="pressed" from="SkillAllocationPopup/MarginContainer/VBoxContainer/EngineeringRow/AllocateButton" to="." method="_on_allocate_skill_pressed" binds= ["engineering"]]
+[connection signal="pressed" from="SkillAllocationPopup/MarginContainer/VBoxContainer/DiplomacyRow/AllocateButton" to="." method="_on_allocate_skill_pressed" binds= ["diplomacy"]]
+[connection signal="pressed" from="SkillAllocationPopup/MarginContainer/VBoxContainer/CombatRow/AllocateButton" to="." method="_on_allocate_skill_pressed" binds= ["combat"]]
+[connection signal="pressed" from="SkillAllocationPopup/MarginContainer/VBoxContainer/ScienceRow/AllocateButton" to="." method="_on_allocate_skill_pressed" binds= ["science"]]
+[connection signal="pressed" from="SkillAllocationPopup/MarginContainer/VBoxContainer/CloseButton" to="." method="_on_skill_allocation_close_pressed"]
