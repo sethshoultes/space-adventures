@@ -3,8 +3,8 @@
 > **This is a hobby/learning project.** Milestones are flexible goals, not deadlines. Build when motivated, pause when needed, pivot if not fun.
 
 **Current Milestone:** Milestone 1 - Proof of Concept
-**Status:** 45% Complete (Phase 1 Weeks 1-4 done, game implementation pending)
-**Next Checkpoint:** Can you play one complete game loop?
+**Status:** 90% Complete (Economy, mission system, UI all working - testing phase)
+**Next Checkpoint:** Full game playthrough testing → Milestone 1 complete!
 
 ---
 
@@ -36,182 +36,183 @@
 
 ---
 
-#### 🔨 Ship Systems Implementation (In Progress)
+#### ✅ Ship Systems Implementation (Complete)
 
-**Current Task: Implement 3 core systems (Level 0→1 only)**
+**All 3 core systems implemented with Level 0-5 support + economy integration**
 
-##### Hull System
-- [ ] **START HERE** → Create `godot/scripts/systems/hull_system.gd`
-  - [ ] Extend base Node class (or create base ShipSystem class)
-  - [ ] Properties: `level: int`, `health: int`, `max_health: int`, `active: bool`
-  - [ ] Method: `upgrade()` - Level 0→1 upgrade logic
-  - [ ] Method: `take_damage(amount: int)`
-  - [ ] Method: `repair(amount: int)`
-  - [ ] Method: `get_power_cost() -> int` (returns 0 for Hull)
-  - [ ] Connect to GameState.ship.systems["hull"]
-  - [ ] Emit EventBus signals on state changes
+##### Hull System ✅
+- [x] Created `godot/scripts/systems/hull_system.gd`
+- [x] Base ShipSystem class created
+- [x] Full Level 0-5 implementation (0-500 HP)
+- [x] Upgrade system with credit + part consumption
+- [x] Damage and repair mechanics
+- [x] GameState integration
+- [x] EventBus signal emission
+- [x] Save/load persistence
 
-- [ ] Test Hull System
-  - [ ] Can instantiate system
-  - [ ] Level 0 starts with 0 HP, inactive
-  - [ ] Can upgrade to Level 1
-  - [ ] Level 1 has 50 HP, active
-  - [ ] Can take damage
-  - [ ] Can repair
-  - [ ] Persists through save/load
+##### Power Core System ✅
+- [x] Created `godot/scripts/systems/power_system.gd`
+- [x] Full Level 0-5 implementation (0-1000 PU)
+- [x] Upgrade system with economy integration
+- [x] Power output calculation
+- [x] GameState ship power tracking
+- [x] Save/load persistence
 
-##### Power Core System
-- [ ] Create `godot/scripts/systems/power_system.gd`
-  - [ ] Properties: `level: int`, `power_output: int`, `efficiency: float`, `active: bool`
-  - [ ] Method: `upgrade()` - Level 0→1 upgrade logic
-  - [ ] Method: `get_power_output() -> int`
-  - [ ] Method: `get_power_cost() -> int` (returns 0, generates power)
-  - [ ] Connect to GameState.ship.systems["power"]
-  - [ ] Update GameState.ship.power_total when active
-
-- [ ] Test Power System
-  - [ ] Level 0: 0 power output
-  - [ ] Level 1: 150 power output
-  - [ ] Integrates with ship power calculations
-  - [ ] Save/load works
-
-##### Propulsion System
-- [ ] Create `godot/scripts/systems/propulsion_system.gd`
-  - [ ] Properties: `level: int`, `speed: int`, `maneuverability: float`, `active: bool`
-  - [ ] Method: `upgrade()` - Level 0→1 upgrade logic
-  - [ ] Method: `get_power_cost() -> int` (10 power at Level 1)
-  - [ ] Method: `get_speed() -> int`
-  - [ ] Connect to GameState.ship.systems["propulsion"]
-  - [ ] Consume power when active
-
-- [ ] Test Propulsion System
-  - [ ] Level 0: 0 speed, consumes 0 power
-  - [ ] Level 1: 50 speed, consumes 10 power
-  - [ ] Power consumption updates ship totals
-  - [ ] Save/load works
+##### Propulsion System ✅
+- [x] Created `godot/scripts/systems/propulsion_system.gd`
+- [x] Full Level 0-5 implementation (0x-12x speed)
+- [x] Upgrade system with economy integration
+- [x] Speed and maneuverability stats
+- [x] Save/load persistence
 
 ---
 
-#### 📝 Content Creation
+#### ✅ Hybrid Economy System (Complete)
 
-##### Tutorial Mission (Hand-Written)
-- [ ] Create `godot/assets/data/missions/mission_tutorial.json`
-  - [ ] Write mission structure (see mission-framework.md)
-  - [ ] Include: mission_id, title, description, difficulty
-  - [ ] Create 3-4 stages
-  - [ ] Add 2-3 choices per stage
-  - [ ] Write all text content (~500 words total)
-  - [ ] Define rewards (100 XP, 200 resources)
-  - [ ] Set requirements (none - this is tutorial)
+**Two-currency model with story-driven part unlocks**
 
-**Mission Content Guidelines:**
-- Teaches: How to upgrade systems
-- Teaches: How missions work
-- Teaches: Resource management
-- Story: Finding first ship part in ruins
-- Tone: Hopeful but serious (Star Trek TNG style)
-- Length: 10-15 minutes to complete
+##### Data Infrastructure ✅
+- [x] PartRegistry singleton (720+ lines, 30+ API methods)
+- [x] 39 parts defined (5 systems × 3 rarity tiers)
+- [x] JSON data files (parts, systems, economy config)
+- [x] O(1) lookup performance with dictionaries
 
-- [ ] Test Tutorial Mission
-  - [ ] JSON parses correctly
-  - [ ] All stages load
-  - [ ] Choices work
-  - [ ] Rewards granted correctly
-  - [ ] Text is clear and engaging
+##### GameState Integration ✅
+- [x] Credits system (add, spend, validation)
+- [x] Skill points allocation system
+- [x] Enhanced inventory (stacking, weight, capacity)
+- [x] XP/leveling with PartRegistry integration
+- [x] 5 new EventBus signals for economy
 
----
+##### Ship System Upgrades ✅
+- [x] Upgrade refactor (credits + parts required)
+- [x] Transaction rollback on failure
+- [x] PartRegistry cost queries
+- [x] All subclasses inherit new behavior
 
-#### 🖼️ Workshop UI Implementation
+##### Workshop UI ✅
+- [x] Player status panel (credits, XP, level, skill points)
+- [x] Upgrade cost display with validation
+- [x] Inventory popup (800x600, shows parts/rarity/weight)
+- [x] Skill allocation popup (600x500)
+- [x] Real-time updates via EventBus
 
-##### Basic Workshop Scene
-- [ ] Create `godot/scenes/workshop.tscn`
-  - [ ] Background (simple, can be placeholder color)
-  - [ ] Title label: "Workshop"
-  - [ ] Ship name display
-  - [ ] Resource counter display
-
-##### Systems Panel
-- [ ] Add VBoxContainer for systems list
-  - [ ] For each system (Hull, Power, Propulsion):
-    - [ ] System name label
-    - [ ] Current level label
-    - [ ] Health/status indicator
-    - [ ] Upgrade button
-    - [ ] Power cost display
-
-##### System Detail Panel
-- [ ] Show selected system details
-  - [ ] System name and description
-  - [ ] Current stats
-  - [ ] Next level stats
-  - [ ] Upgrade cost
-  - [ ] "Upgrade" button (disabled if can't afford)
-
-##### Resource Display
-- [ ] Show current resources
-- [ ] Show resource costs for upgrades
-- [ ] Update in real-time
-
-**UI Polish: Not needed for Milestone 1. Functional > Beautiful.**
-
-- [ ] Wire up Workshop Scene
-  - [ ] Load system data from GameState
-  - [ ] Update UI when systems change
-  - [ ] Connect upgrade buttons to upgrade logic
-  - [ ] Update resource display
-  - [ ] Show success/error messages
-
-- [ ] Test Workshop UI
-  - [ ] Displays all systems correctly
-  - [ ] Upgrade buttons work
-  - [ ] Resources update
-  - [ ] Can't upgrade without resources
-  - [ ] Visual feedback on upgrade
+##### Mission Rewards ✅
+- [x] Missions grant credits + parts
+- [x] Part discovery system (story-driven unlocks)
+- [x] Tutorial mission updated (300 CR + 2 L1 parts)
+- [x] Mission complete UI shows all rewards
 
 ---
 
-#### 💾 Save/Load Implementation
+#### ✅ Tutorial Mission (Complete)
 
-##### Auto-Save System
-- [ ] Implement auto-save in SaveManager
-  - [ ] Auto-save after mission complete
-  - [ ] Auto-save after system upgrade
-  - [ ] Auto-save every 5 minutes (optional)
-  - [ ] Save to `godot/saves/autosave.json`
+**"The Inheritance" - Hand-written JSON mission**
 
-- [ ] Implement save/load UI
-  - [ ] "Continue" button (loads autosave)
-  - [ ] Show last save time
-  - [ ] Handle missing save gracefully
-
-- [ ] Test Save/Load
-  - [ ] Game state persists correctly
-  - [ ] All system data saves
-  - [ ] All player data saves
-  - [ ] Can load and continue
-  - [ ] Corrupted saves handled gracefully
+- [x] 9 stages with branching paths
+- [x] Multiple skill checks (engineering, diplomacy)
+- [x] Rewards Level 1 systems + credits + parts
+- [x] Integrated with ATLAS AI commentary (6 interjections)
+- [x] Full narrative (~2000 words)
+- [x] Star Trek TNG tone maintained
 
 ---
 
-#### 🧪 Integration Testing
+#### ✅ Workshop UI (Complete)
 
-##### Complete Game Loop Test
-- [ ] Start new game
-- [ ] View Workshop
-- [ ] Check resources (should have starting amount)
-- [ ] Select Hull system
-- [ ] Upgrade Hull to Level 1
-- [ ] Verify resources deducted
-- [ ] Verify Hull stats updated
-- [ ] Start Tutorial mission
+**Fully functional ship management interface**
+
+- [x] Workshop scene (`godot/scenes/workshop.tscn`)
+- [x] Systems panel (3 systems displayed)
+- [x] System detail panel (stats, upgrade costs)
+- [x] Player status display (credits, level, XP bar)
+- [x] Resource validation (disabled buttons when can't afford)
+- [x] Power budget tracking
+- [x] Upgrade button functionality
+- [x] Inventory management popup
+- [x] Skill allocation popup
+- [x] Real-time UI updates
+
+---
+
+#### ✅ Mission System (Complete)
+
+**Scrolling narrative log with manual pacing**
+
+- [x] MissionManager singleton (400+ lines)
+- [x] Mission UI scene with scrolling log
+- [x] Mission controller (700+ lines)
+- [x] Workshop → Mission navigation
+- [x] Choice system (up to 4 choices per stage)
+- [x] Result display with consequence text
+- [x] Stardate separators between stages
+- [x] Visual hierarchy (80% opacity for past stages)
+- [x] Manual scroll pacing with inline indicator
+- [x] Mission rewards integration
+- [x] Save/load during missions
+
+---
+
+#### ✅ Magentic UI System (Complete)
+
+**Microsoft-inspired adaptive multi-AI UI**
+
+- [x] AIPersonalityManager singleton (350+ lines)
+- [x] AdaptiveLayoutManager singleton (200+ lines)
+- [x] AIPanel component (150+ lines)
+- [x] 4 AI personalities (ATLAS active, 3 ready)
+- [x] 5 UI states (NARRATIVE_FOCUS, AI_INTERJECTION, etc.)
+- [x] Context-aware AI interjections
+- [x] Adaptive two-panel layout (50/50 split)
+- [x] Smooth 0.4s transitions
+- [x] Signal-based decoupled architecture
+
+---
+
+#### ✅ Save/Load System (Complete)
+
+**JSON-based persistence with versioning**
+
+- [x] SaveManager singleton
+- [x] Auto-save after missions/upgrades
+- [x] 5 save slots + autosave
+- [x] Save migration for version changes
+- [x] Timestamp and playtime tracking
+- [x] Graceful handling of corrupted saves
+- [x] All game state persists correctly
+
+---
+
+#### 🧪 Integration Testing ⏳ NEXT UP
+
+**Current Focus: Full game playthrough testing**
+
+##### Complete Game Loop Test (Ready to Test)
+- [ ] Start new game from Workshop
+- [ ] View player status (0 CR, 0 skill points initially)
+- [ ] Launch tutorial mission "The Inheritance"
 - [ ] Complete mission making choices
-- [ ] Receive rewards (XP, resources)
+- [ ] Observe ATLAS AI interjections (6 total)
+- [ ] Test manual scroll pacing (click/wheel/keyboard)
+- [ ] Receive mission rewards (300 CR, 2 L1 parts, XP)
 - [ ] Return to Workshop
-- [ ] Verify progression saved
-- [ ] Close game
-- [ ] Reopen game
+- [ ] View updated player status (300 CR, level up?)
+- [ ] Open inventory popup (verify 2 parts received)
+- [ ] Attempt system upgrades (should work with rewards)
+- [ ] Verify upgrade costs deducted correctly
+- [ ] Test skill point allocation
+- [ ] Verify auto-save works
+- [ ] Close and reopen game
 - [ ] Continue from save
 - [ ] Verify all state restored
+
+##### Bug Testing
+- [ ] Test with old save files (migration working?)
+- [ ] Test AI panel layout (side-by-side, not overlay?)
+- [ ] Test scroll indicator (appears, clickable, hides?)
+- [ ] Test upgrade when insufficient resources
+- [ ] Test inventory weight limits
+- [ ] Test skill allocation validation
 
 **THIS IS THE CRITICAL TEST. If this works and is fun, Milestone 1 succeeds.**
 
@@ -219,16 +220,22 @@
 
 ### Milestone 1 Complete Criteria
 
-- [ ] All 3 systems implemented and testable
-- [ ] Tutorial mission complete and playable
-- [ ] Workshop UI functional (doesn't need to be pretty)
-- [ ] Auto-save works
-- [ ] Complete game loop works end-to-end
-- [ ] **Can play for 15 minutes and it's interesting**
+- [x] All 3 systems implemented and testable ✅
+- [x] Tutorial mission complete and playable ✅
+- [x] Workshop UI functional ✅
+- [x] Auto-save works ✅
+- [x] Economy system integrated ✅
+- [x] Magentic UI with ATLAS AI ✅
+- [x] Manual scroll pacing ✅
+- [ ] **Complete game loop tested end-to-end** ⏳ IN PROGRESS
+- [ ] **Can play for 15 minutes and it's interesting** ⏳ NEEDS TESTING
+- [ ] **Bug-free or only minor issues** ⏳ NEEDS VALIDATION
 
 **Decision Point: Is it fun?**
 - ✅ YES → Continue to Milestone 2
 - ❌ NO → Pivot or learn from experience
+
+**Status:** 90% complete - testing and validation phase
 
 ---
 
