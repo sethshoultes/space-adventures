@@ -108,7 +108,12 @@
 - ✅ Stardate separators ("Stardate 2247.05", configurable later)
 - ✅ Visual hierarchy (80% past, 100% current)
 - ✅ Mission complete inline in log
-- ✅ 1 second pause between stages (readable, not rushed)
+- ✅ **Manual Scroll Pacing** - Player-controlled narrative flow
+  - Inline scroll indicator after choice results ("▼ Scroll Down ▼")
+  - Click button / mouse wheel / down arrow key to continue
+  - Smooth 0.5s scroll animation
+  - Indicator auto-hides when scrolled past
+  - No auto-scroll (player controls reading pace)
 - ✅ Professional narrative game standard
 
 **Next Tasks - Economy System Phases 7-9:**
@@ -274,6 +279,16 @@
 ---
 
 ## ✅ Recent Completions
+
+### 2025-01-07: Manual Scroll Pacing System (commit e09ca7d)
+- **Player-Controlled Narrative Pacing**
+  - Replaced auto-scroll with manual scroll control for better UX
+  - Inline scroll indicator appears after choice results: "▼ Scroll Down ▼"
+  - Multiple interaction methods: button click, mouse wheel, down arrow key
+  - Smooth 0.5s scroll animation with cubic easing
+  - Indicator auto-hides when scrolled past (100px threshold)
+  - Scroll monitoring system tracks position and removes indicator
+  - Players control reading pace (no rushed auto-scrolls)
 
 ### 2025-01-07: Critical Bug Fixes - Save Migration & Magentic UI Layout
 - **Save File Migration Bug** (commit c1e164f)
