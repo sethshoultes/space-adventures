@@ -61,37 +61,16 @@ horizontal_alignment = 1
 [node name="HSeparator" type="HSeparator" parent="MainLayout/NarrativeContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="StageContent" type="ScrollContainer" parent="MainLayout/NarrativeContainer/VBoxContainer"]
+[node name="NarrativeScroll" type="ScrollContainer" parent="MainLayout/NarrativeContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+follow_focus = true
+scroll_horizontal_enabled = false
 
-[node name="StageText" type="VBoxContainer" parent="MainLayout/NarrativeContainer/VBoxContainer/StageContent"]
+[node name="NarrativeLog" type="VBoxContainer" parent="MainLayout/NarrativeContainer/VBoxContainer/NarrativeScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 15
-
-[node name="StageTitle" type="Label" parent="MainLayout/NarrativeContainer/VBoxContainer/StageContent/StageText"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "Stage Title"
-
-[node name="Description" type="RichTextLabel" parent="MainLayout/NarrativeContainer/VBoxContainer/StageContent/StageText"]
-custom_minimum_size = Vector2(0, 150)
-layout_mode = 2
-theme_override_font_sizes/normal_font_size = 20
-bbcode_enabled = true
-text = "Stage description will appear here..."
-fit_content = true
-
-[node name="ResultText" type="RichTextLabel" parent="MainLayout/NarrativeContainer/VBoxContainer/StageContent/StageText"]
-visible = false
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-theme_override_colors/default_color = Color(0.8, 0.9, 1, 1)
-theme_override_font_sizes/normal_font_size = 18
-bbcode_enabled = true
-text = "Result of your choice..."
-fit_content = true
+theme_override_constants/separation = 30
 
 [node name="HSeparator2" type="HSeparator" parent="MainLayout/NarrativeContainer/VBoxContainer"]
 layout_mode = 2
