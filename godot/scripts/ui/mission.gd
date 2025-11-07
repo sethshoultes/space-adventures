@@ -2,27 +2,38 @@ extends Control
 
 ## Mission Scene Controller
 ## Handles mission playback, displaying stages, and player choices
+## Integrates with AIPersonalityManager for adaptive UI and AI interjections
 
-# UI References
-@onready var mission_title: Label = $MarginContainer/VBoxContainer/Header/MissionTitle
-@onready var location_label: Label = $MarginContainer/VBoxContainer/Header/Location
-@onready var stage_title: Label = $MarginContainer/VBoxContainer/StageContent/StageText/StageTitle
-@onready var description: RichTextLabel = $MarginContainer/VBoxContainer/StageContent/StageText/Description
-@onready var result_text: RichTextLabel = $MarginContainer/VBoxContainer/StageContent/StageText/ResultText
-@onready var choices_label: Label = $MarginContainer/VBoxContainer/ChoicesLabel
+# UI References - Updated for MainLayout/NarrativeContainer structure
+@onready var narrative_container: MarginContainer = $MainLayout/NarrativeContainer
+@onready var ai_panel: PanelContainer = $MainLayout/AIInterjectionPanel
+@onready var mission_title: Label = $MainLayout/NarrativeContainer/VBoxContainer/Header/MissionTitle
+@onready var location_label: Label = $MainLayout/NarrativeContainer/VBoxContainer/Header/Location
+@onready var stage_title: Label = $MainLayout/NarrativeContainer/VBoxContainer/StageContent/StageText/StageTitle
+@onready var description: RichTextLabel = $MainLayout/NarrativeContainer/VBoxContainer/StageContent/StageText/Description
+@onready var result_text: RichTextLabel = $MainLayout/NarrativeContainer/VBoxContainer/StageContent/StageText/ResultText
+@onready var choices_label: Label = $MainLayout/NarrativeContainer/VBoxContainer/ChoicesLabel
 @onready var choice_buttons: Array = [
-	$MarginContainer/VBoxContainer/Choices/Choice1,
-	$MarginContainer/VBoxContainer/Choices/Choice2,
-	$MarginContainer/VBoxContainer/Choices/Choice3,
-	$MarginContainer/VBoxContainer/Choices/Choice4
+	$MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice1,
+	$MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice2,
+	$MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice3,
+	$MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice4
 ]
-@onready var exit_button: Button = $MarginContainer/VBoxContainer/Actions/ExitButton
+@onready var exit_button: Button = $MainLayout/NarrativeContainer/VBoxContainer/Actions/ExitButton
 
 # Current state
 var current_choices: Array = []
+var ai_panel_visible: bool = false
 
 func _ready() -> void:
 	print("Mission scene initialized")
+
+	# Connect to AIPersonalityManager signals
+	AIPersonalityManager.ai_interjection_triggered.connect(_on_ai_interjection_triggered)
+	AIPersonalityManager.ui_state_changed.connect(_on_ui_state_changed)
+
+	# Set initial UI state to NARRATIVE_FOCUS
+	AIPersonalityManager.transition_ui_state(AIPersonalityManager.UIState.NARRATIVE_FOCUS)
 
 	# Check if there's an active mission
 	if not MissionManager.is_mission_active():
@@ -60,6 +71,9 @@ func _load_current_stage() -> void:
 	_display_choices()
 
 	print("Mission: Loaded stage '%s' with %d choices" % [stage.get("stage_id", ""), current_choices.size()])
+
+	# Check for AI interjection triggers
+	_check_ai_interjections(stage)
 
 func _display_choices() -> void:
 	"""Display available choices for current stage"""
@@ -251,3 +265,144 @@ func _return_to_menu() -> void:
 
 	# Return to workshop (where missions are launched from)
 	get_tree().change_scene_to_file("res://scenes/workshop.tscn")
+
+func _check_ai_interjections(stage: Dictionary) -> void:
+	"""Check if this stage triggers any AI interjections"""
+
+	var stage_id = stage.get("stage_id", "")
+	var mission = MissionManager.get_active_mission()
+	var effects = MissionManager.mission_effects
+
+	# Tutorial mission: ATLAS interjections
+	if mission.mission_id == "tutorial_first_salvage":
+		_trigger_tutorial_interjections(stage_id, effects)
+
+func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
+	"""Trigger ATLAS commentary for tutorial mission"""
+
+	match stage_id:
+		"arrival":
+			# ATLAS comments on the museum's active power systems
+			await get_tree().create_timer(2.0).timeout
+			AIPersonalityManager.ai_interject(
+				"atlas",
+				"Captain, I'm detecting active power signatures from the museum. Solar arrays functioning at 78% efficiency. Interior systems still operational. This facility has remarkable longevity—most pre-exodus infrastructure collapsed decades ago.",
+				{"stage": stage_id, "type": "technical_observation"}
+			)
+
+		"workshop_contested":
+			# ATLAS analyzes the scavengers
+			if "encountered_scavengers" in effects:
+				await get_tree().create_timer(1.5).timeout
+				AIPersonalityManager.ai_interject(
+					"atlas",
+					"Bioscan complete. Two humans, armed but showing non-aggressive postures. Plasma cutter: tool, not weapon. Sidearm: defensive carry. Heart rates elevated but not combat-ready. Probability of peaceful resolution: 67%.",
+					{"stage": stage_id, "type": "threat_assessment"}
+				)
+
+		"workshop_informed":
+			# ATLAS provides technical insight on security system
+			if "gathered_intel" in effects:
+				await get_tree().create_timer(1.0).timeout
+				AIPersonalityManager.ai_interject(
+					"atlas",
+					"Security grid analysis: Pre-exodus museum automation, surprisingly intact. If you can access a maintenance terminal, I can interface with their systems. Service robots, door controls, possibly environmental systems. Recommend attempting computer access.",
+					{"stage": stage_id, "type": "technical_opportunity"}
+				)
+
+		"workshop_open":
+			# ATLAS assesses the ship frame
+			await get_tree().create_timer(2.5).timeout
+			AIPersonalityManager.ai_interject(
+				"atlas",
+				"Structural scan complete. Ship frame: titanium-aluminum alloy, stress fractures within acceptable parameters. Designed for light exploration. Hull hard points: 10 systems. Power routing: functional. This frame can support Level 3 systems across all categories. Your grandfather chose well.",
+				{"stage": stage_id, "type": "ship_analysis"}
+			)
+
+		"workshop_claimed":
+			# ATLAS confirms systems operational
+			await get_tree().create_timer(2.0).timeout
+			AIPersonalityManager.ai_interject(
+				"atlas",
+				"All systems installed successfully. Hull: 50 HP nominal. Power core: 100 PU output steady. Propulsion: thrusters responsive. Computer core: ... that would be me. Welcome aboard, Captain. I've initialized ship protocols. We're ready for your first flight.",
+				{"stage": stage_id, "type": "systems_confirmation"}
+			)
+
+		"mission_complete":
+			# ATLAS celebrates completion
+			await get_tree().create_timer(1.0).timeout
+			AIPersonalityManager.ai_interject(
+				"atlas",
+				"Mission complete, Captain. Your grandfather would be proud. Ship classification: Scout, Level 1. Current capabilities: limited. But every starship begins with a single flight. Where shall we go next?",
+				{"stage": stage_id, "type": "mission_complete"}
+			)
+
+## AI Interjection Handlers
+
+func _on_ai_interjection_triggered(personality: String, message: String, context: Dictionary) -> void:
+	"""Handle AI personality interjection during mission"""
+
+	print("Mission: AI interjection from %s: %s" % [personality, message])
+
+	# Show the AI panel with interjection data
+	var interjection_data = {
+		"personality": personality,
+		"message": message,
+		"context": context
+	}
+
+	ai_panel.show_interjection(interjection_data)
+	ai_panel_visible = true
+
+	# Adjust narrative container to 50% width
+	_adjust_layout_for_ai_panel(true)
+
+func _on_ai_panel_dismissed() -> void:
+	"""Handle AI panel dismissal"""
+
+	print("Mission: AI panel dismissed")
+	ai_panel_visible = false
+
+	# Restore narrative container to full width
+	_adjust_layout_for_ai_panel(false)
+
+	# Transition back to NARRATIVE_FOCUS
+	AIPersonalityManager.transition_ui_state(AIPersonalityManager.UIState.NARRATIVE_FOCUS)
+
+func _on_ui_state_changed(new_state: int, old_state: int) -> void:
+	"""Handle UI state changes from AIPersonalityManager"""
+
+	print("Mission: UI state changed from %d to %d" % [old_state, new_state])
+
+	# Adjust layout based on new state
+	match new_state:
+		AIPersonalityManager.UIState.NARRATIVE_FOCUS:
+			_adjust_layout_for_ai_panel(false)
+
+		AIPersonalityManager.UIState.AI_INTERJECTION:
+			_adjust_layout_for_ai_panel(true)
+
+		_:
+			# Other states not yet implemented
+			pass
+
+func _adjust_layout_for_ai_panel(show_panel: bool) -> void:
+	"""Adjust the narrative container size to accommodate AI panel"""
+
+	var tween = create_tween()
+	tween.set_ease(Tween.EASE_IN_OUT)
+	tween.set_trans(Tween.TRANS_CUBIC)
+
+	if show_panel:
+		# Compress narrative to 50% width (size_flags_stretch_ratio)
+		# Note: HBoxContainer with size_flags_horizontal = 3 means it will shrink
+		# when AIPanel becomes visible with its fixed width of 600px
+		ai_panel.visible = true
+		ai_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tween.tween_property(ai_panel, "custom_minimum_size:x", 600, 0.4)
+	else:
+		# Restore narrative to full width
+		tween.tween_property(ai_panel, "custom_minimum_size:x", 0, 0.4)
+		await tween.finished
+		ai_panel.visible = false
+		ai_panel.size_flags_horizontal = 0
