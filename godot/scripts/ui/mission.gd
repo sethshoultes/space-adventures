@@ -2,27 +2,37 @@ extends Control
 
 ## Mission Scene Controller - Scrolling Narrative Log
 ## Appends all story content chronologically - nothing disappears
-## Integrates with AIPersonalityManager for adaptive UI and AI interjections
+## Three-panel layout: Left (narrative), Top Right (scene image), Bottom Right (ATLAS chat)
 
-# UI References
-@onready var narrative_container: MarginContainer = $MainLayout/NarrativeContainer
-@onready var ai_panel: PanelContainer = $MainLayout/AIInterjectionPanel
-@onready var mission_title: Label = $MainLayout/NarrativeContainer/VBoxContainer/Header/MissionTitle
-@onready var location_label: Label = $MainLayout/NarrativeContainer/VBoxContainer/Header/Location
-@onready var narrative_scroll: ScrollContainer = $MainLayout/NarrativeContainer/VBoxContainer/NarrativeScroll
-@onready var narrative_log: VBoxContainer = $MainLayout/NarrativeContainer/VBoxContainer/NarrativeScroll/NarrativeLog
-@onready var choices_label: Label = $MainLayout/NarrativeContainer/VBoxContainer/ChoicesLabel
+# UI References - Narrative Panel (Left)
+@onready var narrative_container: MarginContainer = $MainVBox/TopPanels/NarrativeContainer
+@onready var mission_title: Label = $MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Header/MissionTitle
+@onready var location_label: Label = $MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Header/Location
+@onready var narrative_scroll: ScrollContainer = $MainVBox/TopPanels/NarrativeContainer/VBoxContainer/NarrativeScroll
+@onready var narrative_log: VBoxContainer = $MainVBox/TopPanels/NarrativeContainer/VBoxContainer/NarrativeScroll/NarrativeLog
+@onready var choices_label: Label = $MainVBox/TopPanels/NarrativeContainer/VBoxContainer/ChoicesLabel
 @onready var choice_buttons: Array = [
-	$MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice1,
-	$MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice2,
-	$MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice3,
-	$MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice4
+	$MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices/Choice1,
+	$MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices/Choice2,
+	$MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices/Choice3,
+	$MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices/Choice4
 ]
-@onready var exit_button: Button = $MainLayout/NarrativeContainer/VBoxContainer/Actions/ExitButton
+@onready var exit_button: Button = $MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Actions/ExitButton
+
+# UI References - Right Panels
+@onready var scene_image: TextureRect = $MainVBox/TopPanels/RightPanels/SceneImagePanel/MarginContainer/VBoxContainer/SceneImage
+@onready var atlas_avatar: TextureRect = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/Header/Avatar
+@onready var atlas_label: Label = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/Header/ATLASLabel
+@onready var chat_scroll: ScrollContainer = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/ChatScroll
+@onready var chat_history: VBoxContainer = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/ChatScroll/ChatHistory
+
+# UI References - Bottom Panels
+@onready var atlas_input: LineEdit = $MainVBox/ATLASTextInput/MarginContainer/HBoxContainer/InputField
+@onready var send_button: Button = $MainVBox/ATLASTextInput/MarginContainer/HBoxContainer/SendButton
+@onready var status_label: Label = $MainVBox/StatusTicker/MarginContainer/ScrollContainer/StatusLabel
 
 # State tracking
 var current_choices: Array = []
-var ai_panel_visible: bool = false
 var current_stage_id: String = ""
 var stage_count: int = 0  # For stardate generation
 var base_stardate: float = 2247.05  # Starting stardate
@@ -30,14 +40,14 @@ var is_first_stage: bool = true  # First stage has no separator
 var scroll_indicator: Button = null  # Manual scroll button indicator
 
 func _ready() -> void:
-	print("Mission scene initialized - Scrolling narrative log mode")
+	print("Mission scene initialized - Three-panel layout mode")
 
-	# Connect to AIPersonalityManager signals
-	AIPersonalityManager.ai_interjection_triggered.connect(_on_ai_interjection_triggered)
-	AIPersonalityManager.ui_state_changed.connect(_on_ui_state_changed)
+	# Connect ATLAS input signals
+	atlas_input.text_submitted.connect(_on_atlas_input_submitted)
+	send_button.pressed.connect(_on_atlas_send_pressed)
 
-	# Set initial UI state to NARRATIVE_FOCUS
-	AIPersonalityManager.transition_ui_state(AIPersonalityManager.UIState.NARRATIVE_FOCUS)
+	# Initialize status ticker
+	_update_status_ticker()
 
 	# Check if there's an active mission
 	if not MissionManager.is_mission_active():
@@ -284,6 +294,9 @@ func _display_result(result: Dictionary) -> void:
 		for button in choice_buttons:
 			button.visible = false
 
+		# Update status ticker
+		_update_status_ticker()
+
 		# Short pause for readability
 		await get_tree().create_timer(1.0).timeout
 
@@ -383,6 +396,9 @@ func _append_mission_complete() -> void:
 
 	# Update exit button
 	exit_button.text = "RETURN TO WORKSHOP"
+
+	# Update status ticker
+	_update_status_ticker()
 
 	print("Mission: Mission completed successfully")
 
@@ -582,6 +598,82 @@ func _input(event: InputEvent) -> void:
 		_on_scroll_indicator_pressed()
 		accept_event()  # Consume the event
 
+## ATLAS Chat System
+
+func _add_atlas_message(message: String, is_player: bool = false) -> void:
+	"""Add a message to ATLAS chat history"""
+
+	var message_container = HBoxContainer.new()
+	message_container.set("theme_override_constants/separation", 8)
+
+	if not is_player:
+		# ATLAS message - show avatar
+		var avatar_small = TextureRect.new()
+		avatar_small.custom_minimum_size = Vector2(32, 32)
+		avatar_small.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+		avatar_small.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		message_container.add_child(avatar_small)
+
+	# Message label
+	var message_label = RichTextLabel.new()
+	message_label.bbcode_enabled = true
+	message_label.fit_content = true
+	message_label.scroll_active = false
+	message_label.add_theme_font_size_override("normal_font_size", 14)
+	message_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	if is_player:
+		message_label.add_theme_color_override("default_color", Color(0.8, 1.0, 0.8, 1.0))
+		message_label.text = "[i]You: %s[/i]" % message
+	else:
+		message_label.add_theme_color_override("default_color", Color(0.9, 0.9, 1.0, 1.0))
+		message_label.text = message
+
+	message_container.add_child(message_label)
+	chat_history.add_child(message_container)
+
+	# Auto-scroll to bottom
+	await get_tree().process_frame
+	chat_scroll.scroll_vertical = chat_scroll.get_v_scroll_bar().max_value
+
+func _on_atlas_input_submitted(text: String) -> void:
+	"""Handle Enter key in ATLAS input field"""
+	if text.strip_edges() != "":
+		_send_atlas_message(text)
+
+func _on_atlas_send_pressed() -> void:
+	"""Handle Send button click"""
+	var text = atlas_input.text
+	if text.strip_edges() != "":
+		_send_atlas_message(text)
+
+func _send_atlas_message(message: String) -> void:
+	"""Send player message to ATLAS and get response"""
+
+	# Add player message to history
+	_add_atlas_message(message, true)
+
+	# Clear input
+	atlas_input.text = ""
+
+	# TODO: Call AI service to get ATLAS response
+	# For now, add a placeholder response
+	await get_tree().create_timer(0.5).timeout
+	_add_atlas_message("I'm processing your question: '%s'. AI integration coming soon!" % message)
+
+func _update_status_ticker() -> void:
+	"""Update status ticker with current game state"""
+
+	var credits = GameState.player.credits
+	var hull = GameState.ship.systems.hull.health if GameState.ship.systems.has("hull") else 0
+	var max_hull = GameState.ship.systems.hull.max_health if GameState.ship.systems.has("hull") else 0
+	var location = location_label.text
+	var mission = mission_title.text
+
+	status_label.text = "Credits: %d CR | Hull: %d/%d | Location: %s | Mission: %s" % [
+		credits, hull, max_hull, location, mission
+	]
+
 ## AI Interjection System
 
 func _check_ai_interjections(stage: Dictionary) -> void:
@@ -596,7 +688,7 @@ func _check_ai_interjections(stage: Dictionary) -> void:
 		_trigger_tutorial_interjections(stage_id, effects)
 
 func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
-	"""Trigger ATLAS commentary for tutorial mission"""
+	"""Trigger ATLAS commentary for tutorial mission - adds to chat instead of showing panel"""
 
 	match stage_id:
 		"arrival":
@@ -604,10 +696,8 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 			await get_tree().create_timer(2.0).timeout
 			if current_stage_id != stage_id:
 				return  # Stage changed, don't fire stale interjection
-			AIPersonalityManager.ai_interject(
-				"atlas",
-				"Captain, I'm detecting active power signatures from the museum. Solar arrays functioning at 78% efficiency. Interior systems still operational. This facility has remarkable longevity—most pre-exodus infrastructure collapsed decades ago.",
-				{"stage": stage_id, "type": "technical_observation"}
+			_add_atlas_message(
+				"Captain, I'm detecting active power signatures from the museum. Solar arrays functioning at 78% efficiency. Interior systems still operational. This facility has remarkable longevity—most pre-exodus infrastructure collapsed decades ago."
 			)
 
 		"workshop_contested":
@@ -616,10 +706,8 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 				await get_tree().create_timer(1.5).timeout
 				if current_stage_id != stage_id:
 					return
-				AIPersonalityManager.ai_interject(
-					"atlas",
-					"Bioscan complete. Two humans, armed but showing non-aggressive postures. Plasma cutter: tool, not weapon. Sidearm: defensive carry. Heart rates elevated but not combat-ready. Probability of peaceful resolution: 67%.",
-					{"stage": stage_id, "type": "threat_assessment"}
+				_add_atlas_message(
+					"Bioscan complete. Two humans, armed but showing non-aggressive postures. Plasma cutter: tool, not weapon. Sidearm: defensive carry. Heart rates elevated but not combat-ready. Probability of peaceful resolution: 67%."
 				)
 
 		"workshop_informed":
@@ -628,10 +716,8 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 				await get_tree().create_timer(1.0).timeout
 				if current_stage_id != stage_id:
 					return
-				AIPersonalityManager.ai_interject(
-					"atlas",
-					"Security grid analysis: Pre-exodus museum automation, surprisingly intact. If you can access a maintenance terminal, I can interface with their systems. Service robots, door controls, possibly environmental systems. Recommend attempting computer access.",
-					{"stage": stage_id, "type": "technical_opportunity"}
+				_add_atlas_message(
+					"Security grid analysis: Pre-exodus museum automation, surprisingly intact. If you can access a maintenance terminal, I can interface with their systems. Service robots, door controls, possibly environmental systems. Recommend attempting computer access."
 				)
 
 		"workshop_open":
@@ -639,10 +725,8 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 			await get_tree().create_timer(2.5).timeout
 			if current_stage_id != stage_id:
 				return
-			AIPersonalityManager.ai_interject(
-				"atlas",
-				"Structural scan complete. Ship frame: titanium-aluminum alloy, stress fractures within acceptable parameters. Designed for light exploration. Hull hard points: 10 systems. Power routing: functional. This frame can support Level 3 systems across all categories. Your grandfather chose well.",
-				{"stage": stage_id, "type": "ship_analysis"}
+			_add_atlas_message(
+				"Structural scan complete. Ship frame: titanium-aluminum alloy, stress fractures within acceptable parameters. Designed for light exploration. Hull hard points: 10 systems. Power routing: functional. This frame can support Level 3 systems across all categories. Your grandfather chose well."
 			)
 
 		"workshop_claimed":
@@ -650,10 +734,8 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 			await get_tree().create_timer(2.0).timeout
 			if current_stage_id != stage_id:
 				return
-			AIPersonalityManager.ai_interject(
-				"atlas",
-				"All systems installed successfully. Hull: 50 HP nominal. Power core: 100 PU output steady. Propulsion: thrusters responsive. Computer core: ... that would be me. Welcome aboard, Captain. I've initialized ship protocols. We're ready for your first flight.",
-				{"stage": stage_id, "type": "systems_confirmation"}
+			_add_atlas_message(
+				"All systems installed successfully. Hull: 50 HP nominal. Power core: 100 PU output steady. Propulsion: thrusters responsive. Computer core: ... that would be me. Welcome aboard, Captain. I've initialized ship protocols. We're ready for your first flight."
 			)
 
 		"mission_complete":
@@ -661,74 +743,6 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 			await get_tree().create_timer(1.0).timeout
 			if current_stage_id != stage_id:
 				return
-			AIPersonalityManager.ai_interject(
-				"atlas",
-				"Mission complete, Captain. Your grandfather would be proud. Ship classification: Scout, Level 1. Current capabilities: limited. But every starship begins with a single flight. Where shall we go next?",
-				{"stage": stage_id, "type": "mission_complete"}
+			_add_atlas_message(
+				"Mission complete, Captain. Your grandfather would be proud. Ship classification: Scout, Level 1. Current capabilities: limited. But every starship begins with a single flight. Where shall we go next?"
 			)
-
-## AI Interjection Handlers
-
-func _on_ai_interjection_triggered(personality: String, message: String, context: Dictionary) -> void:
-	"""Handle AI personality interjection during mission"""
-
-	print("Mission: AI interjection from %s: %s" % [personality, message])
-
-	# Show the AI panel with interjection data
-	var interjection_data = {
-		"personality": personality,
-		"message": message,
-		"context": context
-	}
-
-	ai_panel.show_interjection(interjection_data)
-	ai_panel_visible = true
-
-	# Adjust narrative container to 50% width
-	_adjust_layout_for_ai_panel(true)
-
-func _on_ai_panel_dismissed() -> void:
-	"""Handle AI panel dismissal"""
-
-	print("Mission: AI panel dismissed")
-	ai_panel_visible = false
-
-	# Restore narrative container to full width
-	_adjust_layout_for_ai_panel(false)
-
-	# Transition back to NARRATIVE_FOCUS
-	AIPersonalityManager.transition_ui_state(AIPersonalityManager.UIState.NARRATIVE_FOCUS)
-
-func _on_ui_state_changed(new_state: int, old_state: int) -> void:
-	"""Handle UI state changes from AIPersonalityManager"""
-
-	print("Mission: UI state changed from %d to %d" % [old_state, new_state])
-
-	# Adjust layout based on new state
-	match new_state:
-		AIPersonalityManager.UIState.NARRATIVE_FOCUS:
-			_adjust_layout_for_ai_panel(false)
-
-		AIPersonalityManager.UIState.AI_INTERJECTION:
-			_adjust_layout_for_ai_panel(true)
-
-		_:
-			# Other states not yet implemented
-			pass
-
-func _adjust_layout_for_ai_panel(show_panel: bool) -> void:
-	"""Adjust the narrative container size to accommodate AI panel"""
-
-	var tween = create_tween()
-	tween.set_ease(Tween.EASE_IN_OUT)
-	tween.set_trans(Tween.TRANS_CUBIC)
-
-	if show_panel:
-		# Show AI panel and tween to 50% width using stretch_ratio
-		ai_panel.visible = true
-		tween.tween_property(ai_panel, "size_flags_stretch_ratio", 1.0, 0.4)
-	else:
-		# Shrink AI panel to 0% width, then hide
-		tween.tween_property(ai_panel, "size_flags_stretch_ratio", 0.0, 0.4)
-		await tween.finished
-		ai_panel.visible = false

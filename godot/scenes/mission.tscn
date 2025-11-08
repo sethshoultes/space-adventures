@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://c8j7nmr3qw2k5"]
+[gd_scene load_steps=2 format=3 uid="uid://c8j7nmr3qw2k5"]
 
 [ext_resource type="Script" path="res://scripts/ui/mission.gd" id="1_mission"]
-[ext_resource type="PackedScene" uid="uid://bx7k9qw3m8n1p" path="res://scenes/ai_panel.tscn" id="2_ai_panel"]
 
 [node name="Mission" type="Control"]
 layout_mode = 3
@@ -21,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.1, 0.1, 0.15, 1)
 
-[node name="MainLayout" type="HBoxContainer" parent="."]
+[node name="MainVBox" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -30,109 +29,241 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="NarrativeContainer" type="MarginContainer" parent="MainLayout"]
+[node name="TopPanels" type="HBoxContainer" parent="MainVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="NarrativeContainer" type="MarginContainer" parent="MainVBox/TopPanels"]
+custom_minimum_size = Vector2(800, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 1.0
-theme_override_constants/margin_left = 100
-theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 100
-theme_override_constants/margin_bottom = 50
+size_flags_stretch_ratio = 1.8
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainLayout/NarrativeContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/TopPanels/NarrativeContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 15
 
-[node name="Header" type="VBoxContainer" parent="MainLayout/NarrativeContainer/VBoxContainer"]
+[node name="Header" type="VBoxContainer" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="MissionTitle" type="Label" parent="MainLayout/NarrativeContainer/VBoxContainer/Header"]
+[node name="MissionTitle" type="Label" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Header"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 36
 text = "Mission Title"
 horizontal_alignment = 1
 
-[node name="Location" type="Label" parent="MainLayout/NarrativeContainer/VBoxContainer/Header"]
+[node name="Location" type="Label" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Header"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 18
 text = "Location"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="MainLayout/NarrativeContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="NarrativeScroll" type="ScrollContainer" parent="MainLayout/NarrativeContainer/VBoxContainer"]
+[node name="NarrativeScroll" type="ScrollContainer" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 follow_focus = true
 scroll_horizontal_enabled = false
 
-[node name="NarrativeLog" type="VBoxContainer" parent="MainLayout/NarrativeContainer/VBoxContainer/NarrativeScroll"]
+[node name="NarrativeLog" type="VBoxContainer" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/NarrativeScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 30
+theme_override_constants/separation = 25
 
-[node name="HSeparator2" type="HSeparator" parent="MainLayout/NarrativeContainer/VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="ChoicesLabel" type="Label" parent="MainLayout/NarrativeContainer/VBoxContainer"]
+[node name="ChoicesLabel" type="Label" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 22
 text = "What do you do?"
 
-[node name="Choices" type="VBoxContainer" parent="MainLayout/NarrativeContainer/VBoxContainer"]
+[node name="Choices" type="VBoxContainer" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Choice1" type="Button" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Choice 1"
+
+[node name="Choice2" type="Button" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Choice 2"
+
+[node name="Choice3" type="Button" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Choice 3"
+
+[node name="Choice4" type="Button" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Choice 4"
+
+[node name="HSeparator3" type="HSeparator" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Actions" type="HBoxContainer" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Spacer" type="Control" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ExitButton" type="Button" parent="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Actions"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Exit Mission"
+
+[node name="RightPanels" type="VBoxContainer" parent="MainVBox/TopPanels"]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.0
+theme_override_constants/separation = 0
+
+[node name="SceneImagePanel" type="PanelContainer" parent="MainVBox/TopPanels/RightPanels"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.5
+
+[node name="MarginContainer" type="MarginContainer" parent="MainVBox/TopPanels/RightPanels/SceneImagePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/TopPanels/RightPanels/SceneImagePanel/MarginContainer"]
+layout_mode = 2
+
+[node name="SceneImage" type="TextureRect" parent="MainVBox/TopPanels/RightPanels/SceneImagePanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlaceholderLabel" type="Label" parent="MainVBox/TopPanels/RightPanels/SceneImagePanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Scene Image
+(Location Art)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ATLASChatPanel" type="PanelContainer" parent="MainVBox/TopPanels/RightPanels"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.0
+
+[node name="MarginContainer" type="MarginContainer" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Choice1" type="Button" parent="MainLayout/NarrativeContainer/VBoxContainer/Choices"]
+[node name="Avatar" type="TextureRect" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/Header"]
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Choice 1"
+expand_mode = 1
+stretch_mode = 5
 
-[node name="Choice2" type="Button" parent="MainLayout/NarrativeContainer/VBoxContainer/Choices"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Choice 2"
-
-[node name="Choice3" type="Button" parent="MainLayout/NarrativeContainer/VBoxContainer/Choices"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Choice 3"
-
-[node name="Choice4" type="Button" parent="MainLayout/NarrativeContainer/VBoxContainer/Choices"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Choice 4"
-
-[node name="HSeparator3" type="HSeparator" parent="MainLayout/NarrativeContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Actions" type="HBoxContainer" parent="MainLayout/NarrativeContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="Spacer" type="Control" parent="MainLayout/NarrativeContainer/VBoxContainer/Actions"]
+[node name="ATLASLabel" type="Label" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="ExitButton" type="Button" parent="MainLayout/NarrativeContainer/VBoxContainer/Actions"]
-layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.8, 1, 1)
 theme_override_font_sizes/font_size = 20
-text = "Exit Mission"
+text = "ATLAS"
+vertical_alignment = 1
 
-[node name="AIInterjectionPanel" parent="MainLayout" instance=ExtResource("2_ai_panel")]
-visible = false
-custom_minimum_size = Vector2(0, 0)
+[node name="HSeparator" type="HSeparator" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ChatScroll" type="ScrollContainer" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+scroll_horizontal_enabled = false
+
+[node name="ChatHistory" type="VBoxContainer" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/ChatScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.0
+theme_override_constants/separation = 12
 
-[connection signal="pressed" from="MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice1" to="." method="_on_choice_pressed" binds= [0]]
-[connection signal="pressed" from="MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice2" to="." method="_on_choice_pressed" binds= [1]]
-[connection signal="pressed" from="MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice3" to="." method="_on_choice_pressed" binds= [2]]
-[connection signal="pressed" from="MainLayout/NarrativeContainer/VBoxContainer/Choices/Choice4" to="." method="_on_choice_pressed" binds= [3]]
-[connection signal="pressed" from="MainLayout/NarrativeContainer/VBoxContainer/Actions/ExitButton" to="." method="_on_exit_pressed"]
-[connection signal="dismissed" from="MainLayout/AIInterjectionPanel" to="." method="_on_ai_panel_dismissed"]
+[node name="ATLASTextInput" type="PanelContainer" parent="MainVBox"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MainVBox/ATLASTextInput"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainVBox/ATLASTextInput/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="InputField" type="LineEdit" parent="MainVBox/ATLASTextInput/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+placeholder_text = "Ask ATLAS a question..."
+
+[node name="SendButton" type="Button" parent="MainVBox/ATLASTextInput/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Send"
+
+[node name="StatusTicker" type="PanelContainer" parent="MainVBox"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MainVBox/StatusTicker"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainVBox/StatusTicker/MarginContainer"]
+layout_mode = 2
+scroll_vertical_enabled = false
+
+[node name="StatusLabel" type="Label" parent="MainVBox/StatusTicker/MarginContainer/ScrollContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Credits: 0 CR | Hull: 100/100 | Location: Workshop | Mission: None | Status: Ready"
+vertical_alignment = 1
+
+[connection signal="pressed" from="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices/Choice1" to="." method="_on_choice_pressed" binds= [0]]
+[connection signal="pressed" from="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices/Choice2" to="." method="_on_choice_pressed" binds= [1]]
+[connection signal="pressed" from="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices/Choice3" to="." method="_on_choice_pressed" binds= [2]]
+[connection signal="pressed" from="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices/Choice4" to="." method="_on_choice_pressed" binds= [3]]
+[connection signal="pressed" from="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Actions/ExitButton" to="." method="_on_exit_pressed"]
+[connection signal="text_submitted" from="MainVBox/ATLASTextInput/MarginContainer/HBoxContainer/InputField" to="." method="_on_atlas_input_submitted"]
+[connection signal="pressed" from="MainVBox/ATLASTextInput/MarginContainer/HBoxContainer/SendButton" to="." method="_on_atlas_send_pressed"]
