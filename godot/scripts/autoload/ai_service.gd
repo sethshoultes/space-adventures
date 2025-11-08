@@ -110,6 +110,199 @@ func generate_dialogue(
 	return result
 
 # ============================================================================
+# AI ORCHESTRATOR (Multi-Agent System)
+# ============================================================================
+
+## Chat with a specific AI agent
+## agent_name: "atlas", "storyteller", "tactical", or "companion"
+## conversation_id: Optional conversation ID for persistence (generated if not provided)
+func chat_with_agent(
+	agent_name: String,
+	message: String,
+	conversation_id: String = "",
+	include_functions: bool = true
+) -> Dictionary:
+	if not ServiceManager.is_service_available("ai"):
+		return _error_response("AI service unavailable")
+
+	var url = AI_SERVICE_URL + "/api/orchestrator/chat"
+
+	# Generate conversation ID if not provided
+	if conversation_id == "":
+		conversation_id = "conv_%s_%d" % [agent_name, Time.get_unix_time_from_system()]
+
+	var request_body = {
+		"agent": agent_name,
+		"message": message,
+		"conversation_id": conversation_id,
+		"include_functions": include_functions,
+		"game_state": _prepare_game_state()
+	}
+
+	var result = await _make_post_request(url, request_body)
+
+	# Emit events if successful
+	if result.success and result.data.has("response"):
+		EventBus.chat_message_sent.emit(message, agent_name)
+		EventBus.chat_message_received.emit(
+			agent_name,
+			result.data.response,
+			result.data
+		)
+
+	return result
+
+## Intelligently route a message to the most appropriate agent
+## The orchestrator will analyze the message and select the best agent
+func route_message(
+	message: String,
+	conversation_id: String = ""
+) -> Dictionary:
+	if not ServiceManager.is_service_available("ai"):
+		return _error_response("AI service unavailable")
+
+	var url = AI_SERVICE_URL + "/api/orchestrator/route"
+
+	# Generate conversation ID if not provided
+	if conversation_id == "":
+		conversation_id = "conv_routed_%d" % Time.get_unix_time_from_system()
+
+	var request_body = {
+		"message": message,
+		"conversation_id": conversation_id,
+		"game_state": _prepare_game_state()
+	}
+
+	var result = await _make_post_request(url, request_body)
+
+	# Emit events if successful
+	if result.success and result.data.has("response"):
+		var agent = result.data.get("agent", "unknown")
+		EventBus.chat_message_sent.emit(message, agent)
+		EventBus.chat_message_received.emit(
+			agent,
+			result.data.response,
+			result.data
+		)
+
+	return result
+
+## Hand off conversation from one agent to another
+## Preserves context during the transfer
+func handoff_conversation(
+	from_agent: String,
+	to_agent: String,
+	context: String,
+	conversation_id: String = ""
+) -> Dictionary:
+	if not ServiceManager.is_service_available("ai"):
+		return _error_response("AI service unavailable")
+
+	var url = AI_SERVICE_URL + "/api/orchestrator/handoff"
+
+	# Generate conversation ID if not provided
+	if conversation_id == "":
+		conversation_id = "conv_handoff_%d" % Time.get_unix_time_from_system()
+
+	var request_body = {
+		"from_agent": from_agent,
+		"to_agent": to_agent,
+		"context": context,
+		"conversation_id": conversation_id
+	}
+
+	var result = await _make_post_request(url, request_body)
+
+	# Emit events if successful
+	if result.success and result.data.has("response"):
+		EventBus.chat_message_received.emit(
+			to_agent,
+			result.data.response,
+			result.data
+		)
+
+	return result
+
+## Get list of available AI agents
+func list_agents() -> Dictionary:
+	if not ServiceManager.is_service_available("ai"):
+		return _error_response("AI service unavailable")
+
+	var url = AI_SERVICE_URL + "/api/orchestrator/agents"
+
+	var http = _get_available_http_request()
+	if http == null:
+		return _error_response("No available HTTP request slots")
+
+	var error = http.request(url, [], HTTPClient.METHOD_GET)
+	if error != OK:
+		return _error_response("Failed to send request: " + str(error))
+
+	var response = await http.request_completed
+	return _parse_response(response)
+
+## Get conversation history for a specific agent
+func get_conversation_history(agent_name: String) -> Dictionary:
+	if not ServiceManager.is_service_available("ai"):
+		return _error_response("AI service unavailable")
+
+	var url = AI_SERVICE_URL + "/api/orchestrator/history/" + agent_name
+
+	var http = _get_available_http_request()
+	if http == null:
+		return _error_response("No available HTTP request slots")
+
+	var error = http.request(url, [], HTTPClient.METHOD_GET)
+	if error != OK:
+		return _error_response("Failed to send request: " + str(error))
+
+	var response = await http.request_completed
+	return _parse_response(response)
+
+## Clear conversation history (optionally for specific agent)
+func clear_conversation_history(agent_name: String = "") -> Dictionary:
+	if not ServiceManager.is_service_available("ai"):
+		return _error_response("AI service unavailable")
+
+	var url = AI_SERVICE_URL + "/api/orchestrator/history"
+
+	var request_body = {}
+	if agent_name != "":
+		request_body["agent"] = agent_name
+
+	var http = _get_available_http_request()
+	if http == null:
+		return _error_response("No available HTTP request slots")
+
+	var headers = ["Content-Type: application/json"]
+	var json_body = JSON.stringify(request_body)
+
+	var error = http.request(url, headers, HTTPClient.METHOD_DELETE, json_body)
+	if error != OK:
+		return _error_response("Failed to send request: " + str(error))
+
+	var response = await http.request_completed
+	return _parse_response(response)
+
+## Get orchestrator health status
+func get_orchestrator_health() -> Dictionary:
+	if not ServiceManager.is_service_available("ai"):
+		return _error_response("AI service unavailable")
+
+	var url = AI_SERVICE_URL + "/api/orchestrator/health"
+
+	var http = _get_available_http_request()
+	if http == null:
+		return _error_response("No available HTTP request slots")
+
+	var error = http.request(url, [], HTTPClient.METHOD_GET)
+	if error != OK:
+		return _error_response("Failed to send request: " + str(error))
+
+	var response = await http.request_completed
+	return _parse_response(response)
+
+# ============================================================================
 # SPONTANEOUS EVENTS
 # ============================================================================
 

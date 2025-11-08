@@ -347,8 +347,8 @@ theme_override_font_sizes/font_size = 14
 text = "SHOP"
 
 [node name="ActionsPanel" type="PanelContainer" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn"]
+custom_minimum_size = Vector2(0, 230)
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel"]
 layout_mode = 2
@@ -366,28 +366,98 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "ACTIONS"
 
-[node name="Spacer" type="Control" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel/MarginContainer/VBox"]
-layout_mode = 2
-size_flags_vertical = 3
-
 [node name="LaunchMissionsButton" type="Button" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel/MarginContainer/VBox"]
-custom_minimum_size = Vector2(0, 55)
+custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 text = "LAUNCH MISSIONS"
 
 [node name="ManageCrewButton" type="Button" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel/MarginContainer/VBox"]
-custom_minimum_size = Vector2(0, 55)
+custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 disabled = true
 text = "MANAGE CREW"
 
 [node name="ShipyardButton" type="Button" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel/MarginContainer/VBox"]
-custom_minimum_size = Vector2(0, 55)
+custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 text = "SHIPYARD"
+
+[node name="AIChatPanel" type="PanelContainer" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderHBox" type="HBoxContainer" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TitleLabel" type="Label" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/HeaderHBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "AI ASSISTANT"
+
+[node name="AgentSelector" type="OptionButton" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/HeaderHBox"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 13
+selected = 0
+item_count = 4
+popup/item_0/text = "ATLAS"
+popup/item_0/id = 0
+popup/item_1/text = "Storyteller"
+popup/item_1/id = 1
+popup/item_2/text = "Tactical"
+popup/item_2/id = 2
+popup/item_3/text = "Companion"
+popup/item_3/id = 3
+
+[node name="ChatHistory" type="ScrollContainer" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+
+[node name="MessagesVBox" type="VBoxContainer" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/ChatHistory"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="InputHBox" type="HBoxContainer" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MessageInput" type="LineEdit" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/InputHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+placeholder_text = "Ask ATLAS..."
+caret_blink = true
+
+[node name="SendButton" type="Button" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/InputHBox"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+disabled = true
+text = "SEND"
+
+[node name="StatusLabel" type="Label" parent="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Ready"
+horizontal_alignment = 1
 
 [node name="BottomPanel" type="PanelContainer" parent="MainContainer/ContentVBox"]
 custom_minimum_size = Vector2(0, 55)
@@ -431,6 +501,10 @@ text = "MAIN MENU"
 [connection signal="pressed" from="MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel/MarginContainer/VBox/LaunchMissionsButton" to="." method="_on_launch_missions_pressed"]
 [connection signal="pressed" from="MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel/MarginContainer/VBox/ManageCrewButton" to="." method="_on_manage_crew_pressed"]
 [connection signal="pressed" from="MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel/MarginContainer/VBox/ShipyardButton" to="." method="_on_shipyard_pressed"]
+[connection signal="item_selected" from="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/HeaderHBox/AgentSelector" to="." method="_on_agent_selected"]
+[connection signal="text_changed" from="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/InputHBox/MessageInput" to="." method="_on_message_input_changed"]
+[connection signal="text_submitted" from="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/InputHBox/MessageInput" to="." method="_on_message_submitted"]
+[connection signal="pressed" from="MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/InputHBox/SendButton" to="." method="_on_send_message_pressed"]
 [connection signal="pressed" from="MainContainer/ContentVBox/BottomPanel/MarginContainer/ButtonsHBox/SaveButton" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="MainContainer/ContentVBox/BottomPanel/MarginContainer/ButtonsHBox/SettingsButton" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="MainContainer/ContentVBox/BottomPanel/MarginContainer/ButtonsHBox/MainMenuButton" to="." method="_on_main_menu_pressed"]

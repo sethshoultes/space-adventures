@@ -88,6 +88,23 @@ const SYSTEM_DISPLAY_NAMES = {
 @onready var upgrades_list: VBoxContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/UpgradesPanel/MarginContainer/VBox/UpgradesList
 @onready var manage_crew_button: Button = $MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel/MarginContainer/VBox/ManageCrewButton
 
+# AI Chat Panel
+@onready var ai_chat_panel: PanelContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel
+@onready var agent_selector: OptionButton = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/HeaderHBox/AgentSelector
+@onready var chat_history: ScrollContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/ChatHistory
+@onready var messages_vbox: VBoxContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/ChatHistory/MessagesVBox
+@onready var message_input: LineEdit = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/InputHBox/MessageInput
+@onready var send_button: Button = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/InputHBox/SendButton
+@onready var status_label: Label = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/StatusLabel
+
+# AI Chat State
+var current_agent: String = "atlas"
+var conversation_id: String = ""
+var is_sending: bool = false
+
+# Agent names map
+const AGENT_NAMES = ["atlas", "storyteller", "tactical", "companion"]
+
 # Schematic system dots (created dynamically)
 var system_dots: Dictionary = {}
 
@@ -106,6 +123,9 @@ func _ready() -> void:
 
 	# Connect to EventBus signals
 	_connect_signals()
+
+	# Initialize AI chat
+	_initialize_ai_chat()
 
 	# Initial UI update
 	_update_all_displays()
@@ -145,6 +165,7 @@ func _apply_color_theme() -> void:
 	_apply_panel_style(inventory_panel, Color(0.08, 0.1, 0.13, 0.7))
 	_apply_panel_style(upgrades_panel, Color(0.08, 0.1, 0.13, 0.7))
 	_apply_panel_style(actions_panel, Color(0.08, 0.1, 0.13, 0.7))
+	_apply_panel_style(ai_chat_panel, Color(0.08, 0.1, 0.13, 0.7))
 	_apply_panel_style(bottom_panel, Color(0.1, 0.12, 0.15, 0.75))
 
 func _apply_panel_style(panel: PanelContainer, bg_color: Color) -> void:
@@ -835,3 +856,142 @@ func _on_inventory_changed(_item: Dictionary) -> void:
 	_update_inventory()
 	_update_upgrades()
 	_update_systems_grid()  # Refresh upgrade availability
+
+# ============================================================================
+# AI CHAT SYSTEM
+# ============================================================================
+
+func _initialize_ai_chat() -> void:
+	"""Initialize AI chat panel"""
+	# Generate conversation ID
+	conversation_id = "workshop_%d" % Time.get_unix_time_from_system()
+
+	# Set initial agent
+	current_agent = "atlas"
+	agent_selector.selected = 0
+
+	# Update placeholder text
+	_update_chat_placeholder()
+
+	# Add welcome message
+	_add_chat_message("System", "AI Assistant ready. Select an agent and start chatting!", COLOR_CYAN)
+
+	print("AI Chat initialized with conversation ID: %s" % conversation_id)
+
+func _update_chat_placeholder() -> void:
+	"""Update message input placeholder based on selected agent"""
+	match current_agent:
+		"atlas":
+			message_input.placeholder_text = "Ask ATLAS about ship systems..."
+		"storyteller":
+			message_input.placeholder_text = "Ask Storyteller about missions..."
+		"tactical":
+			message_input.placeholder_text = "Ask Tactical for combat advice..."
+		"companion":
+			message_input.placeholder_text = "Chat with your Companion..."
+
+func _add_chat_message(sender: String, text: String, color: Color = COLOR_WHITE) -> void:
+	"""Add a message to the chat history"""
+	var message_container = VBoxContainer.new()
+	message_container.add_theme_constant_override("separation", 5)
+
+	# Sender label
+	var sender_label = Label.new()
+	sender_label.text = sender + ":"
+	sender_label.add_theme_font_size_override("font_size", 12)
+	sender_label.add_theme_color_override("font_color", color)
+	message_container.add_child(sender_label)
+
+	# Message label with word wrap
+	var message_label = Label.new()
+	message_label.text = text
+	message_label.add_theme_font_size_override("font_size", 14)
+	message_label.add_theme_color_override("font_color", COLOR_WHITE)
+	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	message_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	message_container.add_child(message_label)
+
+	# Add to messages
+	messages_vbox.add_child(message_container)
+
+	# Scroll to bottom (wait one frame for layout)
+	await get_tree().process_frame
+	chat_history.scroll_vertical = int(chat_history.get_v_scroll_bar().max_value)
+
+func _set_chat_status(text: String, color: Color = COLOR_WHITE) -> void:
+	"""Update chat status label"""
+	status_label.text = text
+	status_label.add_theme_color_override("font_color", color)
+
+func _on_agent_selected(index: int) -> void:
+	"""Handle agent selection changed"""
+	if index >= 0 and index < AGENT_NAMES.size():
+		current_agent = AGENT_NAMES[index]
+		_update_chat_placeholder()
+		print("Selected agent: %s" % current_agent)
+
+func _on_message_input_changed(new_text: String) -> void:
+	"""Handle message input text changed"""
+	send_button.disabled = new_text.strip_edges().is_empty() or is_sending
+
+func _on_message_submitted(_new_text: String) -> void:
+	"""Handle Enter key pressed in message input"""
+	if not is_sending and not message_input.text.strip_edges().is_empty():
+		_send_chat_message()
+
+func _on_send_message_pressed() -> void:
+	"""Handle send button clicked"""
+	_send_chat_message()
+
+func _send_chat_message() -> void:
+	"""Send message to AI orchestrator"""
+	var message = message_input.text.strip_edges()
+
+	if message.is_empty() or is_sending:
+		return
+
+	# Clear input
+	message_input.text = ""
+	send_button.disabled = true
+	is_sending = true
+
+	# Add user message to chat
+	_add_chat_message("You", message, COLOR_CYAN)
+	_set_chat_status("Sending...", COLOR_YELLOW)
+
+	print("Sending message to %s: %s" % [current_agent, message])
+
+	# Send to AI service
+	var result = await AIService.chat_with_agent(
+		current_agent,
+		message,
+		conversation_id,
+		true  # include_functions
+	)
+
+	# Handle response
+	is_sending = false
+
+	if result.success and result.data.has("response"):
+		var response = result.data.response
+		var agent_display = current_agent.capitalize()
+
+		# Add AI response
+		_add_chat_message(agent_display, response, COLOR_GREEN)
+		_set_chat_status("Ready", COLOR_GREEN)
+
+		# Check for function calls
+		if result.data.has("function_call"):
+			var func_call = result.data.function_call
+			var func_name = func_call.get("name", "unknown")
+			_add_chat_message("System", "Executed function: %s" % func_name, COLOR_YELLOW)
+
+		print("Received response from %s (%d chars)" % [current_agent, response.length()])
+	else:
+		var error = result.get("error", "Unknown error")
+		_add_chat_message("Error", error, COLOR_RED)
+		_set_chat_status("Error", COLOR_RED)
+		print("Error from AI service: %s" % error)
+
+	# Re-enable send button if input has text
+	_on_message_input_changed(message_input.text)
