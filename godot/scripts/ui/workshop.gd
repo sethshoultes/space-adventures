@@ -799,10 +799,9 @@ func _on_save_pressed() -> void:
 		EventBus.notify("Failed to save game", "error")
 
 func _on_settings_pressed() -> void:
-	"""Open settings"""
+	"""Open settings dialog"""
 	print("Settings pressed")
-	# TODO: Open settings menu
-	EventBus.notify("Settings - Coming soon!")
+	_show_settings_dialog()
 
 func _on_main_menu_pressed() -> void:
 	"""Return to main menu"""
@@ -870,6 +869,16 @@ func _initialize_ai_chat() -> void:
 	current_agent = "atlas"
 	agent_selector.selected = 0
 
+	# Add clear history button to header
+	var header_hbox = agent_selector.get_parent()
+	var clear_button = Button.new()
+	clear_button.text = "Clear"
+	clear_button.custom_minimum_size = Vector2(60, 0)
+	clear_button.tooltip_text = "Clear conversation history"
+	clear_button.pressed.connect(_on_clear_history_pressed)
+	header_hbox.add_child(clear_button)
+	header_hbox.move_child(clear_button, header_hbox.get_child_count() - 1)
+
 	# Connect signals
 	send_button.pressed.connect(_on_send_message_pressed)
 	message_input.text_submitted.connect(_on_message_submitted)
@@ -879,8 +888,8 @@ func _initialize_ai_chat() -> void:
 	# Update placeholder text
 	_update_chat_placeholder()
 
-	# Add welcome message
-	_add_chat_message("System", "AI Assistant ready. Select an agent and start chatting!", COLOR_CYAN)
+	# Load conversation history
+	await _load_conversation_history()
 
 	print("AI Chat initialized with conversation ID: %s" % conversation_id)
 
@@ -1001,3 +1010,213 @@ func _send_chat_message() -> void:
 
 	# Re-enable send button if input has text
 	_on_message_input_changed(message_input.text)
+
+func _load_conversation_history() -> void:
+	"""Load and display conversation history from backend"""
+	print("Loading conversation history for agent: %s" % current_agent)
+
+	var result = await AIService.get_conversation_history(current_agent)
+
+	if result.success and result.data.has("messages"):
+		var messages = result.data.messages
+		var message_count = messages.size()
+
+		if message_count > 0:
+			print("Loaded %d messages from history" % message_count)
+
+			# Limit to last 50 messages
+			var start_index = max(0, message_count - 50)
+
+			for i in range(start_index, message_count):
+				var msg = messages[i]
+				var role = msg.get("role", "")
+				var content = msg.get("content", "")
+
+				# Determine sender and color
+				var sender: String
+				var color: Color
+
+				if role == "user":
+					sender = "You"
+					color = COLOR_CYAN
+				elif role == "assistant":
+					sender = current_agent.capitalize()
+					color = COLOR_GREEN
+				elif role == "system":
+					sender = "System"
+					color = COLOR_YELLOW
+				else:
+					sender = role.capitalize()
+					color = COLOR_WHITE
+
+				# Add message to display
+				_add_chat_message(sender, content, color)
+
+			# Add separator
+			_add_chat_message("System", "--- Previous conversation loaded ---", Color(0.5, 0.5, 0.5))
+		else:
+			# No history - show welcome message
+			_add_chat_message("System", "AI Assistant ready. Select an agent and start chatting!", COLOR_CYAN)
+	else:
+		# Error or no history - show welcome message
+		_add_chat_message("System", "AI Assistant ready. Select an agent and start chatting!", COLOR_CYAN)
+		if result.has("error"):
+			print("Error loading history: %s" % result.error)
+
+func _clear_conversation_history() -> void:
+	"""Clear conversation history for current agent"""
+	print("Clearing conversation history for agent: %s" % current_agent)
+
+	var result = await AIService.clear_conversation_history(current_agent)
+
+	if result.success:
+		# Clear UI
+		for child in messages_vbox.get_children():
+			child.queue_free()
+
+		# Add confirmation message
+		_add_chat_message("System", "Conversation history cleared.", COLOR_YELLOW)
+		_set_chat_status("History cleared", COLOR_GREEN)
+
+		print("History cleared successfully")
+	else:
+		var error = result.get("error", "Unknown error")
+		_add_chat_message("Error", "Failed to clear history: %s" % error, COLOR_RED)
+		_set_chat_status("Error", COLOR_RED)
+		print("Error clearing history: %s" % error)
+
+func _on_clear_history_pressed() -> void:
+	"""Handle clear history button pressed"""
+	# Confirm before clearing
+	var confirm_dialog = ConfirmationDialog.new()
+	confirm_dialog.dialog_text = "Clear all conversation history for %s?" % current_agent.capitalize()
+	confirm_dialog.ok_button_text = "Clear"
+	confirm_dialog.cancel_button_text = "Cancel"
+
+	# Add to scene temporarily
+	add_child(confirm_dialog)
+
+	# Connect signals
+	confirm_dialog.confirmed.connect(func():
+		_clear_conversation_history()
+		confirm_dialog.queue_free()
+	)
+	confirm_dialog.canceled.connect(func():
+		confirm_dialog.queue_free()
+	)
+
+	# Show dialog
+	confirm_dialog.popup_centered()
+
+# ============================================================================
+# SETTINGS DIALOG
+# ============================================================================
+
+func _show_settings_dialog() -> void:
+	"""Show settings popup dialog"""
+	# Create dialog
+	var dialog = AcceptDialog.new()
+	dialog.title = "Workshop Settings"
+	dialog.dialog_text = ""  # We'll add custom content
+	dialog.min_size = Vector2(400, 300)
+
+	# Create content container
+	var vbox = VBoxContainer.new()
+	vbox.custom_minimum_size = Vector2(380, 250)
+
+	# Add sections
+	_add_settings_header(vbox, "AI Chat Settings")
+
+	# Auto-scroll messages
+	var auto_scroll_check = CheckBox.new()
+	auto_scroll_check.text = "Auto-scroll to new messages"
+	auto_scroll_check.button_pressed = true  # Default enabled
+	vbox.add_child(auto_scroll_check)
+
+	# Show timestamps
+	var timestamps_check = CheckBox.new()
+	timestamps_check.text = "Show message timestamps"
+	timestamps_check.button_pressed = false  # Default disabled
+	vbox.add_child(timestamps_check)
+
+	# Spacer
+	vbox.add_child(Control.new())
+
+	# Response verbosity
+	_add_settings_header(vbox, "AI Response Style")
+
+	var verbosity_label = Label.new()
+	verbosity_label.text = "Response Length:"
+	vbox.add_child(verbosity_label)
+
+	var verbosity_slider = HSlider.new()
+	verbosity_slider.min_value = 0
+	verbosity_slider.max_value = 2
+	verbosity_slider.step = 1
+	verbosity_slider.value = 1  # Default: Medium
+	verbosity_slider.tick_count = 3
+	verbosity_slider.ticks_on_borders = true
+	vbox.add_child(verbosity_slider)
+
+	var verbosity_value_label = Label.new()
+	verbosity_value_label.text = "Medium"
+	verbosity_value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(verbosity_value_label)
+
+	# Update label when slider changes
+	verbosity_slider.value_changed.connect(func(value: float):
+		match int(value):
+			0: verbosity_value_label.text = "Concise"
+			1: verbosity_value_label.text = "Medium"
+			2: verbosity_value_label.text = "Detailed"
+	)
+
+	# Spacer
+	vbox.add_child(Control.new())
+
+	# AI Service info
+	_add_settings_header(vbox, "Service Status")
+
+	var service_status = Label.new()
+	if ServiceManager.is_service_available("ai"):
+		service_status.text = "✓ AI Service: Online"
+		service_status.add_theme_color_override("font_color", COLOR_GREEN)
+	else:
+		service_status.text = "✗ AI Service: Offline"
+		service_status.add_theme_color_override("font_color", COLOR_RED)
+	vbox.add_child(service_status)
+
+	# Add content to dialog
+	dialog.add_child(vbox)
+	add_child(dialog)
+
+	# Handle close
+	dialog.confirmed.connect(func():
+		print("Settings saved (verbosity: %d)" % int(verbosity_slider.value))
+		# TODO: Save settings to config file
+		dialog.queue_free()
+	)
+	dialog.canceled.connect(func():
+		dialog.queue_free()
+	)
+
+	# Show dialog
+	dialog.popup_centered()
+
+func _add_settings_header(container: VBoxContainer, text: String) -> void:
+	"""Add a section header to settings"""
+	var label = Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", 16)
+	label.add_theme_color_override("font_color", COLOR_CYAN)
+	container.add_child(label)
+
+	# Add separator line
+	var separator = HSeparator.new()
+	separator.custom_minimum_size.y = 2
+	container.add_child(separator)
+
+	# Add spacing
+	var spacer = Control.new()
+	spacer.custom_minimum_size.y = 5
+	container.add_child(spacer)
