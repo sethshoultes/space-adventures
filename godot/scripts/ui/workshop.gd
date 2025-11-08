@@ -870,6 +870,12 @@ func _initialize_ai_chat() -> void:
 	current_agent = "atlas"
 	agent_selector.selected = 0
 
+	# Connect signals
+	send_button.pressed.connect(_on_send_message_pressed)
+	message_input.text_submitted.connect(_on_message_submitted)
+	message_input.text_changed.connect(_on_message_input_changed)
+	agent_selector.item_selected.connect(_on_agent_selected)
+
 	# Update placeholder text
 	_update_chat_placeholder()
 
