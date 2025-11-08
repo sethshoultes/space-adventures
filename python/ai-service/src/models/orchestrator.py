@@ -152,3 +152,73 @@ class ClearHistoryResponse(BaseModel):
     success: bool = Field(..., description="Whether the request was successful")
     message: str = Field(..., description="Success message")
     agent: Optional[str] = Field(None, description="Agent cleared (if specific)")
+
+
+class UrgencyLevel(str, Enum):
+    """Urgency levels for agent messages"""
+    INFO = "INFO"
+    MEDIUM = "MEDIUM"
+    URGENT = "URGENT"
+    CRITICAL = "CRITICAL"
+
+
+class AgentLoopRequest(BaseModel):
+    """Request model for agent loop endpoint"""
+    agent: str = Field(..., description="Name of the agent to check (e.g., 'atlas')")
+    game_state: Dict[str, Any] = Field(..., description="Current game state for agent to analyze")
+    force_check: bool = Field(False, description="Override throttling for testing")
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "agent": "atlas",
+                    "game_state": {
+                        "player": {"level": 3, "rank": "Lieutenant"},
+                        "ship": {"hull_hp": 45, "max_hull_hp": 100, "power": 80},
+                        "mission": {"title": "Cargo Escort", "stage": "route_planning"},
+                        "environment": {"location": "Gamma Route", "threats": []}
+                    },
+                    "force_check": False
+                }
+            ]
+        }
+    }
+
+
+class AgentLoopResponse(BaseModel):
+    """Response model for agent loop endpoint"""
+    success: bool = Field(..., description="Whether the check was successful")
+    data: Optional[Dict[str, Any]] = Field(None, description="Agent response data if successful")
+    error: Optional[str] = Field(None, description="Error message if failed")
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "success": True,
+                    "data": {
+                        "should_act": True,
+                        "message": "Captain, hull integrity at 45%. Micrometeorite impacts detected...",
+                        "urgency": "MEDIUM",
+                        "tools_used": ["get_system_status"],
+                        "reasoning": "Hull below 50% threshold",
+                        "next_check_in": 45
+                    }
+                },
+                {
+                    "success": True,
+                    "data": {
+                        "should_act": False,
+                        "message": None,
+                        "reasoning": "All systems nominal, no changes since last check",
+                        "next_check_in": 60
+                    }
+                },
+                {
+                    "success": False,
+                    "error": "Agent error: LLM timeout"
+                }
+            ]
+        }
+    }

@@ -28,7 +28,9 @@ from ..models.orchestrator import (
     ConversationHistoryResponse,
     ConversationMessage,
     ClearHistoryRequest,
-    ClearHistoryResponse
+    ClearHistoryResponse,
+    AgentLoopRequest,
+    AgentLoopResponse
 )
 from ..orchestrator import get_orchestrator
 
@@ -370,6 +372,110 @@ async def health_check() -> HealthCheckResponse:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Internal error: {str(e)}"
+        )
+
+
+@router.post("/agent_loop", response_model=AgentLoopResponse)
+async def agent_loop_check(request: AgentLoopRequest) -> AgentLoopResponse:
+    """
+    Agent Loop - Autonomous agent periodic check
+
+    This endpoint is called periodically (every 45-60s) by the Godot client
+    to allow autonomous agents to monitor game state and provide proactive
+    interjections.
+
+    The agent will:
+    1. Observe the current game state
+    2. Reason whether intervention is needed
+    3. Act (run tools if necessary)
+    4. Reflect on importance
+    5. Communicate (generate message or stay silent)
+
+    Args:
+        request: Agent name, game state, and options
+
+    Returns:
+        Agent decision (should_act, message, urgency, etc.) or silent response
+
+    Raises:
+        HTTPException: If agent is unknown or check fails
+    """
+    try:
+        logger.info(f"Agent loop check for {request.agent}")
+
+        # Validate agent name
+        from ..orchestrator.agents import is_valid_agent
+        if not is_valid_agent(request.agent):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Unknown agent: {request.agent}. Valid agents: atlas, storyteller, tactical, companion"
+            )
+
+        # Get orchestrator with game state context
+        orchestrator = get_orchestrator(game_state=request.game_state)
+
+        # For Phase 1, we only support ATLAS
+        if request.agent != "atlas":
+            logger.warning(f"Agent {request.agent} not yet implemented, returning silent response")
+            return AgentLoopResponse(
+                success=True,
+                data={
+                    "should_act": False,
+                    "message": None,
+                    "reasoning": f"Agent {request.agent} not yet implemented (Phase 2)",
+                    "next_check_in": 60
+                }
+            )
+
+        # TODO: Implement actual agent loop logic
+        # For now, return a placeholder response
+        # This will be replaced with actual LangGraph ReAct loop implementation
+
+        # Check throttling (unless force_check is True)
+        if not request.force_check:
+            # TODO: Implement Redis-based throttling check
+            # Check if agent sent message in last 60 seconds
+            # Check if hourly rate limit exceeded
+            pass
+
+        # Placeholder: Analyze game state
+        hull_hp = request.game_state.get("ship", {}).get("hull_hp", 100)
+        max_hull_hp = request.game_state.get("ship", {}).get("max_hull_hp", 100)
+        hull_percentage = (hull_hp / max_hull_hp * 100) if max_hull_hp > 0 else 100
+
+        # Simple logic for demonstration
+        if hull_percentage < 50:
+            # Agent should act - hull critical
+            return AgentLoopResponse(
+                success=True,
+                data={
+                    "should_act": True,
+                    "message": f"Captain, hull integrity at {int(hull_percentage)}%. Recommend immediate repair.",
+                    "urgency": "MEDIUM" if hull_percentage > 30 else "URGENT",
+                    "tools_used": ["get_system_status"],
+                    "reasoning": f"Hull below 50% threshold ({int(hull_percentage)}%)",
+                    "next_check_in": 45
+                }
+            )
+        else:
+            # Agent stays silent - all nominal
+            return AgentLoopResponse(
+                success=True,
+                data={
+                    "should_act": False,
+                    "message": None,
+                    "reasoning": "All systems nominal, no changes requiring attention",
+                    "next_check_in": 60
+                }
+            )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in agent loop check: {e}", exc_info=True)
+        return AgentLoopResponse(
+            success=False,
+            error=f"Agent error: {str(e)}"
         )
 
 

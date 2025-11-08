@@ -108,6 +108,9 @@ const AGENT_NAMES = ["atlas", "storyteller", "tactical", "companion"]
 # Schematic system dots (created dynamically)
 var system_dots: Dictionary = {}
 
+# Autonomous AI agent timer
+var atlas_timer: Timer = null
+
 # ============================================================================
 # LIFECYCLE
 # ============================================================================
@@ -126,6 +129,9 @@ func _ready() -> void:
 
 	# Initialize AI chat
 	_initialize_ai_chat()
+
+	# Initialize autonomous ATLAS agent timer
+	_initialize_atlas_timer()
 
 	# Initial UI update
 	_update_all_displays()
@@ -1220,3 +1226,48 @@ func _add_settings_header(container: VBoxContainer, text: String) -> void:
 	var spacer = Control.new()
 	spacer.custom_minimum_size.y = 5
 	container.add_child(spacer)
+
+# ============================================================================
+# AUTONOMOUS ATLAS AGENT SYSTEM
+# ============================================================================
+
+func _initialize_atlas_timer() -> void:
+	"""Initialize timer for autonomous ATLAS agent checks"""
+	atlas_timer = Timer.new()
+	atlas_timer.wait_time = 45.0  # Check every 45 seconds
+	atlas_timer.timeout.connect(_on_atlas_agent_check)
+	atlas_timer.autostart = true
+	add_child(atlas_timer)
+	print("Workshop: ATLAS autonomous agent timer initialized (45s interval)")
+
+func _on_atlas_agent_check() -> void:
+	"""Handle ATLAS autonomous agent check timer"""
+	print("Workshop: ATLAS agent check triggered")
+
+	# Skip if AI service unavailable
+	if not ServiceManager.is_service_available("ai"):
+		print("Workshop: AI service unavailable, skipping ATLAS check")
+		return
+
+	# Call agent loop endpoint
+	var result = await AIService.agent_loop_check("atlas")
+
+	if result.success and result.data.has("should_act"):
+		var should_act = result.data.get("should_act", false)
+
+		if should_act and result.data.has("message"):
+			var message = result.data.message
+			var urgency = result.data.get("urgency", "INFO")
+
+			print("Workshop: ATLAS autonomous message (%s): %s" % [urgency, message.substr(0, 50)])
+
+			# Add message to chat panel
+			_add_chat_message("ATLAS", message, COLOR_GREEN)
+
+			# Update status to show message received
+			_set_chat_status("New message from ATLAS", COLOR_GREEN)
+		else:
+			print("Workshop: ATLAS staying silent (no message)")
+	else:
+		if result.has("error"):
+			print("Workshop: ATLAS agent check error: %s" % result.error)

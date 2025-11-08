@@ -40,6 +40,9 @@ var is_first_stage: bool = true  # First stage has no separator
 var scroll_indicator: Button = null  # Manual scroll button indicator
 var conversation_id: String = ""  # AI orchestrator conversation ID
 
+# Autonomous AI agent timer
+var atlas_timer: Timer = null
+
 func _ready() -> void:
 	print("Mission scene initialized - Three-panel layout mode")
 
@@ -50,6 +53,9 @@ func _ready() -> void:
 	# Connect ATLAS input signals
 	atlas_input.text_submitted.connect(_on_atlas_input_submitted)
 	send_button.pressed.connect(_on_atlas_send_pressed)
+
+	# Initialize autonomous ATLAS agent timer
+	_initialize_atlas_timer()
 
 	# Initialize status ticker
 	_update_status_ticker()
@@ -809,3 +815,52 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 			_add_atlas_message(
 				"Mission complete, Captain. Your grandfather would be proud. Ship classification: Scout, Level 1. Current capabilities: limited. But every starship begins with a single flight. Where shall we go next?"
 			)
+
+## Autonomous ATLAS Agent System
+
+func _initialize_atlas_timer() -> void:
+	"""Initialize timer for autonomous ATLAS agent checks"""
+	atlas_timer = Timer.new()
+	atlas_timer.wait_time = 45.0  # Check every 45 seconds
+	atlas_timer.timeout.connect(_on_atlas_agent_check)
+	atlas_timer.autostart = true
+	add_child(atlas_timer)
+	print("Mission: ATLAS autonomous agent timer initialized (45s interval)")
+
+func _on_atlas_agent_check() -> void:
+	"""Handle ATLAS autonomous agent check timer"""
+	print("Mission: ATLAS agent check triggered")
+
+	# Skip if AI service unavailable
+	if not ServiceManager.is_service_available("ai"):
+		print("Mission: AI service unavailable, skipping ATLAS check")
+		return
+
+	# Call agent loop endpoint
+	var result = await AIService.agent_loop_check("atlas")
+
+	if result.success and result.data.has("should_act"):
+		var should_act = result.data.get("should_act", false)
+
+		if should_act and result.data.has("message"):
+			var message = result.data.message
+			var urgency = result.data.get("urgency", "INFO")
+
+			print("Mission: ATLAS autonomous message (%s): %s" % [urgency, message.substr(0, 50)])
+
+			# Add message to chat with urgency color
+			var color_map = {
+				"INFO": Color(0.9, 0.9, 1.0),
+				"MEDIUM": Color(1.0, 0.9, 0.5),
+				"URGENT": Color(1.0, 0.7, 0.4),
+				"CRITICAL": Color(1.0, 0.4, 0.4)
+			}
+			var message_color = color_map.get(urgency, Color.WHITE)
+
+			# Add to chat (not as player message)
+			_add_atlas_message(message)
+		else:
+			print("Mission: ATLAS staying silent (no message)")
+	else:
+		if result.has("error"):
+			print("Mission: ATLAS agent check error: %s" % result.error)

@@ -477,3 +477,25 @@ func test_connection() -> bool:
 ## Get AI service health info
 func get_health_info() -> Dictionary:
 	return ServiceManager.get_service_status("ai")
+
+# ============================================================================
+# AUTONOMOUS AI AGENT SYSTEM
+# ============================================================================
+
+## Check if autonomous agent has anything to say
+## agent_name: "atlas", "storyteller", "tactical", or "companion"
+## force_check: Optional - bypass throttling (for testing)
+func agent_loop_check(agent_name: String, force_check: bool = false) -> Dictionary:
+	if not ServiceManager.is_service_available("ai"):
+		return _error_response("AI service unavailable")
+
+	var url = AI_SERVICE_URL + "/api/orchestrator/agent_loop"
+
+	var request_body = {
+		"agent": agent_name,
+		"game_state": _prepare_game_state(),
+		"force_check": force_check
+	}
+
+	var result = await _make_post_request(url, request_body)
+	return result
