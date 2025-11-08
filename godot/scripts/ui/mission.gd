@@ -27,8 +27,8 @@ extends Control
 @onready var chat_history: VBoxContainer = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/ChatScroll/ChatHistory
 
 # UI References - Bottom Panels
-@onready var atlas_input: LineEdit = $MainVBox/ATLASTextInput/MarginContainer/HBoxContainer/InputField
-@onready var send_button: Button = $MainVBox/ATLASTextInput/MarginContainer/HBoxContainer/SendButton
+@onready var atlas_input: LineEdit = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/TextInputContainer/InputField
+@onready var send_button: Button = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/TextInputContainer/SendButton
 @onready var status_label: Label = $MainVBox/StatusTicker/MarginContainer/ScrollContainer/StatusLabel
 
 # State tracking

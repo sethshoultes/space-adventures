@@ -213,30 +213,22 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="ATLASTextInput" type="PanelContainer" parent="MainVBox"]
-custom_minimum_size = Vector2(0, 60)
+[node name="HSeparator2" type="HSeparator" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="MainVBox/ATLASTextInput"]
+[node name="TextInputContainer" type="HBoxContainer" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 15
-theme_override_constants/margin_bottom = 10
+theme_override_constants/separation = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainVBox/ATLASTextInput/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="InputField" type="LineEdit" parent="MainVBox/ATLASTextInput/MarginContainer/HBoxContainer"]
+[node name="InputField" type="LineEdit" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/TextInputContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
-placeholder_text = "Ask ATLAS a question..."
+theme_override_font_sizes/font_size = 14
+placeholder_text = "Ask ATLAS..."
 
-[node name="SendButton" type="Button" parent="MainVBox/ATLASTextInput/MarginContainer/HBoxContainer"]
+[node name="SendButton" type="Button" parent="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/TextInputContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 text = "Send"
 
 [node name="StatusTicker" type="PanelContainer" parent="MainVBox"]
@@ -265,5 +257,5 @@ vertical_alignment = 1
 [connection signal="pressed" from="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices/Choice3" to="." method="_on_choice_pressed" binds= [2]]
 [connection signal="pressed" from="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Choices/Choice4" to="." method="_on_choice_pressed" binds= [3]]
 [connection signal="pressed" from="MainVBox/TopPanels/NarrativeContainer/VBoxContainer/Actions/ExitButton" to="." method="_on_exit_pressed"]
-[connection signal="text_submitted" from="MainVBox/ATLASTextInput/MarginContainer/HBoxContainer/InputField" to="." method="_on_atlas_input_submitted"]
-[connection signal="pressed" from="MainVBox/ATLASTextInput/MarginContainer/HBoxContainer/SendButton" to="." method="_on_atlas_send_pressed"]
+[connection signal="text_submitted" from="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/TextInputContainer/InputField" to="." method="_on_atlas_input_submitted"]
+[connection signal="pressed" from="MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/TextInputContainer/SendButton" to="." method="_on_atlas_send_pressed"]
