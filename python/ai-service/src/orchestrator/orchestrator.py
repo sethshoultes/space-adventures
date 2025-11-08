@@ -178,15 +178,45 @@ class AIOrchestrator:
                     game_state=self.game_state
                 )
 
-                # Get assistant's text (may be empty if just calling function)
-                assistant_message = choice.message.content if choice.message.content else f"[Called {function_name}]"
+                logger.info(f"Function {function_name} returned: {function_result}")
 
-                # Save to history (in-memory)
+                # Add user message to history
                 self.conversation_history[AgentType(agent_name_lower)].append(
                     {"role": "user", "content": message}
                 )
+
+                # Add assistant's function call to history (with empty content if needed)
+                assistant_fc_message = choice.message.content if choice.message.content else ""
                 self.conversation_history[AgentType(agent_name_lower)].append(
-                    {"role": "assistant", "content": assistant_message}
+                    {"role": "assistant", "content": assistant_fc_message, "function_call": {"name": function_name, "arguments": json.dumps(arguments)}}
+                )
+
+                # Add function result to history
+                self.conversation_history[AgentType(agent_name_lower)].append(
+                    {"role": "function", "name": function_name, "content": json.dumps(function_result)}
+                )
+
+                # Make second LLM call to get natural language response based on function result
+                logger.info("Making second LLM call to interpret function result")
+
+                second_messages = [{"role": "system", "content": system_prompt}]
+                second_messages.extend(self.conversation_history[AgentType(agent_name_lower)])
+
+                second_response = completion(
+                    model=model,
+                    messages=second_messages,
+                    temperature=temperature,
+                    max_tokens=self.config.max_tokens,
+                    api_base=api_base,
+                    timeout=self.config.timeout
+                )
+
+                # Get the natural language response
+                final_message = second_response.choices[0].message.content
+
+                # Add final response to history
+                self.conversation_history[AgentType(agent_name_lower)].append(
+                    {"role": "assistant", "content": final_message}
                 )
 
                 # Save to persistence if enabled
@@ -202,7 +232,7 @@ class AIOrchestrator:
                             conversation_id,
                             agent_name_lower,
                             "assistant",
-                            assistant_message,
+                            final_message,
                             function_call={
                                 "name": function_name,
                                 "arguments": arguments,
@@ -216,7 +246,7 @@ class AIOrchestrator:
                     "success": True,
                     "agent": agent_name_lower,
                     "model": model,
-                    "response": assistant_message,
+                    "response": final_message,
                     "function_call": {
                         "name": function_name,
                         "arguments": arguments,
