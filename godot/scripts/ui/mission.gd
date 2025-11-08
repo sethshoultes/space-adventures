@@ -205,28 +205,37 @@ func _display_choices() -> void:
 		var button = choice_buttons[i]
 
 		# Set button text
-		button.text = choice.get("text", "Choice %d" % (i + 1))
+		var base_text = choice.get("text", "Choice %d" % (i + 1))
 
 		# Check if choice is available (requirements met)
-		if _check_choice_requirements(choice):
+		var requirement_info = _get_requirement_info(choice)
+
+		if requirement_info.met:
+			# Requirements met - show normal
+			button.text = base_text
 			button.disabled = false
 			button.visible = true
+			button.tooltip_text = ""
 		else:
-			# Show but disabled if requirements not met
-			button.text += " [LOCKED]"
+			# Requirements not met - show locked with info
+			button.text = base_text + " 🔒"
 			button.disabled = true
 			button.visible = true
+			button.tooltip_text = requirement_info.tooltip
 
 	# Show choices section
 	choices_label.visible = current_choices.size() > 0
 
-func _check_choice_requirements(choice: Dictionary) -> bool:
-	"""Check if player meets requirements for a choice"""
+func _get_requirement_info(choice: Dictionary) -> Dictionary:
+	"""Get detailed requirement information for a choice
+	Returns: {met: bool, tooltip: String}"""
 
 	if not choice.has("requirements"):
-		return true
+		return {"met": true, "tooltip": ""}
 
 	var reqs = choice.requirements
+	var requirements_met = true
+	var tooltip_parts = []
 
 	# Check skill requirement
 	if reqs.has("skill") and reqs.has("skill_level"):
@@ -234,8 +243,12 @@ func _check_choice_requirements(choice: Dictionary) -> bool:
 		var required_level = reqs.skill_level
 		var player_skill = GameState.player.skills.get(skill_name, 0)
 
+		var skill_display = skill_name.capitalize()
 		if player_skill < required_level:
-			return false
+			requirements_met = false
+			tooltip_parts.append("Requires %s %d (You have: %d)" % [skill_display, required_level, player_skill])
+		else:
+			tooltip_parts.append("%s %d ✓" % [skill_display, required_level])
 
 	# Check system requirements
 	if reqs.has("system") and reqs.has("system_level"):
@@ -243,10 +256,20 @@ func _check_choice_requirements(choice: Dictionary) -> bool:
 		var required_level = reqs.system_level
 		var system_level = GameState.ship.systems.get(system_name, {}).get("level", 0)
 
+		var system_display = system_name.capitalize()
 		if system_level < required_level:
-			return false
+			requirements_met = false
+			tooltip_parts.append("Requires %s Level %d (You have: %d)" % [system_display, required_level, system_level])
+		else:
+			tooltip_parts.append("%s Level %d ✓" % [system_display, required_level])
 
-	return true
+	var tooltip = "\n".join(tooltip_parts) if tooltip_parts.size() > 0 else ""
+
+	return {"met": requirements_met, "tooltip": tooltip}
+
+func _check_choice_requirements(choice: Dictionary) -> bool:
+	"""Check if player meets requirements for a choice"""
+	return _get_requirement_info(choice).met
 
 func _on_choice_pressed(choice_index: int) -> void:
 	"""Handle player choice selection"""
