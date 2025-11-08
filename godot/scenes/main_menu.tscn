@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dpbgvdcehsnfr"]
+[gd_scene load_steps=3 format=3 uid="uid://dpbgvdcehsnfr"]
 
 [ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_h8ij1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/main_menu_panel_bg.png" id="2_panel_bg"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -52,6 +53,17 @@ offset_right = 275.0
 offset_bottom = 450.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="PanelBackground" type="TextureRect" parent="MenuPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_panel_bg")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="CyanBorder" type="Control" parent="MenuPanel"]
 layout_mode = 1
