@@ -435,19 +435,13 @@ func _on_save_pressed() -> void:
 		# TODO: Show error UI
 
 func _on_missions_pressed() -> void:
-	print("Launching tutorial mission")
+	print("Opening mission selection")
 
-	# Start the tutorial mission
-	var mission_started = MissionManager.start_mission("tutorial_first_salvage")
+	# Auto-save before opening mission selection
+	SaveManager.auto_save()
 
-	if mission_started:
-		# Auto-save before starting mission
-		SaveManager.auto_save()
-
-		# Load mission scene
-		get_tree().change_scene_to_file("res://scenes/mission.tscn")
-	else:
-		print("Failed to start mission")
+	# Load mission selection scene
+	get_tree().change_scene_to_file("res://scenes/mission_selection.tscn")
 
 func _on_main_menu_pressed() -> void:
 	print("Returning to main menu")

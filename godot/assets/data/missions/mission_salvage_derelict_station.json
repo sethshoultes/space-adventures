@@ -1,0 +1,682 @@
+{
+  "mission_id": "salvage_derelict_station",
+  "title": "Salvage Run: Derelict Station",
+  "type": "salvage",
+  "location": "Abandoned Mining Station, Outer Colonies",
+  "description": "An automated mining station, abandoned during the exodus, still holds valuable tech and rare parts. Your scanners detect high-value salvage in the engineering bay, but security drones may still be active. Navigation hazards and automated defenses make this a risky operation.",
+  "difficulty": 4,
+  "estimated_time": "25-35 min",
+  "requirements": {
+    "min_level": 3,
+    "required_systems": [],
+    "completed_missions": []
+  },
+  "objectives": [
+    "Retrieve salvage from the engineering bay",
+    "[OPTIONAL] Recover station data logs for bonus rewards",
+    "[OPTIONAL] Avoid triggering security protocols"
+  ],
+  "stages": [
+    {
+      "stage_id": "approach_station",
+      "title": "Silent Approach",
+      "description": "The mining station floats in the void, a skeletal structure of metal and glass. Solar panels still glint with power. Your sensors detect automated systems online: security drones patrol the exterior in slow, methodical patterns. Three entry points are visible: the main docking bay (exposed but direct), a damaged cargo airlock (risky but quiet), and a maintenance shaft (tight but hidden).",
+      "image": "station_exterior",
+      "choices": [
+        {
+          "choice_id": "main_docking",
+          "text": "Dock at the main bay—direct but exposed approach",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Your ship locks into the docking clamps with a metallic clang. Interior lights flicker on—motion sensors still functional. Security status: ALERTED. Drone signatures converge on your position. You have minutes before they arrive.",
+              "next_stage": "interior_alerted",
+              "effects": ["security_alerted", "drones_active"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "cargo_airlock",
+          "text": "Use the damaged cargo airlock—quieter entry",
+          "requirements": {},
+          "success_chance": 70,
+          "consequences": {
+            "success": {
+              "text": "You manually cycle the damaged airlock. It groans but opens. You slip inside, sealing it behind you. The cargo bay is dark and silent. No alarm. Security drones continue their exterior patrol, unaware of your presence.",
+              "next_stage": "interior_undetected",
+              "effects": ["stealth_entry"],
+              "xp_bonus": 20
+            },
+            "failure": {
+              "text": "The airlock jams halfway open, screeching metal echoing through the station. Emergency systems activate. Red lights pulse. Security status: BREACH DETECTED. Drones inbound.",
+              "next_stage": "interior_alerted",
+              "effects": ["security_alerted", "drones_active", "damaged_entry"]
+            }
+          }
+        },
+        {
+          "choice_id": "use_sensors",
+          "text": "Use Sensors L2+ to map optimal entry route",
+          "requirements": {
+            "system": "sensors",
+            "system_level": 2
+          },
+          "success_chance": "system_based",
+          "consequences": {
+            "success": {
+              "text": "Your sensors penetrate the station's hull, mapping power flows and security protocols. You identify a maintenance shaft with inactive sensors—the security grid has a blind spot. You slip in completely undetected. Full tactical advantage.",
+              "next_stage": "interior_tactical",
+              "effects": ["stealth_entry", "tactical_intel", "sensor_advantage"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "Your active scan is detected by the station's passive sensors. Security AI logs the intrusion. Drones reroute to investigate. You're forced to enter quickly through the cargo airlock before they arrive.",
+              "next_stage": "interior_undetected",
+              "effects": ["scan_detected"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "interior_alerted",
+      "title": "Hot Zone",
+      "description": "Alarm klaxons echo through empty corridors. Red emergency lights pulse. You're inside, but security knows it. Drone signatures appear on your scanner—three units converging from different directions. The engineering bay is two decks down. You can fight, hack the security grid, or find a way to lose them in the station's maze of corridors.",
+      "image": "station_alarm",
+      "choices": [
+        {
+          "choice_id": "hack_security_grid",
+          "text": "Hack into the security grid and disable drones",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You jack into a security terminal. The station's AI is old, vulnerable. You inject a shutdown command. Drones power down mid-flight, clattering to the deck. Security grid: OFFLINE. The station is yours.",
+              "next_stage": "engineering_bay_secured",
+              "effects": ["security_disabled", "full_control"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "The security AI detects your intrusion attempt. Countermeasures activate. You're locked out, and now the drones know exactly where you are. Time to move—fast.",
+              "next_stage": "escape_drones",
+              "effects": ["hack_failed", "position_compromised"]
+            }
+          }
+        },
+        {
+          "choice_id": "evade_through_corridors",
+          "text": "Use the station's layout to lose the drones",
+          "requirements": {},
+          "success_chance": 60,
+          "consequences": {
+            "success": {
+              "text": "You sprint through maintenance corridors, using blast doors to slow pursuit. The drones are fast but not agile in tight spaces. You reach the engineering bay with minutes to spare. They're still searching the upper decks.",
+              "next_stage": "engineering_bay_timed",
+              "effects": ["drones_evaded", "time_pressure"],
+              "xp_bonus": 15
+            },
+            "failure": {
+              "text": "You take a wrong turn—dead end. The drones close in, weapons charging. You're forced to improvise an escape through a cargo shaft, delaying your approach to the engineering bay and alerting more security systems.",
+              "next_stage": "engineering_bay_compromised",
+              "effects": ["pursuit_ongoing", "elevated_security"]
+            }
+          }
+        },
+        {
+          "choice_id": "power_down_section",
+          "text": "Cut power to this station section—blind the drones",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 4
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You locate a power junction and sever the main feed. The entire section goes dark—emergency lighting only. Drones lose sensor lock and revert to search patterns. You move through the shadows, completely invisible. Brilliant.",
+              "next_stage": "engineering_bay_dark",
+              "effects": ["power_disabled", "stealth_regained", "environmental_control"],
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "You trigger a power surge instead. Lights flare, then fail—but backup systems engage immediately. The drones switch to thermal tracking. Your heat signature stands out like a beacon. This just got worse.",
+              "next_stage": "escape_drones",
+              "effects": ["thermal_tracked", "power_unstable"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "interior_undetected",
+      "title": "Silent Infiltration",
+      "description": "You move through darkened corridors, careful to avoid motion sensors. The station is a ghost—workstations abandoned mid-shift, coffee cups still sitting on desks. The exodus happened fast. Engineering bay is ahead, door sealed but accessible. Your scanner shows no active security in this section, but something's wrong. Power readings are fluctuating. The station's reactor may be unstable.",
+      "image": "station_corridor",
+      "choices": [
+        {
+          "choice_id": "proceed_carefully",
+          "text": "Proceed to engineering bay, maintaining stealth",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You reach the engineering bay door. Biometric lock, still active. You bypass it with a simple override—security focused on external threats, not internal access. Inside: rows of equipment, salvage, and technology. Untouched for years.",
+              "next_stage": "engineering_bay_secured",
+              "effects": ["stealth_maintained"],
+              "xp_bonus": 25
+            }
+          }
+        },
+        {
+          "choice_id": "investigate_reactor",
+          "text": "Investigate reactor fluctuations before proceeding",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You access the reactor control room. The fusion reactor is in slow decay—containment failing. Years, maybe months before breach. You stabilize it with a manual shutdown sequence. Crisis averted. More importantly, you've gained insight into the station's power systems. This knowledge will be useful.",
+              "next_stage": "engineering_bay_secured",
+              "effects": ["stealth_maintained", "reactor_stabilized", "bonus_intel"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "Your attempt to stabilize the reactor triggers a cascade alert. Automated safety systems engage, sealing sections and activating emergency protocols. Security drones wake up. You need to move—now.",
+              "next_stage": "engineering_bay_timed",
+              "effects": ["reactor_alert", "security_partial"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "interior_tactical",
+      "title": "Perfect Information",
+      "description": "Your sensor sweep gives you complete tactical awareness. You know where every drone is, which systems are active, and the optimal path to the engineering bay. The station's security AI doesn't even know you're here. You have your choice of approach—efficiency or discovery. There's a data core near the engineering bay. Recovering those logs would provide valuable intelligence... but it takes time.",
+      "image": "station_tactical",
+      "choices": [
+        {
+          "choice_id": "direct_to_engineering",
+          "text": "Go directly to engineering bay—fast and clean",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You move like a ghost through the station, avoiding every sensor, every drone patrol route. Three minutes later, you're standing in the engineering bay. Not a single alarm triggered. Professional work.",
+              "next_stage": "engineering_bay_secured",
+              "effects": ["stealth_maintained", "perfect_infiltration"],
+              "xp_bonus": 30
+            }
+          }
+        },
+        {
+          "choice_id": "recover_data_logs",
+          "text": "Detour to data core—recover station logs for intel bonus",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You access the station's data core. Logs download: mining operations, personnel records, and something unexpected—coordinates to three more abandoned stations, all with similar salvage potential. This information is worth more than the parts you came for.",
+              "next_stage": "engineering_bay_secured",
+              "effects": ["stealth_maintained", "data_recovered", "bonus_locations"],
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "The data core's encryption is tougher than expected. You waste time trying to crack it. A drone patrol passes closer than anticipated—you have to abandon the download and move to the engineering bay before your window closes.",
+              "next_stage": "engineering_bay_secured",
+              "effects": ["stealth_maintained", "data_partial"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "engineering_bay_secured",
+      "title": "The Prize",
+      "description": "The engineering bay is a treasure trove. Composite hull plates—rare quality, perfect condition. A fusion cell power core—intact, high-output model. Diagnostic equipment, repair drones, even a complete engineering toolkit. More than you can carry. You need to prioritize. And there's a locked storage container in the corner—heavy security, but your scans show advanced components inside.",
+      "image": "engineering_bay",
+      "choices": [
+        {
+          "choice_id": "take_essentials",
+          "text": "Take the essential parts and leave—quick and safe",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You load the hull plates and fusion cell onto your ship. Standard salvage, but valuable. Clean extraction. You're in and out within the hour.",
+              "next_stage": "extraction_clean",
+              "effects": ["salvage_secured"],
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "force_container",
+          "text": "Force open the locked container—risk/reward gamble",
+          "requirements": {},
+          "success_chance": 65,
+          "consequences": {
+            "success": {
+              "text": "You cut through the container's lock with a plasma torch. Inside: rare composite plates and an engineering toolkit—professional-grade equipment. This is exactly what you needed. Worth every second of risk.",
+              "next_stage": "extraction_jackpot",
+              "effects": ["salvage_secured", "rare_parts_acquired"],
+              "xp_bonus": 35
+            },
+            "failure": {
+              "text": "The container's security activates—loud alarm, station-wide broadcast. Every dormant system on this station just woke up. Drones converge on your position. You grab what you can and run.",
+              "next_stage": "extraction_pursuit",
+              "effects": ["security_total_alert", "partial_salvage"]
+            }
+          }
+        },
+        {
+          "choice_id": "bypass_container",
+          "text": "Bypass container security with engineering skill",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 4
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You interface with the container's security system. It's old tech—vulnerable to modern techniques. The lock disengages silently. Inside: rare composite plates, an engineering toolkit, and a data module containing advanced repair schematics. Jackpot.",
+              "next_stage": "extraction_perfect",
+              "effects": ["salvage_secured", "rare_parts_acquired", "schematics_found"],
+              "xp_bonus": 60
+            },
+            "failure": {
+              "text": "The lock's security is tougher than anticipated—military-grade encryption. You can't crack it in the time available. Take what you can carry and get out before your luck runs out.",
+              "next_stage": "extraction_clean",
+              "effects": ["salvage_secured"],
+              "xp_bonus": 20
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "engineering_bay_timed",
+      "title": "Race Against Time",
+      "description": "You burst into the engineering bay with drones minutes behind you. No time for subtlety. Grab what you can, load it fast, and get out. The essential parts are right there—hull plates and a fusion cell. But that locked container in the corner is tempting. Do you have time?",
+      "image": "engineering_bay_alarm",
+      "choices": [
+        {
+          "choice_id": "grab_and_run",
+          "text": "Grab essential parts and evacuate immediately",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You snatch the hull plates and fusion cell, sprinting back to your ship as drones enter the bay. They open fire, but you're already through the airlock. Close call, but you got the goods.",
+              "next_stage": "extraction_narrow",
+              "effects": ["salvage_secured", "narrow_escape"],
+              "xp_bonus": 15
+            }
+          }
+        },
+        {
+          "choice_id": "risk_container",
+          "text": "Risk opening the container—high reward, high danger",
+          "requirements": {},
+          "success_chance": 50,
+          "consequences": {
+            "success": {
+              "text": "You force the container open in seconds—pure adrenaline strength. Rare parts inside. You load everything into a cargo sled and haul it to your ship. Drones burst in as you seal the airlock. Too close. Way too close. But you got everything.",
+              "next_stage": "extraction_jackpot",
+              "effects": ["salvage_secured", "rare_parts_acquired", "extreme_risk"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "The container won't budge. You waste precious seconds. Drones flood the bay, weapons hot. You grab only the hull plates and run, leaving the fusion cell and container behind. Partial salvage is better than nothing.",
+              "next_stage": "extraction_pursuit",
+              "effects": ["partial_salvage", "drones_engaged"],
+              "rewards_modified": {"items": ["remove:power_fusion_cell_l2_uncommon"]}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "engineering_bay_compromised",
+      "title": "Hostile Environment",
+      "description": "You reach the engineering bay, but the situation is deteriorating. Drones are close, station systems are failing, and you're running out of time. The salvage is here, but so is danger. Every second counts.",
+      "image": "engineering_bay_hostile",
+      "choices": [
+        {
+          "choice_id": "salvage_under_fire",
+          "text": "Salvage what you can while under pressure",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You work frantically, loading parts as alarms blare and drones close in. You get the hull plates and most of the fusion cell components before you're forced to retreat. Not everything, but enough.",
+              "next_stage": "extraction_pursuit",
+              "effects": ["partial_salvage", "combat_salvage"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "engineering_bay_dark",
+      "title": "Darkness and Opportunity",
+      "description": "Emergency lighting casts long shadows. With main power offline, the engineering bay's security is dead. You move through darkness, loading parts methodically. No rush. No pressure. Just you and decades of untouched salvage. This is how professionals work.",
+      "image": "engineering_bay_dark",
+      "choices": [
+        {
+          "choice_id": "methodical_salvage",
+          "text": "Take your time, gather everything valuable",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You spend an hour cataloging and loading the best parts. Hull plates, fusion cell, toolkit, and even some spare components. Quality over speed. When you're done, you have everything worth taking.",
+              "next_stage": "extraction_perfect",
+              "effects": ["salvage_secured", "complete_haul", "professional_work"],
+              "xp_bonus": 40
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "escape_drones",
+      "title": "Fighting Retreat",
+      "description": "This isn't going according to plan. Drones are on you, weapons hot. You need to get to your ship—now. Fighting through or creating a distraction might buy you time, but every second matters.",
+      "image": "drone_combat",
+      "choices": [
+        {
+          "choice_id": "fighting_retreat",
+          "text": "Fight through the drones to your ship",
+          "requirements": {
+            "skill": "combat",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You disable two drones with precise shots, dodge the third, and sprint to your ship. Hull takes some damage from weapons fire, but you make it. Launch before they regroup. Mission accomplished—barely.",
+              "next_stage": "extraction_damaged",
+              "effects": ["combat_success", "hull_damage", "minimal_salvage"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "The drones overwhelm your position. You're forced to abandon all salvage and flee to your ship empty-handed. Emergency launch as weapons fire rakes your hull. You escaped with your life, but nothing else.",
+              "next_stage": "extraction_failed",
+              "effects": ["combat_failure", "mission_failed"],
+              "mission_result": "failure"
+            }
+          }
+        },
+        {
+          "choice_id": "create_distraction",
+          "text": "Trigger reactor overload as distraction—desperate gamble",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You overload the station's reactor with a timed delay. Emergency systems redirect all drones to the reactor core. You have a three-minute window. You sprint to engineering bay, grab the fusion cell, and reach your ship as the station begins tearing itself apart behind you. Insane—but effective.",
+              "next_stage": "extraction_catastrophic",
+              "effects": ["reactor_overload", "station_destroyed", "desperate_salvage"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "The reactor overload triggers immediately—no delay. The station shudders. Bulkheads collapse. You run for your life, abandoning all salvage. You barely make it to your ship as the station's superstructure fails. No parts, but you survived.",
+              "next_stage": "extraction_failed",
+              "effects": ["station_destroyed", "mission_failed"],
+              "mission_result": "failure"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "extraction_clean",
+      "title": "Clean Exit",
+      "description": "Mission accomplished. Essential salvage secured, no complications. You seal your ship's cargo hold and disengage from the station. Hull plates and fusion cell—exactly what you needed. Professional work.",
+      "image": "ship_departure",
+      "choices": [
+        {
+          "choice_id": "return_home",
+          "text": "Return to workshop",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You pilot away from the derelict station. Another successful salvage run. The parts will serve you well.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "extraction_perfect",
+      "title": "Perfect Execution",
+      "description": "You've executed this salvage operation flawlessly. Maximum salvage, zero complications, complete stealth. The rare parts and schematics you recovered will accelerate your ship's development significantly. This is the kind of operation that builds reputations.",
+      "image": "perfect_haul",
+      "choices": [
+        {
+          "choice_id": "return_victorious",
+          "text": "Return to workshop with exceptional haul",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You review the salvage: rare composite plates, advanced fusion cell, professional toolkit, and repair schematics. This single operation advanced your capabilities more than a dozen standard runs. Well done.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 50
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "extraction_jackpot",
+      "title": "High-Risk Payoff",
+      "description": "You took risks, and they paid off. The locked container yielded rare components that will be invaluable for advanced upgrades. Your cargo hold is full of high-quality salvage. Worth every moment of danger.",
+      "image": "rare_salvage",
+      "choices": [
+        {
+          "choice_id": "return_wealthy",
+          "text": "Return to workshop with rare salvage",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The rare parts alone are worth more than ten standard salvage runs. You've secured resources that will push your ship to the next level. Risk and reward—perfectly balanced.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 30
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "extraction_narrow",
+      "title": "Narrow Escape",
+      "description": "You made it out by seconds. Drone weapons fire barely missed your ship during extraction. Your hull took minor damage, but the salvage is secure. Close calls build experience.",
+      "image": "narrow_escape",
+      "choices": [
+        {
+          "choice_id": "return_relieved",
+          "text": "Return to workshop, grateful to be intact",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You patch the hull damage and review the salvage. Standard parts, but you earned them. Not every operation goes smoothly—surviving the difficult ones is what matters.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "extraction_pursuit",
+      "title": "Hot Pursuit",
+      "description": "Drones chase you all the way to your ship. You seal the airlock as weapons fire impacts your hull. Emergency launch, full thrust away from the station. You got some salvage, but not everything. Partial success.",
+      "image": "pursuit_escape",
+      "choices": [
+        {
+          "choice_id": "return_damaged",
+          "text": "Return to workshop for repairs and assessment",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Your ship's hull needs work, but you salvaged valuable parts. Not a perfect operation, but you achieved the primary objective. Sometimes that's enough.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "extraction_catastrophic",
+      "title": "Catastrophic Success",
+      "description": "The station explodes behind you, debris field expanding. You barely escaped with a fusion cell and your life. Reckless? Absolutely. Successful? Technically. You won't be returning to that station—it no longer exists.",
+      "image": "station_explosion",
+      "choices": [
+        {
+          "choice_id": "return_shaken",
+          "text": "Return to workshop, process what just happened",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You destroyed an entire mining station to salvage one fusion cell. Effective, but extreme. The part is valuable—and you learned something about your own decision-making under pressure.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "rewards_modified": {"items": ["remove:hull_composite_plates_l2_rare"]},
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "extraction_damaged",
+      "title": "Combat Extraction",
+      "description": "You fought your way out. Hull damage is significant, but you salvaged minimal parts before combat forced you to retreat. Survival is a form of success.",
+      "image": "damaged_extraction",
+      "choices": [
+        {
+          "choice_id": "return_for_repairs",
+          "text": "Return to workshop, prioritize hull repairs",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The combat damage will cost you time and resources to repair. You salvaged less than intended, but you survived a hostile encounter. Experience gained.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "rewards_modified": {"items": ["remove:hull_composite_plates_l2_rare"]},
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "extraction_failed",
+      "title": "Failed Operation",
+      "description": "You barely escaped with your life. No salvage, damaged hull, and a bruised ego. Not every operation succeeds. Learn from this and try again.",
+      "image": "mission_failure",
+      "choices": [
+        {
+          "choice_id": "return_empty",
+          "text": "Return to workshop, plan better next time",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Mission failed. No salvage recovered. Hull repairs will be expensive. But you survived, and survival means you can try again. Failure is a harsh teacher.",
+              "next_stage": "mission_complete",
+              "mission_result": "failure",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete",
+      "title": "Mission Complete",
+      "description": "Salvage run concluded. Return to workshop.",
+      "image": "mission_end",
+      "choices": []
+    }
+  ],
+  "rewards": {
+    "xp": 250,
+    "credits": 800,
+    "items": [
+      {"part_id": "power_fusion_cell_l2_uncommon", "quantity": 1},
+      {"part_id": "hull_composite_plates_l2_rare", "quantity": 1}
+    ],
+    "discovered_parts": [
+      "hull_composite_plates_l2_rare",
+      "power_fusion_cell_l2_uncommon",
+      "hull_ablative_armor_l2_uncommon"
+    ],
+    "unlocks": [
+      "mission_station_data_followup"
+    ]
+  },
+  "conditional_rewards": {
+    "if_data_recovered": {
+      "items": [
+        {"part_id": "engineering_toolkit_rare", "quantity": 1}
+      ],
+      "xp_bonus": 50,
+      "unlocks": ["location_mining_station_alpha", "location_mining_station_beta", "location_mining_station_gamma"]
+    },
+    "if_rare_parts_acquired": {
+      "credits": 200,
+      "xp_bonus": 25
+    },
+    "if_stealth_maintained": {
+      "xp_bonus": 40,
+      "credits": 150
+    },
+    "if_perfect_infiltration": {
+      "xp_bonus": 50,
+      "credits": 200
+    },
+    "if_schematics_found": {
+      "items": [
+        {"part_id": "engineering_toolkit_rare", "quantity": 1}
+      ],
+      "xp_bonus": 40,
+      "discovered_parts": ["hull_reinforced_bulkheads_l3_rare"]
+    }
+  },
+  "failure_consequences": {
+    "xp": 75,
+    "effects": ["failed_station_salvage", "hull_damage_sustained"]
+  }
+}

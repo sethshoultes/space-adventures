@@ -1,0 +1,318 @@
+{
+  "mission_id": "distress_signal_alpha",
+  "title": "Distress Signal Alpha",
+  "type": "rescue",
+  "location": "Asteroid Field Theta-9, Outer Rim Sector",
+  "description": "A distress signal echoes from the Theta-9 asteroid field. Initial long-range scans detect life signs aboard an unknown vessel drifting dangerously close to a dense asteroid cluster. The ship's hull integrity is degrading rapidly. Time is critical, but the asteroid field presents significant navigational hazards. Your choice: risk your ship to save strangers, or maintain a safe distance?",
+  "difficulty": 2,
+  "estimated_time": "20-25 min",
+  "requirements": {
+    "min_level": 1,
+    "required_systems": [],
+    "completed_missions": []
+  },
+  "objectives": [
+    "Investigate distress signal in asteroid field",
+    "Navigate through asteroids safely",
+    "Locate and assist distressed vessel",
+    "[OPTIONAL] Identify the ship's origin"
+  ],
+  "stages": [
+    {
+      "stage_id": "initial_contact",
+      "title": "Distress Call",
+      "description": "Your communications system crackles to life: 'This is... anyone... Alpha... losing hull integrity... asteroid field Theta-9... please...' The signal is weak, fragmented. Your computer plots the coordinates: deep in an asteroid field notorious for claiming unwary ships. Sensors detect multiple life signs aboard the distressed vessel, approximately 15 minutes from critical hull failure. You could reach them in time—if you risk the asteroids.",
+      "image": "distress_signal",
+      "choices": [
+        {
+          "choice_id": "respond_immediately",
+          "text": "Plot fastest course through the asteroid field—time is critical",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You engage thrusters at maximum burn. The asteroids loom ahead, a maze of tumbling rock and ice. Your sensors light up with proximity warnings. This is going to be tight. The distress signal grows stronger as you close the distance, but so do the navigational hazards.",
+              "next_stage": "asteroid_navigation",
+              "effects": ["direct_approach", "time_pressure"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "plot_safe_route",
+          "text": "Plot a safer route around the densest asteroids—caution first",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You engage computer navigation to find the safest path. It will take longer, but you'll minimize collision risk. The computer plots a winding course through the outer edge of the field. The distress signal pulses urgently. You hope those extra minutes won't cost lives.",
+              "next_stage": "asteroid_navigation",
+              "effects": ["safe_approach"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "scan_before_approach",
+          "text": "Use sensors to analyze the asteroid field and signal source first",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You run a detailed sensor sweep before committing to the field. The data reveals a pattern in the asteroid movements—gravitational eddies creating temporary 'safe lanes' between clusters. More interesting: the distressed ship's transponder identifies it as a civilian transport, registry code from before the Exodus. How is a pre-Exodus ship still operating? Your analysis shaves precious minutes off your approach time while maintaining safety.",
+              "next_stage": "asteroid_navigation",
+              "effects": ["analyzed_field", "identified_ship", "optimal_route"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "You attempt a sensor sweep, but the asteroid field's electromagnetic interference scrambles your readings. You've lost valuable time with inconclusive data. The distress signal is weaker now. You'll have to navigate by instinct.",
+              "next_stage": "asteroid_navigation",
+              "effects": ["time_lost", "no_intel"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "asteroid_navigation",
+      "title": "Through the Gauntlet",
+      "description": "The asteroid field surrounds you. Tumbling rocks the size of buildings drift past your viewport. Your proximity alarms are a constant symphony of warnings. Ahead, you can see the distressed vessel—a battered transport ship, hull breached in multiple places, emergency lights flickering. But between you and them: a particularly dense cluster of asteroids, closing together like grinding teeth.",
+      "image": "asteroid_field_navigation",
+      "choices": [
+        {
+          "choice_id": "manual_piloting",
+          "text": "Trust your piloting skills and manually navigate through the densest section",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You take manual control. Thrusters fire in precise bursts as you thread the needle between spinning asteroids. A massive rock tumbles past your starboard side, missing by meters. Your hands are steady. Another burst, a roll to port, engines full reverse. You emerge on the other side, hull intact, directly alongside the distressed vessel. Perfect execution.",
+              "next_stage": "vessel_assessment",
+              "effects": ["perfect_navigation", "gained_crew_respect"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "You take manual control, but the asteroids are faster than anticipated. A glancing blow against your starboard hull—sparks and alarms. Another rock clips your dorsal section. Your hull integrity drops to 75%. You make it through, but your ship has taken damage. The distressed vessel is just ahead, but you'll need repairs yourself now.",
+              "next_stage": "vessel_assessment",
+              "effects": ["hull_damaged", "navigation_difficult"],
+              "damage": "hull_hp:-25"
+            }
+          }
+        },
+        {
+          "choice_id": "computer_assist",
+          "text": "Use computer-assisted navigation to calculate the safest route",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You engage the navigation computer. It plots a winding path, longer but safer. The computer's calculations account for asteroid rotation, trajectory, and mass. You follow the guidance precisely. It takes three extra minutes, but you arrive at the distressed vessel with your hull intact. Those extra minutes, however, cost the other ship—you can see their hull integrity is now critical.",
+              "next_stage": "vessel_assessment",
+              "effects": ["safe_arrival", "delayed_rescue"],
+              "xp_bonus": 15
+            }
+          }
+        },
+        {
+          "choice_id": "use_thrusters_aggressively",
+          "text": "Maximum thrust—blow through the asteroids with speed and power",
+          "requirements": {
+            "system": "propulsion",
+            "system_level": 2
+          },
+          "success_chance": "system_based",
+          "consequences": {
+            "success": {
+              "text": "You engage maximum thrust. Your upgraded propulsion system roars to life, accelerating you through the asteroid field at dangerous speeds. Rocks flash past your viewport in a blur. Your velocity is your shield—too fast for the asteroids to track and intercept. You burst through the gauntlet in record time, arriving at the distressed vessel with minutes to spare. Reckless? Perhaps. Effective? Absolutely.",
+              "next_stage": "vessel_assessment",
+              "effects": ["speed_approach", "extra_time_gained"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "You engage maximum thrust, but your propulsion system isn't quite up to the task. You're fast, but not fast enough. An asteroid clips your aft section. Another grazes your port nacelle. You make it through, but your propulsion system is damaged. You've arrived at the distressed vessel, but with compromised engines.",
+              "next_stage": "vessel_assessment",
+              "effects": ["propulsion_damaged"],
+              "damage": "propulsion_damage"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "vessel_assessment",
+      "title": "The Derelict",
+      "description": "You're alongside the distressed vessel now. Up close, it's worse than you thought. The ship is ancient—definitely pre-Exodus design, civilian transport class. Multiple hull breaches vent atmosphere into space. Emergency bulkheads have sealed, trapping survivors in isolated sections. Life support is failing. You can see people through the viewport, waving desperately. Your sensors detect 12 life signs, down from the initial 15. You don't have much time.",
+      "image": "damaged_vessel",
+      "choices": [
+        {
+          "choice_id": "immediate_evacuation",
+          "text": "Begin immediate evacuation—dock and bring survivors aboard",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You maneuver for docking. Your airlocks mate with their emergency hatch. The seal holds—barely. You open the hatch. Twelve survivors flood through: families, engineers, a ship's captain. They're shaken but alive. The captain, a woman with kind eyes, grips your hand. 'Thank you. Another five minutes and...' She doesn't finish. You don't need her to. You've saved twelve lives today.",
+              "next_stage": "moral_choice",
+              "effects": ["all_survivors_rescued", "grateful_refugees"],
+              "xp_bonus": 50
+            }
+          }
+        },
+        {
+          "choice_id": "assess_cargo",
+          "text": "Quickly assess if the ship has salvageable cargo or technology first",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You ask the survivors about the ship's cargo before fully committing to the rescue. The captain's eyes harden. 'You're worried about cargo while we're dying?' She's not wrong. You proceed with the evacuation, but the delay costs you. One survivor succumbs to injuries before you can reach them. You save eleven lives. The captain won't meet your eyes. The moral weight of that choice will stay with you.",
+              "next_stage": "moral_choice",
+              "effects": ["delayed_rescue", "survivor_died", "moral_compromise", "cargo_knowledge"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "repair_their_ship",
+          "text": "Attempt emergency repairs to stabilize their ship instead of evacuation",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "A risky call, but you know your engineering. You EVA to their hull with repair patches and sealant. Working in zero-g, you seal the critical breaches. Their hull integrity stabilizes. Life support reboots. You've saved their ship AND the survivors. The captain is incredulous. 'You... you fixed it? I thought we'd lose everything.' This wasn't the easy choice, but it was the right one. Twelve lives saved, their home intact.",
+              "next_stage": "moral_choice",
+              "effects": ["ship_repaired", "all_survivors_saved", "heroic_action", "earned_alliance"],
+              "xp_bonus": 60
+            },
+            "failure": {
+              "text": "You EVA to attempt repairs, but the damage is worse than you thought. Your patches won't hold under the stress fractures. You've lost critical minutes. You abort the repair and begin emergency evacuation, but it's too late for two of the survivors. Ten souls rescued. Two lost. The captain doesn't blame you—you tried the impossible. But you'll remember those two faces.",
+              "next_stage": "moral_choice",
+              "effects": ["repair_failed", "two_survivors_died", "attempted_heroics"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "moral_choice",
+      "title": "Questions and Answers",
+      "description": "With the survivors safe aboard your ship, you have time to talk. The captain introduces herself as Elena Vasquez, formerly of the transport vessel 'Morning Star.' She explains they've been living on Earth, scavenging like you, but wanted to reach the colony on Titan. They thought their old ship could make it. They were wrong. Now they're refugees with nowhere to go. Elena looks at you with weary hope. 'What happens to us now?'",
+      "image": "refugees_aboard",
+      "choices": [
+        {
+          "choice_id": "take_to_settlement",
+          "text": "Offer to take them to the nearest settlement—it's out of your way, but the right thing to do",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You alter course for the nearest settlement—a three-day detour. The refugees are grateful beyond words. Over the journey, Elena shares stories of Earth before the Exodus: cities of glass and steel, orbital elevators, humanity reaching for the stars. She gives you coordinates to a hidden cache her crew discovered—'For your kindness,' she says. You've made friends, and maybe something more: allies in this harsh new world.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "effects": ["helped_refugees", "gained_allies", "cache_coordinates"],
+              "rewards_modified": {
+                "credits": "+100",
+                "unlocks": ["location_hidden_cache"]
+              },
+              "xp_bonus": 40
+            }
+          }
+        },
+        {
+          "choice_id": "drop_at_outpost",
+          "text": "Drop them at the nearest outpost—you've done enough already",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You plot course for a small outpost, only six hours away. It's not much, but it's shelter and supplies. The refugees understand—you're not running a charity. Elena thanks you quietly. 'You saved our lives. That's enough.' They disembark at the outpost. You watch them go, families clinging together, walking into an uncertain future. You did what you could. It has to be enough.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "effects": ["refugees_delivered"],
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "recruit_offer",
+          "text": "Offer Elena and skilled crew members positions aboard your ship",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You make Elena an offer: join your crew. She's a skilled captain, and you could use the expertise. She considers, then smiles. 'You saved us. You offered us purpose. How can I refuse?' Elena and two of her engineers join your crew. The remaining survivors head to the outpost with your supplies and blessing. You've gained valuable allies, skilled crew, and the respect of people who've seen the worst and survived.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "effects": ["elena_joined_crew", "engineers_recruited", "crew_expanded"],
+              "rewards_modified": {
+                "unlocks": ["crew_system_unlocked"],
+                "items": [{"part_id": "propulsion_ion_drive_l1_uncommon", "quantity": 1}]
+              },
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "You make the offer, but Elena politely declines. 'You're brave, and we owe you our lives. But my place is with my people. We'll find our way together, as refugees.' You respect her choice. They disembark at the outpost. You've saved lives, but you couldn't save the dream of what might have been.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "effects": ["recruitment_declined"],
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "demand_payment",
+          "text": "Demand payment or salvage rights for the rescue—this is a business",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You inform Elena that rescue services aren't free. She looks at you with disappointment, but nods. 'We have some supplies. Spare parts. Not much, but it's yours.' They transfer what little cargo they have—some credits, a few salvaged parts. It's not much. When they disembark at the outpost, no one meets your eyes. You have your payment. But you can feel the weight of their judgment. In the mirror, you wonder if you like what you see.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "effects": ["demanded_payment", "refugees_resentful", "moral_stain"],
+              "rewards_modified": {
+                "credits": "+200"
+              },
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete",
+      "title": "Mission Complete",
+      "description": "The distress call has been answered. Lives have been saved. The Theta-9 asteroid field holds fewer secrets now, and one more ship has found safe harbor. How you chose to help—quickly or carefully, generously or pragmatically—that's your story to tell. The stars are filled with people in need. How you answer their calls defines who you are.",
+      "image": "mission_complete",
+      "choices": []
+    }
+  ],
+  "rewards": {
+    "xp": 150,
+    "credits": 450,
+    "items": [
+      {"part_id": "propulsion_chemical_thruster_l1_common", "quantity": 1},
+      {"part_id": "sensors_basic_array_l1_uncommon", "quantity": 1}
+    ],
+    "discovered_parts": [
+      "sensors_basic_array_l1_uncommon"
+    ],
+    "unlocks": []
+  },
+  "failure_consequences": {
+    "xp": 50,
+    "effects": ["failed_rescue"]
+  }
+}

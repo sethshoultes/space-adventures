@@ -1,0 +1,433 @@
+{
+  "mission_id": "cargo_escort_gamma",
+  "title": "Cargo Escort: Gamma Route",
+  "type": "trade",
+  "location": "Gamma Route Trade Corridor",
+  "description": "A merchant convoy needs protection through contested space on the Gamma Route. Pirates have been active in the area, and the merchant is willing to pay well for escort services. Navigate diplomatic situations, manage risks, and make choices that could mean the difference between profit and disaster.",
+  "difficulty": 3,
+  "estimated_time": "10-12 min",
+  "requirements": {
+    "min_level": 1,
+    "required_systems": [],
+    "completed_missions": []
+  },
+  "objectives": [
+    "Negotiate escort contract with merchant captain",
+    "Escort convoy through Gamma Route safely",
+    "Deliver cargo to destination",
+    "[OPTIONAL] Respond to distress calls encountered en route",
+    "[OPTIONAL] Maximize payment through skilled negotiation"
+  ],
+  "stages": [
+    {
+      "stage_id": "initial_contract",
+      "title": "Meeting Captain Voss",
+      "description": "The trade port is bustling with activity. Captain Elena Voss stands beside three cargo haulers, each loaded with sealed containers. She's a veteran trader with sharp eyes and a no-nonsense demeanor. 'You're the escort I hired?' she asks, sizing up your ship. 'I need protection through the Gamma Route. Pirates have been hitting convoys. Standard rate is 600 credits. Questions?'",
+      "image": "trade_port_meeting",
+      "choices": [
+        {
+          "choice_id": "accept_standard",
+          "text": "Accept the standard rate—600 credits for safe delivery",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Voss nods approvingly. 'Straightforward. I like that. We launch in ten minutes. Stay close to the convoy and keep your sensors active. First sign of trouble, I want to know about it.' She hands you the route coordinates. The Gamma Route stretches through three sectors, each with its own reputation.",
+              "next_stage": "route_planning",
+              "effects": ["standard_payment"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "negotiate_higher",
+          "text": "Negotiate for higher pay—this is dangerous work (Diplomacy 2)",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "'You're not wrong,' Voss admits, studying you with newfound respect. 'Pirates have been aggressive lately. Tell you what—800 credits, and if we make it through without losing any cargo, I'll throw in a voucher for premium ship parts. Deal?' You've earned her respect and better terms. Smart negotiation pays off.",
+              "next_stage": "route_planning",
+              "effects": ["negotiated_payment", "earned_respect"],
+              "rewards_modified": {
+                "credits": 800,
+                "items": ["add:credits_voucher_500cr"]
+              },
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "Voss laughs, but not unkindly. 'Nice try. Standard rate is standard for a reason. But I appreciate the confidence. 600 credits, take it or leave it.' She's not budging, but she seems to respect the attempt. At least you tried.",
+              "next_stage": "route_planning",
+              "effects": ["standard_payment", "attempted_negotiation"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "ask_about_cargo",
+          "text": "Ask about the cargo—what exactly are you protecting?",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "'Smart question,' Voss says, nodding toward the containers. 'Medical supplies, mostly. Antibiotics, surgical equipment, water filtration units. Earthbound colonies are desperate for this stuff. That's why pirates want it—high value, easy to fence.' She pauses. 'Nothing illegal, if that's what you're worried about. Just people trying to survive.' Knowing what you're protecting makes it feel more important.",
+              "next_stage": "route_planning",
+              "effects": ["standard_payment", "knows_cargo_importance"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "route_planning",
+      "title": "Charting the Course",
+      "description": "You review the route options with Voss. The Gamma Route has three main paths through the contested sectors. The Safe Route adds two hours but avoids known pirate hotspots. The Direct Route is fastest but passes through recently attacked areas. The Profitable Route swings past a distressed mining station that might pay for supplies—but it's even more dangerous. 'Your ship, your call on the route,' Voss says. 'But I'm paying for results, not heroics.'",
+      "image": "nav_chart",
+      "choices": [
+        {
+          "choice_id": "safe_route",
+          "text": "Take the Safe Route—avoid unnecessary risks",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The Safe Route takes you through well-patrolled space. The journey is uneventful—exactly what you wanted. Voss's convoy keeps tight formation. Hours pass with nothing but routine sensor sweeps. It's boring, but boring means everyone gets paid. 'Good call,' Voss says over comms. 'Sometimes the smart play is the cautious play.'",
+              "next_stage": "uneventful_journey",
+              "effects": ["safe_route_chosen"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "direct_route",
+          "text": "Take the Direct Route—time is money, calculated risk",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You plot the Direct Route through Sector Gamma-7. It's faster, yes, but your sensors immediately pick up debris fields from recent attacks. Voss's voice crackles over comms: 'Sensor contact. Three ships, bearing 270. Could be salvagers... could be pirates.' Your hand hovers over the weapons console. Here we go.",
+              "next_stage": "pirate_encounter",
+              "effects": ["direct_route_chosen"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "profitable_route",
+          "text": "Take the Profitable Route—help the mining station, earn extra pay",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "'Risky,' Voss warns. 'But I respect initiative. If we pull this off, the mining station pays 200 credits for medical supplies, and you get half.' The route takes you past the mining station's distress beacon. It's still active. Someone down there needs help. But this area is pirate territory. High risk, high reward.",
+              "next_stage": "mining_station_approach",
+              "effects": ["profitable_route_chosen", "bonus_opportunity"],
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "uneventful_journey",
+      "title": "Smooth Sailing",
+      "description": "The Safe Route lives up to its name. Your sensors stay clear, the convoy maintains formation, and Voss's haulers make steady progress toward the destination. It's almost too quiet. You run diagnostic checks on your systems to pass the time. Everything's green. In another hour, you'll be at the destination collecting payment. Sometimes the best missions are the boring ones.",
+      "image": "convoy_formation",
+      "choices": [
+        {
+          "choice_id": "maintain_vigilance",
+          "text": "Stay alert—monitor sensors continuously (Science 2)",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "Your vigilance pays off. You spot a faint sensor ghost—a ship trying to shadow the convoy while cloaked. You alert Voss immediately. 'Good catch,' she says. 'That's a scout ship. They're looking for easier targets.' You adjust course slightly, and the shadow breaks off. Threat neutralized without firing a shot. Professional work.",
+              "next_stage": "delivery_complete",
+              "effects": ["threat_detected", "professional_work"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "You maintain sensor sweeps, but the quiet journey lulls you into routine. Nothing appears on sensors. The convoy reaches its destination without incident. Voss seems satisfied. 'Clean run. Just what I needed.' Sometimes luck is better than skill.",
+              "next_stage": "delivery_complete",
+              "effects": ["routine_completion"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "relax_slightly",
+          "text": "Relax a bit—seems safe enough",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You ease back in your seat, confident the Safe Route was the right choice. The convoy makes steady progress. Voss's voice occasionally checks in over comms, but there's nothing urgent. The destination appears on sensors right on schedule. 'Textbook escort,' Voss says. 'Couldn't ask for better.' Easy money.",
+              "next_stage": "delivery_complete",
+              "effects": ["relaxed_journey"],
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "pirate_encounter",
+      "title": "Hostile Contact",
+      "description": "Three ships break from the debris field and intercept your convoy. They're armed, but not military-grade. Pirates, definitely. The lead ship hails you: 'This is Captain Dane of the Free Traders Coalition. That convoy is carrying supplies we need. Pay the toll—500 credits—or we take the cargo by force. Your choice, escort.' Voss's voice cuts in on a private channel: 'Don't pay them. We paid you to handle this.'",
+      "image": "pirate_ships",
+      "choices": [
+        {
+          "choice_id": "negotiate_toll",
+          "text": "Negotiate the toll down—try to find a middle ground (Diplomacy 3)",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "'Free Traders Coalition?' you respond calmly. 'You're not pirates, you're survivors. I get it. But 500 credits is steep. How about this—we give you one container of medical supplies. You let us pass. Everyone wins.' Silence. Then Dane's voice: 'One container. Non-negotiable.' Voss curses on the private channel but relents. You jettison one container. The pirates retrieve it and depart. 'Expensive,' Voss mutters, 'but we're alive. And we still have most of the cargo.'",
+              "next_stage": "delivery_complete",
+              "effects": ["negotiated_with_pirates", "lost_one_container"],
+              "rewards_modified": {
+                "credits": -100
+              },
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "'Not interested in deals,' Dane says coldly. 'Pay or fight.' Your negotiation failed. Voss's voice is tense: 'Looks like we're doing this the hard way.' The pirates are powering weapons. You have seconds to decide.",
+              "next_stage": "forced_decision",
+              "effects": ["negotiation_failed"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "refuse_toll",
+          "text": "Refuse to pay—you were hired to protect this convoy, not give in to extortion",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "'Not paying,' you reply firmly. 'And you're not taking the cargo.' Dane laughs. 'Bold. Let's see if your ship backs up your mouth.' The pirate ships move into attack position... but then hesitate. Your ship is armed. The convoy is alert. They're re-evaluating the cost. After a long moment, Dane's voice returns: 'Not worth it today. But we'll remember you.' The pirates break off. Voss exhales in relief. 'That was a gamble. But it worked. Good bluff—or was it a bluff?'",
+              "next_stage": "delivery_complete",
+              "effects": ["stood_ground", "pirates_remember"],
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "pay_toll_quick",
+          "text": "Pay the 500 credits immediately—not worth the fight",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You transfer 500 credits to the pirate account. 'Smart,' Dane says. 'You get to live, we get paid. Win-win.' The pirate ships withdraw. Voss is furious. 'I hired you to protect us, not pay them off! That's coming out of your fee.' She's not happy, but everyone's alive. The convoy continues, and you're down 500 credits. Expensive lesson.",
+              "next_stage": "delivery_complete",
+              "effects": ["paid_toll", "voss_disappointed"],
+              "rewards_modified": {
+                "credits": -500
+              },
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "forced_decision",
+      "title": "No More Talking",
+      "description": "The pirates are done negotiating. Their weapons are powered up, targeting locks are active. You have to make a choice right now: fight or flight. Voss's convoy is vulnerable. Your ship is the only thing between them and disaster. 'Whatever you're going to do,' Voss says, voice tight, 'do it fast.'",
+      "image": "weapons_lock",
+      "choices": [
+        {
+          "choice_id": "emergency_maneuver",
+          "text": "Execute emergency evasive maneuvers—protect the convoy (Engineering 2)",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You push your propulsion system to maximum, putting your ship between the pirates and the convoy. 'All haulers, execute scatter pattern Delta!' Voss's convoy breaks formation and scatters. The pirates are confused—too many targets moving in different directions. By the time they regroup, you've repositioned and the convoy is accelerating away. 'Brilliant flying,' Voss says, impressed. 'They didn't land a single shot.' You regroup the convoy and continue to the destination. Crisis averted through skill.",
+              "next_stage": "delivery_complete",
+              "effects": ["emergency_escape", "impressed_voss"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "You attempt evasive maneuvers, but your propulsion system struggles. The pirates land a few glancing hits before you manage to get the convoy moving. 'We're taking damage!' Voss shouts. One of her haulers has a hull breach, but the cargo is intact. You limp to the destination, battered but alive. Voss pays you, but she's not calling you for the next job.",
+              "next_stage": "delivery_complete",
+              "effects": ["damaged_escape", "voss_unimpressed"],
+              "rewards_modified": {
+                "credits": -200
+              },
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "jettison_cargo",
+          "text": "Jettison some cargo to distract them—save the convoy",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "'Sorry, Voss,' you say, jettisoning two cargo containers into space. The pirates immediately break pursuit to claim the easy prize. 'Damn it!' Voss curses, but she's already accelerating away with the remaining cargo. You've saved most of the convoy at the cost of two containers. At the destination, Voss is frustrated but pragmatic. 'We lost cargo, but we're alive. I'll dock your pay for the losses, but you made the right call under pressure.'",
+              "next_stage": "delivery_complete",
+              "effects": ["cargo_sacrificed", "convoy_saved"],
+              "rewards_modified": {
+                "credits": -200
+              },
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mining_station_approach",
+      "title": "Mining Station Sierra-9",
+      "description": "The mining station appears on sensors—a cluster of modular habitats clinging to an asteroid. The distress beacon is still broadcasting. 'Station Sierra-9 to any ships. We need medical supplies. Sickness outbreak. Will pay for aid.' Voss looks at you. 'Your call. We've got the supplies they need. But this area is crawling with pirates. If we stop, we're vulnerable.'",
+      "image": "mining_station",
+      "choices": [
+        {
+          "choice_id": "help_station",
+          "text": "Help the station—these people are desperate",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You dock with the station and transfer medical supplies. The station manager is deeply grateful. 'You saved lives today,' she says, transferring 200 credits to your account. But as you undock, sensors light up: three pirate ships incoming. 'Told you,' Voss mutters. But the mining station's defense turrets activate. 'We got your back, escort!' The pirates are caught between your ship and the station's guns. They retreat quickly. Good deed rewarded.",
+              "next_stage": "delivery_complete",
+              "effects": ["helped_station", "earned_allies", "pirates_driven_off"],
+              "rewards_modified": {
+                "credits": 200
+              },
+              "xp_bonus": 50
+            }
+          }
+        },
+        {
+          "choice_id": "ignore_station",
+          "text": "Ignore the station—stick to the mission, deliver the convoy safely",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You fly past the station. The distress beacon continues broadcasting behind you. 'Practical,' Voss says, but she sounds disappointed. The rest of the journey is uneventful. You reach the destination on schedule with all cargo intact. Voss pays you in full, but she doesn't make eye contact. You got paid, but it feels hollow. Some choices have costs that aren't measured in credits.",
+              "next_stage": "delivery_complete",
+              "effects": ["ignored_station", "hollow_victory"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "scan_station_first",
+          "text": "Scan the station for threats before committing (Science 3)",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You run a detailed sensor sweep. The station's distress is real—thermal signatures show multiple sick crew members. But your sensors also detect a cloaked ship nearby, waiting in ambush. 'Trap,' you inform Voss. 'Pirates were using the distress call to lure in targets.' You broadcast a warning to the station and adjust your route. The cloaked ship doesn't pursue. 'Sharp eyes,' Voss says, impressed. 'That could have gone very badly.' You continue safely to the destination. Smart preparation saves the day.",
+              "next_stage": "delivery_complete",
+              "effects": ["detected_trap", "avoided_ambush", "warned_station"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "Your sensor sweep doesn't reveal anything unusual. You cautiously approach the station. The distress call seems legitimate. But as you begin docking procedures, three ships decloak around you. Pirates. 'Trap!' Voss shouts. You have to fight your way out. The convoy escapes, but you've taken damage and wasted time. The mission succeeds, but barely.",
+              "next_stage": "delivery_complete",
+              "effects": ["fell_for_trap", "fought_pirates"],
+              "rewards_modified": {
+                "credits": -100
+              },
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "delivery_complete",
+      "title": "Contract Fulfilled",
+      "description": "The convoy reaches its destination: a fortified trade hub on the edge of Earth's reclaimed territories. Voss's haulers dock and begin unloading cargo. She settles up with you, transferring the agreed-upon credits. 'You did good work,' she says, and you can tell she means it. 'If you're ever looking for more escort jobs, look me up. The Gamma Route always needs reliable protection.' You've earned a reputation as a dependable escort.",
+      "image": "trade_hub_arrival",
+      "choices": [
+        {
+          "choice_id": "accept_payment",
+          "text": "Accept payment and part ways professionally",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You accept the payment and shake Voss's hand. 'Pleasure doing business,' you say. She nods and heads off to handle her cargo. You check your credit balance—up by a solid amount. The job's done, the convoy's safe, and you're a little richer. Not a bad day's work. The Gamma Route will see you again, no doubt.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "ask_about_future",
+          "text": "Ask about future trade opportunities—build relationship (Diplomacy 2)",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "'Actually,' you say, 'I'm interested in more than one-off jobs. Think we could work together regularly?' Voss considers, then grins. 'I like your style. Tell you what—I'll put you on my preferred escort list. Priority contracts, better pay, advance notice. Deal?' You've just secured a valuable business relationship. Voss hands you a data chip. 'My private comm code. Next time I run the Gamma Route, you'll be my first call.' Networking pays dividends.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "effects": ["ongoing_relationship", "preferred_escort"],
+              "xp_bonus": 35
+            },
+            "failure": {
+              "text": "'Let's see how this job goes first,' Voss says diplomatically. She's not committing to anything yet. Fair enough. You accept payment and part ways on good terms, but no special relationship established. Still, you completed the job. The Gamma Route will remember you.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete",
+      "title": "Mission Complete",
+      "description": "The Gamma Route escort is complete. Your reputation as a reliable escort grows. Captain Voss's convoy reached its destination safely, and you've earned both credits and experience navigating the dangerous trade corridors of post-Exodus Earth.",
+      "image": "mission_success",
+      "choices": []
+    }
+  ],
+  "rewards": {
+    "xp": 150,
+    "credits": 600,
+    "items": [
+      {"part_id": "propulsion_ion_drive_l1_uncommon", "quantity": 1}
+    ],
+    "discovered_parts": [
+      "propulsion_ion_drive_l1_uncommon"
+    ],
+    "unlocks": [
+      "mission_trade_expansion",
+      "location_gamma_route_hub"
+    ]
+  },
+  "failure_consequences": {
+    "xp": 50,
+    "effects": ["failed_escort_mission"]
+  }
+}

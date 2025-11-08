@@ -1,0 +1,602 @@
+{
+  "mission_id": "first_contact_protocol",
+  "title": "First Contact Protocol",
+  "type": "story",
+  "location": "Earth Orbit Training Facility",
+  "description": "ATLAS has prepared a training simulation to teach you first contact protocols. Before you leave Earth for the stars, you need to understand the delicate art of meeting new civilizations. This simulation will test your judgment, cultural sensitivity, and decision-making under uncertainty.",
+  "difficulty": 1,
+  "estimated_time": "15-18 min",
+  "requirements": {
+    "min_level": 1,
+    "required_systems": [],
+    "completed_missions": ["tutorial_first_salvage"]
+  },
+  "objectives": [
+    "Complete ATLAS first contact training simulation",
+    "Demonstrate cultural sensitivity and diplomatic awareness",
+    "[OPTIONAL] Achieve perfect score on all protocols"
+  ],
+  "stages": [
+    {
+      "stage_id": "training_intro",
+      "title": "Welcome to First Contact Training",
+      "description": "ATLAS's holographic form materializes in your workshop. 'Captain, before you venture into space, we must prepare you for what may be humanity's greatest challenge: first contact with alien civilizations. The Exodus ships left Earth seeking new worlds, and they likely found them. You may not be the first human to meet alien life, but you must be prepared nonetheless.' The AI's expression grows serious. 'This simulation will test your judgment. There are no perfect answers—only consequences. Are you ready?'",
+      "image": "atlas_hologram",
+      "choices": [
+        {
+          "choice_id": "ready_begin",
+          "text": "I'm ready. Begin the simulation.",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "ATLAS nods approvingly. 'Excellent. Remember: cultural sensitivity, open-mindedness, and caution. The simulation will feel real, but no actual harm can come to you. Your decisions, however, will reveal your character.' The workshop fades away, replaced by the bridge of a simulated starship. You're in orbit around an unknown moon. Sensors have detected an artificial signal.",
+              "next_stage": "initial_contact",
+              "effects": ["simulation_started"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "ask_questions",
+          "text": "What should I expect? What are the protocols?",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "ATLAS displays a holographic briefing. 'The Federation's first contact protocols are simple in principle, complex in execution: 1) Approach peacefully. 2) Communicate clearly. 3) Respect autonomy. 4) Never impose. 5) Accept consequences.' The AI pauses. 'But real first contact is never simple. Cultural misunderstandings, fear, curiosity, aggression—all are possible. Your job is to navigate uncertainty with wisdom and compassion. Trust your instincts, but question your assumptions. Now—are you ready?'",
+              "next_stage": "initial_contact",
+              "effects": ["reviewed_protocols"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "initial_contact",
+      "title": "Unknown Signal Detected",
+      "description": "Your simulated ship's sensors ping with an artificial signal emanating from the moon's surface. The pattern is clearly structured—mathematical sequences, repeating rhythms. Someone or something is broadcasting. Your science officer reports: 'Signal is non-threatening. Appears to be... a greeting? Or possibly a warning. The universal translator is attempting to decode, but we need more data.' Outside the viewport, the alien moon glows in the light of its parent gas giant. This is the moment. First contact.",
+      "image": "alien_moon_signal",
+      "choices": [
+        {
+          "choice_id": "analyze_first",
+          "text": "Analyze the signal thoroughly before responding",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You spend precious minutes analyzing the signal structure. It's elegant—prime numbers, fibonacci sequences, and what appears to be a representation of the periodic table. The universal translator begins to assemble meaning: 'Greetings... peaceful... curious... welcome.' The signal is an invitation. Your careful analysis reveals something else: embedded coordinates pointing to a specific location on the moon's surface. They want to meet face-to-face.",
+              "next_stage": "signal_decoded",
+              "effects": ["thorough_analysis", "found_coordinates"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "You attempt to analyze the signal, but the mathematics are beyond your current science skills. The universal translator provides a rough approximation: 'Greetings... something... something... welcome or warning?' You're not sure. Do you respond blindly, or take a more cautious approach?",
+              "next_stage": "signal_unclear",
+              "effects": ["incomplete_analysis"]
+            }
+          }
+        },
+        {
+          "choice_id": "respond_immediately",
+          "text": "Respond with a friendly greeting signal",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You instruct communications to broadcast a simple mathematical greeting in return—the same prime number sequence, followed by a representation of your ship and its peaceful intent. The response is immediate. The alien signal shifts, becoming more complex, more excited. They heard you. They're responding. The universal translator begins to piece together fragments: '...understand... curious... meet... coordinates...' They want to meet. But where? You'll need to interpret the rest of their message to know.",
+              "next_stage": "signal_unclear",
+              "effects": ["responded_early", "aliens_excited"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "cautious_observation",
+          "text": "Continue observing without revealing our presence",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You decide to observe passively, maintaining sensor lock on the signal source without responding. Hours pass. The alien signal repeats, unchanging. Then, suddenly, it stops. Your sensors show no change on the moon's surface—but the greeting has ceased. Did they give up? Did they detect your presence and interpret silence as hostility? Or are they simply patient? ATLAS's voice interrupts: 'Captain, in first contact scenarios, silence can be interpreted many ways. Not all of them are positive.'",
+              "next_stage": "signal_stopped",
+              "effects": ["remained_silent", "aliens_uncertain"],
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "signal_decoded",
+      "title": "Invitation Received",
+      "description": "The signal is clear now: an invitation to meet on the moon's surface at specific coordinates. Your science officer displays the location—a valley between two mountain ranges, sheltered and defensible. Your tactical officer notes: 'If this is a trap, it's a good one. Limited escape routes, high ground on both sides.' But your communications officer counters: 'Or it's neutral ground—protected from environmental hazards, easy to find, symbolic of meeting in the middle.' How do you proceed?",
+      "image": "valley_coordinates",
+      "choices": [
+        {
+          "choice_id": "accept_invitation",
+          "text": "Accept the invitation. Land at the coordinates with an open mind.",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 1
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You broadcast acceptance of the invitation and begin your descent. The valley is beautiful—alien vegetation in shades of purple and silver, rock formations that seem almost intentionally artistic. As your shuttle lands, you see them: bipedal figures, approximately your height, emerging from a structure that blends seamlessly with the rock. They're not carrying visible weapons. They approach slowly, deliberately, showing their empty hands. A gesture of peace that transcends species.",
+              "next_stage": "face_to_face",
+              "effects": ["peaceful_approach", "trust_established"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "You accept the invitation, but your nervousness shows. Your shuttle's landing is awkward, kicking up dust. The aliens emerge from their structure, but they keep their distance. Your diplomatic inexperience is evident—you're not sure if you should exit first, if you should bring gifts, if you should speak or wait to be spoken to. The moment is awkward, tense. They're watching you carefully.",
+              "next_stage": "awkward_meeting",
+              "effects": ["diplomatic_uncertainty"]
+            }
+          }
+        },
+        {
+          "choice_id": "suggest_orbit",
+          "text": "Suggest meeting in orbit instead, on neutral ground",
+          "requirements": {},
+          "success_chance": 75,
+          "consequences": {
+            "success": {
+              "text": "You counter-propose a meeting in orbit, aboard your ship or a neutral location in space. The alien response comes slowly: 'Understand... caution... acceptable.' They agree. Hours later, a small alien craft docks with your ship. You meet in your cargo bay, both sides visible to each other, both in their own element. It's a compromise that shows wisdom. The aliens seem to appreciate your thoughtfulness.",
+              "next_stage": "orbital_meeting",
+              "effects": ["suggested_compromise", "mutual_respect"],
+              "xp_bonus": 20
+            },
+            "failure": {
+              "text": "You suggest an orbital meeting, but the aliens decline. 'Surface... traditional... important.' You've inadvertently rejected their cultural practice. The invitation stands, but you sense you've created unnecessary tension. Sometimes caution can be mistaken for disrespect.",
+              "next_stage": "awkward_meeting",
+              "effects": ["cultural_misstep"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "signal_unclear",
+      "title": "Partial Understanding",
+      "description": "The alien signal continues, but you're only getting fragments through the universal translator. You know they're aware of you. You know they're communicating. But the full meaning is unclear. Do they want to meet? Are they warning you away? Is this a scientific exchange or a territorial challenge? Your communications officer looks to you for guidance. Every moment of delay could be interpreted as uncertainty—or wisdom.",
+      "image": "signal_analysis",
+      "choices": [
+        {
+          "choice_id": "request_clarification",
+          "text": "Broadcast a request for clarification in simple terms",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You craft a careful response: simple images, basic concepts, a humble request for clearer communication. The alien response shifts immediately—they slow down, simplify, repeat key concepts. The universal translator locks on: 'Meet... surface... coordinates... peace.' They're adapting to your comprehension level. It's a sign of intelligence and patience. The coordinates come through clearly now. They want a face-to-face meeting.",
+              "next_stage": "signal_decoded",
+              "effects": ["established_communication", "mutual_adaptation"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "Your attempt at clarification seems to confuse them. They repeat their original message, louder and faster. You're not getting through. ATLAS's voice cuts in: 'Sometimes, Captain, admitting we don't understand is the wisest path. But it requires humility and skill you haven't yet mastered.'",
+              "next_stage": "communication_breakdown",
+              "effects": ["communication_failure"]
+            }
+          }
+        },
+        {
+          "choice_id": "land_cautiously",
+          "text": "Land on the moon at a safe distance and observe",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You decide to land on the moon, but away from the signal source. From a safe distance, you scan and observe. Hours pass. Then you see them: alien figures in the distance, watching your ship. They make no aggressive moves. They simply... wait. One of them slowly raises an appendage in what might be a wave. They're giving you space, time to decide. The ball is in your court.",
+              "next_stage": "cautious_contact",
+              "effects": ["landed_safely", "aliens_patient"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "signal_stopped",
+      "title": "Silence",
+      "description": "The alien signal has ceased. Your sensors show the source is still active, but they've stopped broadcasting. Your communications officer reports: 'They detected us. I'm certain of it. They know we're here, and we chose not to respond. From their perspective... we might seem hostile. Or perhaps simply uninterested.' ATLAS appears on your viewscreen: 'First contact is a dialogue, Captain. Silence is also a message—but rarely a positive one. You may have lost this opportunity.'",
+      "image": "silent_moon",
+      "choices": [
+        {
+          "choice_id": "apologize_late",
+          "text": "Broadcast an apology and greeting now, explaining the delay",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You craft a message of apology and explanation—you were cautious, uncertain, learning. You mean no harm. The response is slow in coming, but it arrives: 'Understand... caution... acceptable. Meet?' They're giving you a second chance. Your humility and honesty have saved the moment. First contact is back on track, though the relationship begins with a stumble rather than a smooth start.",
+              "next_stage": "signal_decoded",
+              "effects": ["recovered_from_silence", "humble_approach"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "Your apology comes across as insincere or confusing. The aliens do not respond. The opportunity is lost. ATLAS materializes: 'A valuable lesson, Captain. In first contact, timing and tone matter as much as intent. You cannot reclaim a first impression.'",
+              "next_stage": "simulation_failure",
+              "effects": ["first_contact_failed"],
+              "mission_result": "failure"
+            }
+          }
+        },
+        {
+          "choice_id": "accept_failure",
+          "text": "Accept that this opportunity is lost. Learn from the mistake.",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You accept the consequence of your caution. Some opportunities, once missed, cannot be reclaimed. ATLAS appears: 'A mature choice, Captain. Not every first contact will succeed. Sometimes we fail, and we must carry that forward as wisdom.' The simulation environment fades, returning you to your workshop. The lesson is learned, if painful.",
+              "next_stage": "simulation_debrief",
+              "effects": ["accepted_failure", "learned_humility"],
+              "xp_bonus": 20
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "face_to_face",
+      "title": "First Contact",
+      "description": "You stand face-to-face with an alien civilization. They are humanoid, but distinctly other—skin that shimmers like oil on water, large eyes that seem to see more than the visible spectrum, delicate fingers that move in patterns that might be communication. One of them steps forward. Through the universal translator, fragmented words emerge: 'Welcome... peace... learn... together?' Their intention is clear, even if the language is not. They want cultural exchange. But now comes the real test: what do you share?",
+      "image": "alien_first_contact",
+      "choices": [
+        {
+          "choice_id": "share_culture",
+          "text": "Share information about Earth, humanity, and your mission",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You tell them of Earth, the Exodus, humanity's long journey through the stars. You speak of hope and loss, of rebuilding and rediscovery. They listen with what seems like deep attention. In return, they share their own story—a civilization that survived a planetary disaster, learned to live underground, emerged to find the stars waiting. Two species, separated by light-years, united by the simple desire to understand and be understood. The exchange is beautiful.",
+              "next_stage": "successful_contact",
+              "effects": ["cultural_exchange", "mutual_understanding"],
+              "xp_bonus": 35
+            }
+          }
+        },
+        {
+          "choice_id": "ask_questions",
+          "text": "Ask about their civilization before sharing yours",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 1
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You ask questions—about their world, their technology, their culture. They seem pleased by your curiosity. Through the translator, they describe a civilization built on collective memory, artistic expression, and careful stewardship of their fragile moon. They live in harmony with their environment because they nearly destroyed it once. They learned. When you share your own story in return, the exchange feels balanced. You listened before speaking. They appreciate this.",
+              "next_stage": "successful_contact",
+              "effects": ["respectful_exchange", "earned_trust"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "Your questions are too technical, too rapid. You overwhelm them with scientific curiosity before establishing rapport. They retreat slightly, uncertain. The translator conveys confusion: 'Analyze? Study? Not... conversation?' You've made them feel like specimens rather than people. First contact requires empathy as much as curiosity.",
+              "next_stage": "awkward_meeting",
+              "effects": ["overly_analytical"]
+            }
+          }
+        },
+        {
+          "choice_id": "cautious_exchange",
+          "text": "Share carefully, avoiding sensitive information about Earth's location or technology",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You share cultural information—music, art, philosophy—while carefully avoiding strategic details like Earth's coordinates or your technology level. They seem to notice your caution and mirror it, sharing their culture but not their science. It's a careful dance, both sides protecting themselves while still reaching out. Trust will take time. But the foundation is laid without making either side vulnerable. Sometimes wisdom is knowing what not to share.",
+              "next_stage": "cautious_success",
+              "effects": ["mutual_caution", "protected_information"],
+              "xp_bonus": 30
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "awkward_meeting",
+      "title": "Cultural Missteps",
+      "description": "The meeting is not going smoothly. Misunderstandings have created tension. The aliens seem uncertain, perhaps even concerned. Your universal translator struggles to convey nuance. One of the aliens makes a gesture—is it frustration? Goodbye? A request for patience? You're not sure. This is the reality of first contact: imperfect communication, cultural confusion, the risk of offense without intent. How do you salvage this moment?",
+      "image": "tense_meeting",
+      "choices": [
+        {
+          "choice_id": "acknowledge_mistakes",
+          "text": "Openly acknowledge the awkwardness and request patience",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You stop, take a breath, and through the translator, convey: 'This is difficult. I am making mistakes. I ask for your patience and forgiveness. I want to understand.' The effect is immediate. The tension eases. One of the aliens makes a sound that the translator interprets as laughter. They respond: 'Yes. Difficult. We... also... mistakes. Together... learn?' Honesty and humility have saved the moment. First contact doesn't have to be perfect—it just has to be sincere.",
+              "next_stage": "recovered_contact",
+              "effects": ["acknowledged_mistakes", "built_rapport"],
+              "xp_bonus": 35
+            },
+            "failure": {
+              "text": "Your attempt to acknowledge the awkwardness comes across as insincere or confusing. The aliens retreat further. The meeting ends without hostility, but without connection. ATLAS appears: 'Sometimes, Captain, good intentions are not enough. Skill, practice, and genuine empathy are required.'",
+              "next_stage": "simulation_debrief",
+              "effects": ["contact_failed_peacefully"]
+            }
+          }
+        },
+        {
+          "choice_id": "end_meeting",
+          "text": "Politely end the meeting before things get worse",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You make a gesture of polite withdrawal and begin to return to your shuttle. The aliens do not stop you. The meeting ends without incident, but also without real connection. As you lift off, you see them watching your departure. No hostility, but no friendship either. ATLAS's voice: 'Not every first contact succeeds, Captain. But you departed peacefully, and that is something. Next time, you'll know better.'",
+              "next_stage": "simulation_debrief",
+              "effects": ["peaceful_withdrawal", "lesson_learned"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "orbital_meeting",
+      "title": "Meeting in the Stars",
+      "description": "The alien craft is unlike anything in human design—organic curves, pulsing lights, technology that seems to blur the line between machine and art. They enter your cargo bay wearing what might be environmental suits or formal attire—you're not certain. But their body language is clear: cautious respect. The same emotion you're feeling. Two species, meeting in the void between worlds, both taking a risk.",
+      "image": "alien_ship_docking",
+      "choices": [
+        {
+          "choice_id": "formal_greeting",
+          "text": "Offer a formal diplomatic greeting following protocol",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 1
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You follow first contact protocols: a formal greeting, statement of peaceful intent, and offer of cultural exchange. The aliens seem to appreciate the structure. They respond in kind with their own formal greeting—a series of harmonious tones that the translator interprets as names, titles, and expressions of goodwill. The meeting proceeds with dignity and mutual respect. Formality, it turns out, can be a universal language.",
+              "next_stage": "successful_contact",
+              "effects": ["formal_protocol_successful", "diplomatic_success"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "Your formal greeting is too stiff, too rehearsed. The aliens seem confused by the formality—perhaps their culture is less hierarchical, more casual. You've created an unnecessary barrier. They respond politely, but the warmth you hoped for is absent.",
+              "next_stage": "awkward_meeting",
+              "effects": ["overly_formal"]
+            }
+          }
+        },
+        {
+          "choice_id": "casual_approach",
+          "text": "Approach casually, emphasizing common ground as explorers",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You approach them as one explorer to another—no grand speeches, just genuine curiosity and respect. You show them your ship, your star charts, your mission. They seem to relax, and in turn, share their own journey. Two species, both reaching for the stars, both curious about what lies beyond their own world. The connection is immediate and real. Sometimes the best diplomacy is simply being human.",
+              "next_stage": "successful_contact",
+              "effects": ["casual_connection", "natural_rapport"],
+              "xp_bonus": 35
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "cautious_contact",
+      "title": "The Waiting Game",
+      "description": "You've landed at a safe distance, and they've maintained theirs. Both sides are cautious, both sides are curious. Hours pass. Then one of the aliens begins to slowly walk toward your ship, hands visible and empty. They stop halfway between your positions and wait. It's a clear invitation: meet in the middle. The ball is in your court. Do you trust this gesture?",
+      "image": "alien_approaching",
+      "choices": [
+        {
+          "choice_id": "meet_halfway",
+          "text": "Walk out to meet them halfway",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You exit your ship and walk toward the alien figure, matching their slow, deliberate pace. When you meet in the middle, standing on alien ground beneath alien stars, the moment is profound. Neither of you speaks at first—the universal translator is still learning. But you both understand the gesture. Two beings from different worlds, choosing trust over fear. The alien extends a hand-like appendage. You take it. First contact.",
+              "next_stage": "successful_contact",
+              "effects": ["mutual_trust", "iconic_moment"],
+              "xp_bonus": 40
+            }
+          }
+        },
+        {
+          "choice_id": "signal_invitation",
+          "text": "Signal them to come closer to your ship instead",
+          "requirements": {},
+          "success_chance": 60,
+          "consequences": {
+            "success": {
+              "text": "You signal for them to approach your ship. They pause, consider, then slowly continue forward. They're willing to come to you, though you sense they noticed you didn't meet them halfway. The meeting proceeds, but the power dynamic has shifted slightly. You maintained control, but perhaps at the cost of equal partnership.",
+              "next_stage": "face_to_face",
+              "effects": ["maintained_control", "slight_imbalance"],
+              "xp_bonus": 20
+            },
+            "failure": {
+              "text": "You signal for them to approach, but they don't move. They wait. The message is clear: they offered to meet as equals. If you want contact, you must show the same courage they did. The standoff continues.",
+              "next_stage": "communication_breakdown",
+              "effects": ["trust_issue"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "successful_contact",
+      "title": "Understanding Achieved",
+      "description": "First contact is a success. You've communicated, shared culture, and established the foundation for future relations. The aliens express gratitude through the translator: 'Hope... future... together... stars.' Before they depart, they offer a gift—a small device, its purpose unclear but its meaning crystal clear. A token of friendship. You offer something in return: a data chip containing Earth's music, art, and a message of peace. When they leave, you feel changed. You've represented humanity well.",
+      "image": "gift_exchange",
+      "choices": [
+        {
+          "choice_id": "continue_simulation",
+          "text": "Ask ATLAS about the next stage of the simulation",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "ATLAS appears, a proud expression on the AI's holographic face. 'There is no next stage, Captain. This simulation was never about perfect execution—it was about testing your character, your judgment, and your capacity for empathy. You succeeded. Not perfectly, but genuinely. And that is what matters in first contact.' The simulation fades, returning you to your workshop. You feel ready for what lies ahead.",
+              "next_stage": "simulation_complete",
+              "mission_result": "success",
+              "xp_bonus": 50
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "recovered_contact",
+      "title": "Learning Together",
+      "description": "The awkwardness has passed. Both sides have acknowledged the difficulty of cross-species communication and chosen to work through it together. The aliens share fragments of their culture—bioluminescent art, harmonic communication patterns, a deep respect for ecological balance. You share humanity's journey, its triumphs and failures, its hopes for the future. By the end, neither side fully understands the other—but both sides respect each other. That's enough for a first meeting.",
+      "image": "cultural_exchange",
+      "choices": [
+        {
+          "choice_id": "conclude_positively",
+          "text": "Conclude the meeting with mutual goodwill",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You exchange gestures of respect and goodwill. The meeting ends not with perfect understanding, but with hope. ATLAS's voice: 'Well done, Captain. First contact is rarely smooth, but it can still be successful. You demonstrated adaptability, humility, and genuine respect. Those qualities will serve you well among the stars.' The simulation fades.",
+              "next_stage": "simulation_complete",
+              "mission_result": "success",
+              "xp_bonus": 45
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "cautious_success",
+      "title": "Careful Foundations",
+      "description": "The meeting ends with both sides having shared culture without vulnerability. Trust will take time to build, but you've avoided potentially dangerous disclosures while still establishing contact. The aliens seem to appreciate your caution—perhaps they, too, have learned to be careful among the stars. Before departing, they transmit coordinates to a neutral meeting point for future contact. The door is open, if you choose to walk through it later.",
+      "image": "departing_aliens",
+      "choices": [
+        {
+          "choice_id": "accept_coordinates",
+          "text": "Accept the coordinates and express hope for future meetings",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You accept the coordinates and convey optimism for future contact. The aliens depart peacefully. ATLAS materializes: 'A careful, measured success, Captain. Not all first contacts require immediate deep friendship. Sometimes, simply establishing communication and trust over time is the wisest path. You showed strategic thinking alongside diplomatic skill.' The simulation ends.",
+              "next_stage": "simulation_complete",
+              "mission_result": "success",
+              "xp_bonus": 40
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "communication_breakdown",
+      "title": "Lost Opportunity",
+      "description": "The communication has broken down. Whether through misunderstanding, mistrust, or incompatible approaches, the first contact has failed to establish meaningful connection. The aliens withdraw to their settlement. Your ship remains in orbit. No hostility, but no friendship either. ATLAS appears: 'First contact does not always succeed, Captain. This simulation has taught you a valuable lesson: good intentions are not enough. Skill, patience, and cultural sensitivity are essential. Learn from this.'",
+      "image": "failed_contact",
+      "choices": [
+        {
+          "choice_id": "reflect_on_failure",
+          "text": "Reflect on what went wrong and commit to improving",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You analyze every decision, every moment where communication faltered. ATLAS helps you understand the cultural and diplomatic principles you missed. 'Failure is a teacher, Captain, if you're willing to learn.' You leave the simulation wiser, if humbled. Next time, you'll be better prepared.",
+              "next_stage": "simulation_debrief",
+              "effects": ["learned_from_failure"],
+              "xp_bonus": 25
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "simulation_debrief",
+      "title": "Lessons Learned",
+      "description": "The simulation ends. ATLAS appears in your workshop, holographic interface showing detailed analysis of your choices. 'First contact is humanity's greatest challenge and greatest opportunity. Today, you learned that it requires more than technology—it requires wisdom, empathy, and humility. You did not achieve perfect success, but you demonstrated growth. That is what matters.' The AI provides you with a data module on communications protocols as reward for completing the training.",
+      "image": "atlas_debrief",
+      "choices": [
+        {
+          "choice_id": "accept_lesson",
+          "text": "Thank ATLAS and accept the communications training data",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You accept the data module and ATLAS's wisdom. 'When you venture into space, Captain, remember: every species you meet has its own history, its own fears, its own hopes. Approach them with the same respect you would want for humanity. That is the essence of first contact protocol.' You install the basic communications array data into your ship's database. One step closer to the stars.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 30
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "simulation_failure",
+      "title": "Training Incomplete",
+      "description": "The simulation ends in failure. ATLAS appears, expression neutral. 'First contact requires preparation, Captain. Today's simulation revealed gaps in your diplomatic skills and cultural awareness. This is why we train. I recommend you gain more experience in diplomacy and science before attempting this simulation again. The stakes in real first contact are too high for unprepared captains.' The lesson is harsh, but necessary.",
+      "image": "simulation_failed",
+      "choices": [
+        {
+          "choice_id": "try_again_later",
+          "text": "Accept the failure and plan to retry with better skills",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You accept ATLAS's assessment. Some challenges require preparation. You'll return to this training when you're ready—when your diplomacy and science skills have improved. For now, you have other missions to complete, other ways to grow. The stars can wait.",
+              "next_stage": "mission_fail",
+              "mission_result": "failure"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete",
+      "title": "Protocol Certified",
+      "description": "ATLAS certifies you as having completed first contact protocol training. 'You are ready, Captain. When you meet alien civilizations—and you will—remember these lessons. Approach with humility, communicate with care, and always respect autonomy. The future of human-alien relations may depend on captains like you.' The training module is complete. You are one step closer to leaving Earth behind and exploring the infinite possibilities among the stars.",
+      "image": "certification_complete",
+      "choices": []
+    },
+    {
+      "stage_id": "mission_fail",
+      "title": "Training Failed",
+      "description": "You have not passed the first contact protocol training. ATLAS recommends additional preparation before attempting this simulation again. The galaxy is vast and dangerous. Unprepared captains put themselves—and humanity's reputation—at risk.",
+      "image": "training_failed",
+      "choices": []
+    }
+  ],
+  "rewards": {
+    "xp": 100,
+    "credits": 200,
+    "items": [
+      {"part_id": "communications_basic_array_l1_common", "quantity": 1}
+    ],
+    "discovered_parts": [
+      "communications_basic_array_l1_common"
+    ],
+    "unlocks": [
+      "mission_second_story"
+    ]
+  },
+  "failure_consequences": {
+    "xp": 50,
+    "effects": ["first_contact_training_failed", "recommend_skill_improvement"]
+  }
+}

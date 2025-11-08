@@ -1,10 +1,11 @@
 {
   "mission_id": "tutorial_first_salvage",
   "title": "The Inheritance",
-  "type": "salvage",
+  "type": "tutorial",
   "location": "Old Aerospace Museum, Nevada",
   "description": "Your grandfather's final message led you here: an abandoned aerospace museum in the Nevada desert. He claimed to have hidden something valuable—a ship frame, parts, and tools. Everything you need to start rebuilding. But the museum has attracted other scavengers too.",
   "difficulty": 1,
+  "estimated_time": "15-20 min",
   "requirements": {
     "min_level": 1,
     "required_systems": [],

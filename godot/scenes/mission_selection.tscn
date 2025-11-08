@@ -1,0 +1,199 @@
+[gd_scene load_steps=3 format=3 uid="uid://cqvx8y7h3nmvp"]
+
+[ext_resource type="Script" path="res://scripts/ui/mission_selection.gd" id="1_mission_selection"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.101961, 0.113725, 0.180392, 1)
+
+[node name="MissionSelection" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mission_selection")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="Header" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Header"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Header/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0, 0.898039, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "MISSION SELECTION"
+
+[node name="BackButton" type="Button" parent="Header"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "← BACK TO WORKSHOP"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="LeftPanel" type="MarginContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/LeftPanel"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/LeftPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="MissionList" type="VBoxContainer" parent="HBoxContainer/LeftPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="RightPanel" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/RightPanel"]
+layout_mode = 2
+
+[node name="DetailsContainer" type="VBoxContainer" parent="HBoxContainer/RightPanel"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/RightPanel/DetailsContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.898039, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "SELECT A MISSION"
+autowrap_mode = 3
+
+[node name="TypeDifficultyLabel" type="Label" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "TYPE: --- | DIFFICULTY: ---"
+
+[node name="TimeLabel" type="Label" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.666667, 0, 1)
+theme_override_font_sizes/font_size = 14
+text = "⏱ ESTIMATED TIME: ---"
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="LocationHeader" type="Label" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.898039, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "LOCATION:"
+
+[node name="LocationContainer" type="MarginContainer" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+
+[node name="LocationLabel" type="Label" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer/LocationContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "---"
+autowrap_mode = 3
+
+[node name="BriefingHeader" type="Label" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.898039, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "MISSION BRIEFING:"
+
+[node name="BriefingContainer" type="MarginContainer" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+
+[node name="BriefingLabel" type="Label" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer/BriefingContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Select a mission to view details."
+autowrap_mode = 3
+
+[node name="RequirementsHeader" type="Label" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.898039, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "REQUIREMENTS:"
+
+[node name="RequirementsContainer" type="MarginContainer" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+
+[node name="RequirementsLabel" type="Label" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer/RequirementsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "---"
+autowrap_mode = 3
+
+[node name="RewardsHeader" type="Label" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.898039, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "REWARDS:"
+
+[node name="RewardsContainer" type="MarginContainer" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+
+[node name="RewardsLabel" type="Label" parent="HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer/RewardsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "---"
+autowrap_mode = 3
+
+[node name="LaunchButton" type="Button" parent="HBoxContainer/RightPanel/DetailsContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 1, 0.533333, 1)
+theme_override_font_sizes/font_size = 20
+text = "LAUNCH MISSION"
