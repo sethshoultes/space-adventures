@@ -135,6 +135,51 @@ FUNCTION_DEFINITIONS = [
             },
             "required": []
         }
+    },
+    {
+        "name": "get_ship_info",
+        "description": "Get specific information about the player's ship (flexible query)",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "field": {
+                    "type": "string",
+                    "description": "Which ship information to retrieve",
+                    "enum": ["name", "class", "power_total", "power_available", "hull_hp", "max_hull_hp", "all_systems", "operational_systems", "all"]
+                }
+            },
+            "required": ["field"]
+        }
+    },
+    {
+        "name": "get_player_info",
+        "description": "Get specific information about the player (flexible query)",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "field": {
+                    "type": "string",
+                    "description": "Which player information to retrieve",
+                    "enum": ["name", "level", "rank", "xp", "skills", "credits", "all"]
+                }
+            },
+            "required": ["field"]
+        }
+    },
+    {
+        "name": "get_mission_context",
+        "description": "Get current mission details and story context (only available during missions)",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "include_history": {
+                    "type": "boolean",
+                    "description": "Include previous mission stages in response",
+                    "default": False
+                }
+            },
+            "required": []
+        }
     }
 ]
 
@@ -444,6 +489,150 @@ async def recommend_upgrades(priority: str = "balanced", game_state: Optional[Di
     }
 
 
+async def get_ship_info(field: str, game_state: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """
+    Get specific information about the player's ship
+
+    Args:
+        field: Which ship information to retrieve
+        game_state: Current game state
+
+    Returns:
+        Requested ship information
+    """
+    if game_state is None:
+        # Mock data for testing
+        mock_ship = {
+            "name": "USS Prototype",
+            "ship_class": "None",
+            "power_total": 50,
+            "power_available": 25,
+            "hull_hp": 170,
+            "max_hull_hp": 200,
+            "all_systems": {
+                "hull": {"level": 2, "health": 85, "active": True},
+                "power": {"level": 2, "health": 100, "active": True},
+                "shields": {"level": 1, "health": 100, "active": False},
+                "weapons": {"level": 1, "health": 100, "active": False}
+            },
+            "operational_systems": ["hull", "power"]
+        }
+
+        if field == "all":
+            return {"success": True, "data": mock_ship}
+        elif field in mock_ship:
+            return {"success": True, "data": {field: mock_ship[field]}}
+        else:
+            return {"success": False, "error": f"Unknown field: {field}"}
+
+    ship = game_state.get("ship", {})
+
+    if field == "all":
+        return {"success": True, "data": ship}
+    elif field == "all_systems":
+        return {"success": True, "data": ship.get("systems", {})}
+    elif field == "operational_systems":
+        systems = ship.get("systems", {})
+        operational = [name for name, sys in systems.items() if sys.get("active", False)]
+        return {"success": True, "data": operational}
+    elif field in ship:
+        return {"success": True, "data": {field: ship[field]}}
+    else:
+        return {"success": False, "error": f"Unknown ship field: {field}"}
+
+
+async def get_player_info(field: str, game_state: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """
+    Get specific information about the player
+
+    Args:
+        field: Which player information to retrieve
+        game_state: Current game state
+
+    Returns:
+        Requested player information
+    """
+    if game_state is None:
+        # Mock data for testing
+        mock_player = {
+            "name": "Captain",
+            "level": 3,
+            "rank": "Lieutenant",
+            "xp": 750,
+            "skills": {
+                "engineering": 2,
+                "diplomacy": 1,
+                "combat": 2,
+                "science": 1
+            },
+            "credits": 1500
+        }
+
+        if field == "all":
+            return {"success": True, "data": mock_player}
+        elif field in mock_player:
+            return {"success": True, "data": {field: mock_player[field]}}
+        else:
+            return {"success": False, "error": f"Unknown field: {field}"}
+
+    player = game_state.get("player", {})
+
+    if field == "all":
+        return {"success": True, "data": player}
+    elif field in player:
+        return {"success": True, "data": {field: player[field]}}
+    else:
+        return {"success": False, "error": f"Unknown player field: {field}"}
+
+
+async def get_mission_context(include_history: bool = False, game_state: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """
+    Get current mission details and story context
+
+    Args:
+        include_history: Include previous mission stages in response
+        game_state: Current game state
+
+    Returns:
+        Mission context information
+    """
+    if game_state is None:
+        # Mock data - no mission active
+        return {
+            "success": False,
+            "error": "No mission currently active"
+        }
+
+    # Check if there's mission context in game_state
+    mission = game_state.get("mission", None)
+
+    if mission is None:
+        return {
+            "success": False,
+            "error": "No mission currently active"
+        }
+
+    # Build response with current mission info
+    response_data = {
+        "mission_id": mission.get("mission_id", "unknown"),
+        "title": mission.get("title", "Unknown Mission"),
+        "type": mission.get("type", "unknown"),
+        "difficulty": mission.get("difficulty", 1),
+        "current_stage": mission.get("current_stage", "stage_1"),
+        "description": mission.get("description", "")
+    }
+
+    # Add history if requested
+    if include_history:
+        response_data["completed_stages"] = mission.get("completed_stages", [])
+        response_data["choices_made"] = mission.get("choices_made", [])
+
+    return {
+        "success": True,
+        "data": response_data
+    }
+
+
 # =============================================================================
 # FUNCTION REGISTRY
 # =============================================================================
@@ -458,6 +647,9 @@ FUNCTION_REGISTRY: Dict[str, Callable] = {
     "calculate_upgrade_cost": calculate_upgrade_cost,
     "get_player_status": get_player_status,
     "recommend_upgrades": recommend_upgrades,
+    "get_ship_info": get_ship_info,
+    "get_player_info": get_player_info,
+    "get_mission_context": get_mission_context,
 }
 
 
