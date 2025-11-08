@@ -23,7 +23,7 @@ import logging
 from typing import Dict, Any
 
 # Import API routers
-from src.api import missions_router, chat_router, dialogue_router
+from src.api import missions_router, chat_router, dialogue_router, orchestrator_router
 from src.ai.client import get_ai_client
 
 # Load environment variables
@@ -58,6 +58,7 @@ app.add_middleware(
 app.include_router(missions_router)
 app.include_router(chat_router)
 app.include_router(dialogue_router)
+app.include_router(orchestrator_router)  # Multi-agent orchestration
 
 
 # Health check endpoint
@@ -87,10 +88,17 @@ async def health_check() -> Dict[str, Any]:
             "health": providers_health
         },
         "cache_enabled": os.getenv("CACHE_ENABLED", "true") == "true",
+        "orchestrator_enabled": True,
         "endpoints": {
             "missions": "/api/missions/generate",
             "chat": "/api/chat/message",
-            "dialogue": "/api/dialogue/generate"
+            "dialogue": "/api/dialogue/generate",
+            "orchestrator": {
+                "chat": "/api/orchestrator/chat",
+                "route": "/api/orchestrator/route",
+                "agents": "/api/orchestrator/agents",
+                "health": "/api/orchestrator/health"
+            }
         }
     }
 
@@ -108,7 +116,8 @@ async def root():
             "missions": "/api/missions/*",
             "chat": "/api/chat/*",
             "dialogue": "/api/dialogue/*",
-            "encounters": "/api/encounters/*"
+            "encounters": "/api/encounters/*",
+            "orchestrator": "/api/orchestrator/*"
         }
     }
 
