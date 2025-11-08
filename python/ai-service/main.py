@@ -26,6 +26,17 @@ from typing import Dict, Any
 from src.api import missions_router, chat_router, dialogue_router
 from src.ai.client import get_ai_client
 
+# Import background task system
+from src.background import (
+    get_scheduler,
+    get_mission_queue,
+    pregenerate_missions,
+    generate_daily_events,
+    cleanup_old_cache,
+    refresh_galaxy_state,
+    replenish_all_queues
+)
+
 # Load environment variables
 load_dotenv()
 
@@ -116,8 +127,10 @@ async def root():
 # Startup event
 @app.on_event("startup")
 async def startup_event():
-    """Initialize AI client on startup."""
+    """Initialize AI client and background tasks on startup."""
     logger.info("Starting AI Service...")
+
+    # Initialize AI client
     try:
         ai_client = get_ai_client()
         available = ai_client.get_available_providers()
@@ -125,12 +138,77 @@ async def startup_event():
     except Exception as e:
         logger.error(f"Error initializing AI client: {e}")
 
+    # Initialize and start background scheduler
+    try:
+        scheduler = get_scheduler()
+
+        if scheduler.enabled:
+            logger.info("Configuring AI-first background tasks...")
+
+            # INTERVAL TASKS (periodic)
+            # Pre-generate missions every 30 minutes
+            scheduler.add_interval_task(
+                replenish_all_queues,
+                minutes=30,
+                task_id="mission_replenishment"
+            )
+
+            # CRON TASKS (scheduled)
+            # Daily events at 3 AM
+            scheduler.add_cron_task(
+                generate_daily_events,
+                hour=3,
+                minute=0,
+                task_id="daily_events"
+            )
+
+            # Cache cleanup at 2 AM daily
+            scheduler.add_cron_task(
+                cleanup_old_cache,
+                hour=2,
+                minute=0,
+                task_id="cache_cleanup"
+            )
+
+            # Weekly galaxy refresh on Mondays at 2 AM
+            scheduler.add_cron_task(
+                refresh_galaxy_state,
+                hour=2,
+                minute=0,
+                day_of_week='mon',
+                task_id="weekly_galaxy_refresh"
+            )
+
+            # Start the scheduler
+            scheduler.start()
+
+            # Optionally: Pre-generate some missions on startup
+            startup_pregenerate = os.getenv("STARTUP_PREGENERATE", "false").lower() == "true"
+            if startup_pregenerate:
+                logger.info("Pre-generating initial missions...")
+                await pregenerate_missions(count=2)
+
+            logger.info("Background tasks configured and started")
+        else:
+            logger.info("Background tasks disabled")
+
+    except Exception as e:
+        logger.error(f"Error initializing background tasks: {e}")
+
 
 # Shutdown event
 @app.on_event("shutdown")
 async def shutdown_event():
     """Cleanup on shutdown."""
     logger.info("Shutting down AI Service...")
+
+    # Shutdown background scheduler
+    try:
+        scheduler = get_scheduler()
+        scheduler.shutdown()
+        logger.info("Background tasks shutdown complete")
+    except Exception as e:
+        logger.error(f"Error shutting down background tasks: {e}")
 
 if __name__ == "__main__":
     import uvicorn
