@@ -1002,7 +1002,7 @@ func _send_chat_message() -> void:
 		_set_chat_status("Ready", COLOR_GREEN)
 
 		# Check for function calls
-		if result.data.has("function_call"):
+		if result.data.has("function_call") and result.data.function_call != null:
 			var func_call = result.data.function_call
 			var func_name = func_call.get("name", "unknown")
 			_add_chat_message("System", "Executed function: %s" % func_name, COLOR_YELLOW)
