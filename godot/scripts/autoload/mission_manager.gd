@@ -276,6 +276,14 @@ func _apply_consequences(consequence: Dictionary) -> void:
 			var change = consequence.skill_changes[skill_name]
 			GameState.increase_skill(skill_name, change)
 
+## Public function to manually complete the current mission
+## Used by mission UI when mission reaches a completion stage
+func complete_current_mission() -> void:
+	if not mission_active:
+		push_warning("MissionManager: No active mission to complete")
+		return
+	_complete_mission(true)
+
 ## Complete the mission
 func _complete_mission(success: bool = true) -> void:
 	if not mission_active:

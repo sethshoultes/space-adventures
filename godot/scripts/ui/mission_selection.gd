@@ -107,14 +107,17 @@ func _create_mission_card(mission: Dictionary) -> Control:
 	margin.add_theme_constant_override("margin_right", 12)
 	margin.add_theme_constant_override("margin_top", 8)
 	margin.add_theme_constant_override("margin_bottom", 8)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Allow clicks through to button below
 	card.add_child(margin)
 
 	var vbox = VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 4)
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Allow clicks through to button below
 	margin.add_child(vbox)
 
 	# Top row: Title and Type Badge
 	var top_row = HBoxContainer.new()
+	top_row.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Allow clicks through
 	vbox.add_child(top_row)
 
 	var title_label = Label.new()
@@ -168,6 +171,7 @@ func _create_mission_card(mission: Dictionary) -> Control:
 	# Bottom row: Status badge
 	var bottom_row = HBoxContainer.new()
 	bottom_row.alignment = BoxContainer.ALIGNMENT_END
+	bottom_row.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Allow clicks through
 	vbox.add_child(bottom_row)
 
 	var status_badge = Label.new()

@@ -358,6 +358,13 @@ func _append_mission_complete() -> void:
 
 	var mission = MissionManager.get_active_mission()
 
+	# If mission is still active in MissionManager, complete it to award rewards
+	# (This handles missions that end with a "mission_complete" stage instead of
+	#  having "mission_complete": true in the consequence)
+	if MissionManager.is_mission_active() and mission.has("mission_id"):
+		MissionManager.complete_current_mission()
+		print("Mission: Manually completed mission in MissionManager to award rewards")
+
 	# Create completion entry
 	var completion_entry = VBoxContainer.new()
 	completion_entry.set("theme_override_constants/separation", 15)
