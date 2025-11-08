@@ -1,514 +1,384 @@
 extends Control
 
 ## Main Menu Scene
-## Test scene for Phase 1, Week 3 - Godot Foundation
-## Tests all autoload singletons and service connectivity
+## Complete main menu with service status, save info, and navigation
 
-@onready var service_status_label: Label = $CenterContainer/VBoxContainer/ServiceStatus
-@onready var game_state_label: Label = $CenterContainer/VBoxContainer/GameStateInfo
-@onready var output_log: RichTextLabel = $Output
+# Color constants
+const COLOR_CYAN: Color = Color(0.0, 0.898, 1.0)  # #00e5ff
+const COLOR_GREEN: Color = Color(0.0, 1.0, 0.533)  # #00ff88
+const COLOR_YELLOW: Color = Color(1.0, 0.733, 0.0)  # #ffbb00
+const COLOR_RED: Color = Color(1.0, 0.267, 0.267)  # #ff4444
+const COLOR_WHITE: Color = Color(1.0, 1.0, 1.0)
+const COLOR_GRAY: Color = Color(0.69, 0.69, 0.69)  # #b0b0b0
 
-var chat_session_id: String = ""
+# Node references
+@onready var background_image: TextureRect = $BackgroundLayer/BackgroundImage
+
+@onready var menu_panel: Control = $MenuPanel
+@onready var cyan_border: Control = $MenuPanel/CyanBorder
+@onready var yellow_bracket_tl: Control = $MenuPanel/YellowBracketTL
+@onready var yellow_bracket_tr: Control = $MenuPanel/YellowBracketTR
+@onready var yellow_bracket_bl: Control = $MenuPanel/YellowBracketBL
+@onready var yellow_bracket_br: Control = $MenuPanel/YellowBracketBR
+
+@onready var gateway_label: Label = $MenuPanel/MarginContainer/MainVBox/SystemStatusPanel/MarginContainer/VBoxContainer/StatusHBox/GatewayLabel
+@onready var ai_label: Label = $MenuPanel/MarginContainer/MainVBox/SystemStatusPanel/MarginContainer/VBoxContainer/StatusHBox/AILabel
+@onready var whisper_label: Label = $MenuPanel/MarginContainer/MainVBox/SystemStatusPanel/MarginContainer/VBoxContainer/StatusHBox/WhisperLabel
+
+@onready var continue_button: Button = $MenuPanel/MarginContainer/MainVBox/MenuButtons/ContinueButton
+@onready var new_game_button: Button = $MenuPanel/MarginContainer/MainVBox/MenuButtons/NewGameButton
+@onready var load_game_button: Button = $MenuPanel/MarginContainer/MainVBox/MenuButtons/LoadGameButton
+@onready var settings_button: Button = $MenuPanel/MarginContainer/MainVBox/MenuButtons/SettingsButton
+@onready var quit_button: Button = $MenuPanel/MarginContainer/MainVBox/MenuButtons/QuitButton
+
+@onready var save_info_label: Label = $MenuPanel/MarginContainer/MainVBox/SaveInfoPanel/SaveInfoLabel
+@onready var save_time_label: Label = $MenuPanel/MarginContainer/MainVBox/SaveInfoPanel/SaveTimeLabel
 
 func _ready() -> void:
-	log_output("[b]Main Menu Initialized[/b]")
-	log_output("Testing autoload singletons...")
+	print("Main Menu: Initializing...")
 
-	# Test that all singletons are available
-	_test_singletons()
+	# Try to load background image if it exists
+	_load_background_image()
 
-	# Update UI
-	_update_game_state_display()
+	# Draw cyan border and yellow corner brackets
+	_setup_menu_panel_borders()
 
-	# Check service status
-	await get_tree().create_timer(1.0).timeout
-	_check_service_status()
+	# Update system status
+	_update_system_status()
 
-	# Connect to EventBus signals
-	_connect_event_bus()
+	# Update save info and Continue button state
+	_update_save_info()
 
-func _test_singletons() -> void:
-	"""Test that all autoload singletons are accessible"""
-	var singletons = ["GameState", "SaveManager", "ServiceManager", "AIService", "EventBus"]
+	# Apply button styling
+	_setup_button_styles()
 
-	for singleton_name in singletons:
-		if has_node("/root/" + singleton_name):
-			log_output("[color=green]✓[/color] %s loaded" % singleton_name)
+	print("Main Menu: Ready")
+
+func _draw() -> void:
+	# This is called when queue_redraw() is invoked
+	pass
+
+# ============================================================================
+# INITIALIZATION
+# ============================================================================
+
+func _load_background_image() -> void:
+	"""Try to load the background image if it exists"""
+	var bg_path = "res://assets/sprites/backgrounds/main_menu_bg.png"
+
+	if FileAccess.file_exists(bg_path):
+		var texture = load(bg_path) as Texture2D
+		if texture:
+			background_image.texture = texture
+			background_image.visible = true
+			print("Main Menu: Background image loaded")
 		else:
-			log_output("[color=red]✗[/color] %s FAILED TO LOAD" % singleton_name)
-
-func _connect_event_bus() -> void:
-	"""Connect to EventBus signals for testing"""
-	EventBus.xp_gained.connect(_on_xp_gained)
-	EventBus.level_up.connect(_on_level_up)
-	EventBus.system_installed.connect(_on_system_installed)
-	EventBus.game_saved.connect(_on_game_saved)
-	EventBus.game_loaded.connect(_on_game_loaded)
-	EventBus.chat_message_received.connect(_on_chat_message_received)
-
-	log_output("[color=green]✓[/color] Connected to EventBus signals")
-
-func _check_service_status() -> void:
-	"""Check backend service availability"""
-	log_output("\n[b]Checking backend services...[/b]")
-
-	var results = await ServiceManager.check_all_services()
-
-	var status_text = ""
-	var all_ok = true
-
-	for service_name in results:
-		var status = results[service_name]
-		if status.available:
-			status_text += "%s: [color=green]OK[/color]\n" % service_name.capitalize()
-			log_output("[color=green]✓[/color] %s service: AVAILABLE" % service_name.capitalize())
-		else:
-			status_text += "%s: [color=red]OFFLINE[/color]\n" % service_name.capitalize()
-			log_output("[color=red]✗[/color] %s service: UNAVAILABLE - %s" % [service_name.capitalize(), status.error])
-			all_ok = false
-
-	service_status_label.text = status_text.strip_edges()
-
-	if all_ok:
-		log_output("\n[color=green][b]✓ All services operational![/b][/color]")
+			print("Main Menu: Background image exists but failed to load")
 	else:
-		log_output("\n[color=yellow][b]⚠ Some services offline (check Docker)[/b][/color]")
+		print("Main Menu: No background image found, using fallback color")
+		# BackgroundFallback ColorRect is already visible by default
 
-func _update_game_state_display() -> void:
-	"""Update game state display"""
-	var player = GameState.player
-	var ship = GameState.ship
+func _setup_menu_panel_borders() -> void:
+	"""Setup cyan border and yellow corner brackets for menu panel"""
+	# Connect draw signals
+	cyan_border.draw.connect(_draw_cyan_border)
+	yellow_bracket_tl.draw.connect(_draw_bracket_top_left)
+	yellow_bracket_tr.draw.connect(_draw_bracket_top_right)
+	yellow_bracket_bl.draw.connect(_draw_bracket_bottom_left)
+	yellow_bracket_br.draw.connect(_draw_bracket_bottom_right)
 
-	game_state_label.text = "Player: %s | Level %d %s | Ship: %s (%s)" % [
-		player.name,
-		player.level,
-		player.rank,
-		ship.name,
-		ship.ship_class
+	# Queue redraws
+	cyan_border.queue_redraw()
+	yellow_bracket_tl.queue_redraw()
+	yellow_bracket_tr.queue_redraw()
+	yellow_bracket_bl.queue_redraw()
+	yellow_bracket_br.queue_redraw()
+
+func _draw_cyan_border() -> void:
+	"""Draw cyan rectangular border around menu panel"""
+	var panel_size = menu_panel.size
+	var border_width = 2.0
+
+	# Draw rectangle outline
+	cyan_border.draw_rect(
+		Rect2(Vector2.ZERO, panel_size),
+		COLOR_CYAN,
+		false,
+		border_width
+	)
+
+func _draw_bracket_top_left() -> void:
+	"""Draw yellow L-bracket in top-left corner"""
+	var bracket_length = 45.0
+	var line_width = 3.0
+
+	# Top line (horizontal)
+	yellow_bracket_tl.draw_line(
+		Vector2(0, 0),
+		Vector2(bracket_length, 0),
+		COLOR_YELLOW,
+		line_width
+	)
+
+	# Left line (vertical)
+	yellow_bracket_tl.draw_line(
+		Vector2(0, 0),
+		Vector2(0, bracket_length),
+		COLOR_YELLOW,
+		line_width
+	)
+
+func _draw_bracket_top_right() -> void:
+	"""Draw yellow L-bracket in top-right corner"""
+	var bracket_length = 45.0
+	var line_width = 3.0
+	var width = 50.0  # Control width
+
+	# Top line (horizontal)
+	yellow_bracket_tr.draw_line(
+		Vector2(width - bracket_length, 0),
+		Vector2(width, 0),
+		COLOR_YELLOW,
+		line_width
+	)
+
+	# Right line (vertical)
+	yellow_bracket_tr.draw_line(
+		Vector2(width, 0),
+		Vector2(width, bracket_length),
+		COLOR_YELLOW,
+		line_width
+	)
+
+func _draw_bracket_bottom_left() -> void:
+	"""Draw yellow L-bracket in bottom-left corner"""
+	var bracket_length = 45.0
+	var line_width = 3.0
+	var height = 50.0  # Control height
+
+	# Left line (vertical)
+	yellow_bracket_bl.draw_line(
+		Vector2(0, height - bracket_length),
+		Vector2(0, height),
+		COLOR_YELLOW,
+		line_width
+	)
+
+	# Bottom line (horizontal)
+	yellow_bracket_bl.draw_line(
+		Vector2(0, height),
+		Vector2(bracket_length, height),
+		COLOR_YELLOW,
+		line_width
+	)
+
+func _draw_bracket_bottom_right() -> void:
+	"""Draw yellow L-bracket in bottom-right corner"""
+	var bracket_length = 45.0
+	var line_width = 3.0
+	var width = 50.0  # Control width
+	var height = 50.0  # Control height
+
+	# Right line (vertical)
+	yellow_bracket_br.draw_line(
+		Vector2(width, height - bracket_length),
+		Vector2(width, height),
+		COLOR_YELLOW,
+		line_width
+	)
+
+	# Bottom line (horizontal)
+	yellow_bracket_br.draw_line(
+		Vector2(width - bracket_length, height),
+		Vector2(width, height),
+		COLOR_YELLOW,
+		line_width
+	)
+
+func _setup_button_styles() -> void:
+	"""Apply custom styling to buttons"""
+	# Continue button (green accent)
+	_apply_button_border(continue_button, COLOR_GREEN, 4.0)
+
+	# New Game, Load Game (cyan accent)
+	_apply_button_border(new_game_button, COLOR_CYAN, 4.0)
+	_apply_button_border(load_game_button, COLOR_CYAN, 4.0)
+
+	# Settings (white accent)
+	_apply_button_border(settings_button, COLOR_WHITE, 4.0)
+
+	# Quit button (red accent)
+	_apply_button_border(quit_button, COLOR_RED, 4.0)
+	var quit_stylebox = quit_button.get_theme_stylebox("normal").duplicate() as StyleBoxFlat
+	quit_stylebox.set_border_width_all(4)
+	quit_stylebox.border_color = COLOR_RED
+	quit_button.add_theme_color_override("font_color", COLOR_RED)
+
+func _apply_button_border(button: Button, border_color: Color, border_width: float) -> void:
+	"""Apply a colored left border to a button"""
+	var stylebox_normal = StyleBoxFlat.new()
+	stylebox_normal.bg_color = Color(0.2, 0.2, 0.25, 0.8)
+	stylebox_normal.border_width_left = int(border_width)
+	stylebox_normal.border_color = border_color
+	stylebox_normal.content_margin_left = 15
+	stylebox_normal.content_margin_top = 10
+	stylebox_normal.content_margin_right = 15
+	stylebox_normal.content_margin_bottom = 10
+
+	var stylebox_hover = stylebox_normal.duplicate() as StyleBoxFlat
+	stylebox_hover.bg_color = Color(0.25, 0.25, 0.3, 0.9)
+
+	var stylebox_pressed = stylebox_normal.duplicate() as StyleBoxFlat
+	stylebox_pressed.bg_color = Color(0.15, 0.15, 0.2, 1.0)
+
+	var stylebox_disabled = stylebox_normal.duplicate() as StyleBoxFlat
+	stylebox_disabled.bg_color = Color(0.1, 0.1, 0.15, 0.5)
+	stylebox_disabled.border_color = COLOR_GRAY
+
+	button.add_theme_stylebox_override("normal", stylebox_normal)
+	button.add_theme_stylebox_override("hover", stylebox_hover)
+	button.add_theme_stylebox_override("pressed", stylebox_pressed)
+	button.add_theme_stylebox_override("disabled", stylebox_disabled)
+
+# ============================================================================
+# SYSTEM STATUS
+# ============================================================================
+
+func _update_system_status() -> void:
+	"""Check backend service availability and update status display"""
+	# Check each service asynchronously
+	_check_service("gateway", gateway_label)
+	_check_service("ai", ai_label)
+	_check_service("whisper", whisper_label)
+
+func _check_service(service_name: String, label: Label) -> void:
+	"""Check if a service is available"""
+	var status = await ServiceManager.check_service(service_name)
+
+	if status.available:
+		label.text = "%s: ● OK" % service_name.capitalize()
+		label.add_theme_color_override("font_color", COLOR_GREEN)
+	else:
+		label.text = "%s: ● OFFLINE" % service_name.capitalize()
+		label.add_theme_color_override("font_color", COLOR_RED)
+
+# ============================================================================
+# SAVE INFO
+# ============================================================================
+
+func _update_save_info() -> void:
+	"""Update save info display and Continue button state"""
+	var recent_slot = SaveManager.get_most_recent_save()
+
+	if recent_slot == -1:
+		# No save found
+		save_info_label.text = "No save data found"
+		save_time_label.text = ""
+		continue_button.disabled = true
+		return
+
+	# Load save metadata
+	var save_data = SaveManager.get_save_info(recent_slot)
+	if save_data.is_empty():
+		save_info_label.text = "No save data found"
+		save_time_label.text = ""
+		continue_button.disabled = true
+		return
+
+	# Enable Continue button
+	continue_button.disabled = false
+
+	# Format save info
+	var player_name = save_data.get("player_name", "Unknown")
+	var level = save_data.get("player_level", 1)
+	var rank = save_data.get("player_rank", "Cadet")
+	var ship_name = save_data.get("ship_name", "Unnamed Vessel")
+	var ship_class = save_data.get("ship_class", "None")
+
+	save_info_label.text = "Player: %s | Level %d %s | Ship: %s (%s)" % [
+		player_name, level, rank, ship_name, ship_class
 	]
+
+	# Calculate time ago
+	var last_played = save_data.get("timestamp", 0.0)
+	if last_played > 0:
+		var now = Time.get_unix_time_from_system()
+		var diff = now - last_played
+		var hours = int(diff / 3600.0)
+		var minutes = int(fmod(diff, 3600.0) / 60.0)
+
+		if hours == 0 and minutes < 1:
+			save_time_label.text = "Last played: Less than 1 minute ago"
+		elif hours == 0:
+			save_time_label.text = "Last played: %d minute%s ago" % [minutes, "s" if minutes != 1 else ""]
+		elif hours == 1:
+			save_time_label.text = "Last played: 1 hour ago"
+		elif hours < 24:
+			save_time_label.text = "Last played: %d hours ago" % hours
+		else:
+			var days = int(hours / 24)
+			save_time_label.text = "Last played: %d day%s ago" % [days, "s" if days != 1 else ""]
+	else:
+		save_time_label.text = ""
 
 # ============================================================================
 # BUTTON HANDLERS
 # ============================================================================
 
-func _on_test_service_button_pressed() -> void:
-	log_output("\n[b]Testing service connection...[/b]")
-	_check_service_status()
-
-func _on_test_chat_button_pressed() -> void:
-	log_output("\n[b]Testing AI chat...[/b]")
-
-	if not ServiceManager.is_service_available("ai"):
-		log_output("[color=red]✗[/color] AI service not available")
-		EventBus.error("Service Unavailable", "AI service is not running. Start Docker services.")
+func _on_continue_pressed() -> void:
+	"""Load most recent save and continue"""
+	var recent_save = SaveManager.get_most_recent_save()
+	if recent_save == -1:
+		EventBus.notify("No save file found", "error")
 		return
 
-	log_output("Sending chat message to ATLAS...")
+	print("Main Menu: Loading save slot %d..." % recent_save)
 
-	if chat_session_id == "":
-		chat_session_id = "test_session_%d" % Time.get_unix_time_from_system()
-
-	var result = await AIService.chat_message(
-		"Hello ATLAS, this is a test message. Please respond briefly.",
-		"atlas",
-		chat_session_id
-	)
-
-	if result.success:
-		log_output("[color=green]✓[/color] Chat successful!")
-		if result.data.has("message"):
-			log_output("[color=cyan]ATLAS:[/color] %s" % result.data.message)
-		if result.data.has("cached") and result.data.cached:
-			log_output("[color=yellow](Cached response)[/color]")
+	if SaveManager.load_game(recent_save):
+		print("Main Menu: Save loaded, navigating to workshop...")
+		get_tree().change_scene_to_file("res://scenes/workshop.tscn")
 	else:
-		log_output("[color=red]✗[/color] Chat failed: %s" % result.error)
-		EventBus.error("Chat Failed", result.error)
+		EventBus.notify("Failed to load save file", "error")
 
-func _on_test_mission_button_pressed() -> void:
-	log_output("\n[b]Testing mission generation...[/b]")
+func _on_new_game_pressed() -> void:
+	"""Start a new game"""
+	print("Main Menu: Starting new game...")
 
-	if not ServiceManager.is_service_available("ai"):
-		log_output("[color=red]✗[/color] AI service not available")
-		EventBus.error("Service Unavailable", "AI service is not running. Start Docker services.")
-		return
+	# Reset game state to defaults
+	GameState.reset_to_new_game()
 
-	log_output("Generating medium difficulty mission...")
-
-	var result = await AIService.generate_mission("medium", "salvage", "Old Earth Ruins")
-
-	if result.success:
-		log_output("[color=green]✓[/color] Mission generation successful!")
-
-		if result.data.has("mission"):
-			var mission = result.data.mission
-			log_output("\n[b]Generated Mission:[/b]")
-			log_output("  Title: %s" % mission.get("title", "Unknown"))
-			log_output("  Type: %s" % mission.get("type", "Unknown"))
-			log_output("  Difficulty: %s" % mission.get("difficulty", "Unknown"))
-			log_output("  Location: %s" % mission.get("location", "Unknown"))
-
-			if mission.has("description"):
-				log_output("  Description: %s" % mission.description)
-
-			if mission.has("stages"):
-				log_output("  Stages: %d" % mission.stages.size())
-
-		if result.data.has("cached") and result.data.cached:
-			log_output("[color=yellow](Cached response)[/color]")
-
-		if result.data.has("generation_time_ms"):
-			log_output("  Generation time: %.2fms" % result.data.generation_time_ms)
-	else:
-		log_output("[color=red]✗[/color] Mission generation failed: %s" % result.error)
-		EventBus.error("Mission Generation Failed", result.error)
-
-func _on_test_dialogue_button_pressed() -> void:
-	log_output("\n[b]Testing dialogue generation...[/b]")
-
-	if not ServiceManager.is_service_available("ai"):
-		log_output("[color=red]✗[/color] AI service not available")
-		EventBus.error("Service Unavailable", "AI service is not running. Start Docker services.")
-		return
-
-	log_output("Generating NPC dialogue...")
-
-	var result = await AIService.generate_dialogue(
-		"Jax Morgan",
-		"Salvage Yard Owner",
-		"Player arrives at salvage yard looking for ship parts",
-		"asks about available hull components"
-	)
-
-	if result.success:
-		log_output("[color=green]✓[/color] Dialogue generation successful!")
-
-		if result.data.has("dialogue"):
-			log_output("\n[b]Generated Dialogue:[/b]")
-			log_output("[color=cyan]Jax Morgan:[/color] %s" % result.data.dialogue)
-
-		if result.data.has("cached") and result.data.cached:
-			log_output("[color=yellow](Cached response)[/color]")
-
-		if result.data.has("generation_time_ms"):
-			log_output("  Generation time: %.2fms" % result.data.generation_time_ms)
-	else:
-		log_output("[color=red]✗[/color] Dialogue generation failed: %s" % result.error)
-		EventBus.error("Dialogue Generation Failed", result.error)
-
-func _on_test_save_button_pressed() -> void:
-	log_output("\n[b]Testing save/load system...[/b]")
-
-	# Modify game state
-	log_output("Modifying game state...")
-	GameState.add_xp(50, "test")
-	GameState.increase_skill("engineering", 5)
-	GameState.player.name = "Test Captain"
-	GameState.ship.name = "USS Test Ship"
-	_update_game_state_display()
-
-	# Save game
-	log_output("Saving to slot 1...")
-	var save_result = SaveManager.save_game(1)
-	if save_result:
-		log_output("[color=green]✓[/color] Save successful!")
-	else:
-		log_output("[color=red]✗[/color] Save failed!")
-		return
-
-	# Load game
-	await get_tree().create_timer(0.5).timeout
-	log_output("Loading from slot 1...")
-	var load_result = SaveManager.load_game(1)
-	if load_result:
-		log_output("[color=green]✓[/color] Load successful!")
-		_update_game_state_display()
-	else:
-		log_output("[color=red]✗[/color] Load failed!")
-
-	# Show save info
-	var save_info = SaveManager.get_save_info(1)
-	if not save_info.is_empty():
-		log_output("\nSave file info:")
-		log_output("  Player: %s (Level %d %s)" % [save_info.player_name, save_info.player_level, save_info.player_rank])
-		log_output("  Ship: %s (%s)" % [save_info.ship_name, save_info.ship_class])
-		log_output("  Missions: %d" % save_info.completed_missions)
-		log_output("  Playtime: %s" % SaveManager.format_playtime(save_info.playtime_seconds))
-
-func _on_test_hull_system_button_pressed() -> void:
-	log_output("\n[b]=== Testing Hull System ===[/b]")
-
-	# Create Hull system instance
-	var hull = HullSystem.new()
-	log_output("Created Hull system instance")
-
-	# Test Level 0 (no hull)
-	log_output("\n[b]Test: Level 0 (No Hull)[/b]")
-	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
-	log_output("  Status: %s" % hull.get_status())
-	log_output("  Active: %s" % ("Yes" if hull.active else "No"))
-
-	# Upgrade to Level 1
-	log_output("\n[b]Test: Upgrade to Level 1 (Salvaged Hull)[/b]")
-	hull.upgrade()
-	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
-	log_output("  Status: %s" % hull.get_status())
-	log_output("  Active: %s" % ("Yes" if hull.active else "No"))
-	log_output("  Kinetic Armor: %.0f%%" % (hull.armor_kinetic * 100))
-	log_output("  Power Cost: %d PU" % hull.get_power_cost())
-	log_output("  [color=green]✓[/color] Expected: 50 HP, 5% armor, 0 PU")
-
-	# Test damage
-	log_output("\n[b]Test: Take 20 kinetic damage[/b]")
-	var reduced_damage = hull.take_hull_damage(20, "kinetic")
-	log_output("  Damage after armor: %d (reduced from 20)" % reduced_damage)
-	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
-	log_output("  Expected reduction: ~5% = 19 damage")
-
-	# Test repair
-	log_output("\n[b]Test: Repair 10 HP[/b]")
-	hull.repair(10)
-	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
-
-	# Upgrade to Level 2
-	log_output("\n[b]Test: Upgrade to Level 2 (Reinforced Structure)[/b]")
-	hull.upgrade()
-	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
-	log_output("  Kinetic Armor: %.0f%%" % (hull.armor_kinetic * 100))
-	log_output("  [color=green]✓[/color] Expected: 100 HP, 15% armor")
-
-	# Upgrade to Level 3
-	log_output("\n[b]Test: Upgrade to Level 3 (Composite Armor)[/b]")
-	hull.upgrade()
-	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
-	log_output("  Kinetic Armor: %.0f%%" % (hull.armor_kinetic * 100))
-	log_output("  Energy Armor: %.0f%%" % (hull.armor_energy * 100))
-	log_output("  Radiation Resist: %.0f%%" % (hull.radiation_resist * 100))
-	log_output("  [color=green]✓[/color] Expected: 200 HP, 25% kinetic, 10% energy, 10% radiation")
-
-	# Test energy damage
-	log_output("\n[b]Test: Take 30 energy damage[/b]")
-	var energy_reduced = hull.take_hull_damage(30, "energy")
-	log_output("  Damage after armor: %d (reduced from 30)" % energy_reduced)
-	log_output("  HP: %d/%d" % [hull.get_current_hp(), hull.get_max_hp()])
-	log_output("  Expected reduction: ~10% = 27 damage")
-
-	# Test GameState integration
-	log_output("\n[b]Test: GameState Integration[/b]")
-	log_output("  GameState max_hull_hp: %d" % GameState.ship.max_hull_hp)
-	log_output("  GameState systems[hull].level: %d" % GameState.ship.systems.hull.level)
-	log_output("  [color=green]✓[/color] Expected: 200 HP, Level 3")
-
-	# Test detailed stats
-	log_output("\n[b]Hull Stats:[/b]")
-	var stats = hull.get_stats_string()
-	log_output(stats)
-
-	log_output("\n[color=green][b]✓ Hull System Tests Complete![/b][/color]")
-
-func _on_test_power_system_button_pressed() -> void:
-	log_output("\n[b]=== Testing Power Core System ===[/b]")
-
-	# Create Power Core instance
-	var power = PowerSystem.new()
-	log_output("Created Power Core instance")
-
-	# Test Level 0 (no power)
-	log_output("\n[b]Test: Level 0 (No Power)[/b]")
-	log_output("  Power Output: %d PU" % power.get_power_output())
-	log_output("  Status: %s" % power.get_status())
-	log_output("  Active: %s" % ("Yes" if power.active else "No"))
-
-	# Upgrade to Level 1
-	log_output("\n[b]Test: Upgrade to Level 1 (Fusion Cell)[/b]")
-	power.upgrade()
-	log_output("  Power Output: %d PU" % power.get_power_output())
-	log_output("  Efficiency: %.0f%%" % power.get_efficiency_percent())
-	log_output("  Power Cost Reduction: %.0f%%" % power.get_cost_reduction_percent())
-	log_output("  [color=green]✓[/color] Expected: 100 PU, 80% efficiency, 0% reduction")
-
-	# Upgrade to Level 2
-	log_output("\n[b]Test: Upgrade to Level 2 (Deuterium Reactor)[/b]")
-	power.upgrade()
-	log_output("  Power Output: %d PU" % power.get_power_output())
-	log_output("  Efficiency: %.0f%%" % power.get_efficiency_percent())
-	log_output("  Power Cost Reduction: %.0f%%" % power.get_cost_reduction_percent())
-	log_output("  [color=green]✓[/color] Expected: 200 PU, 85% efficiency, 10% reduction")
-
-	# Upgrade to Level 3
-	log_output("\n[b]Test: Upgrade to Level 3 (M/AM Core)[/b]")
-	power.upgrade()
-	log_output("  Power Output: %d PU" % power.get_power_output())
-	log_output("  Efficiency: %.0f%%" % power.get_efficiency_percent())
-	log_output("  Power Cost Reduction: %.0f%%" % power.get_cost_reduction_percent())
-	log_output("  [color=green]✓[/color] Expected: 400 PU, 90% efficiency, 15% reduction")
-
-	# Upgrade to Level 4
-	log_output("\n[b]Test: Upgrade to Level 4 (Advanced M/AM)[/b]")
-	power.upgrade()
-	log_output("  Power Output: %d PU" % power.get_power_output())
-	log_output("  Efficiency: %.0f%%" % power.get_efficiency_percent())
-	log_output("  Power Cost Reduction: %.0f%%" % power.get_cost_reduction_percent())
-	log_output("  Emergency Reserve: %d PU" % power.emergency_reserve)
-	log_output("  [color=green]✓[/color] Expected: 700 PU, 93% efficiency, 20% reduction, 100 PU reserve")
-
-	# Test emergency reserve
-	log_output("\n[b]Test: Use Emergency Reserve[/b]")
-	var reserve_used = power.use_emergency_reserve()
-	log_output("  Reserve used: %d PU" % reserve_used)
-	log_output("  Remaining reserve: %d PU" % power.emergency_reserve)
-	log_output("  [color=green]✓[/color] Expected: 100 PU used, 0 PU remaining")
-
-	# Upgrade to Level 5
-	log_output("\n[b]Test: Upgrade to Level 5 (Zero-Point Energy)[/b]")
-	power.upgrade()
-	log_output("  Power Output: %d PU" % power.get_power_output())
-	log_output("  Efficiency: %.0f%%" % power.get_efficiency_percent())
-	log_output("  Power Cost Reduction: %.0f%%" % power.get_cost_reduction_percent())
-	log_output("  Power Regen: %d PU/turn" % power.power_regen_per_turn)
-	log_output("  [color=green]✓[/color] Expected: 1000 PU, 98% efficiency, 25% reduction, 5 PU/turn")
-
-	# Test power regeneration
-	log_output("\n[b]Test: Power Regeneration[/b]")
-	var regen = power.regenerate_power()
-	log_output("  Regenerated: %d PU" % regen)
-	log_output("  [color=green]✓[/color] Expected: 5 PU per turn")
-
-	# Test GameState integration
-	log_output("\n[b]Test: GameState Integration[/b]")
-	log_output("  GameState power_total: %d PU" % GameState.ship.power_total)
-	log_output("  GameState power_available: %d PU" % GameState.ship.power_available)
-	log_output("  GameState power_consumption: %d PU" % GameState.ship.power_consumption)
-	log_output("  GameState systems[power].level: %d" % GameState.ship.systems.power.level)
-	log_output("  [color=green]✓[/color] Expected: 1000 PU total, Level 5")
-
-	# Test detailed stats
-	log_output("\n[b]Power Core Stats:[/b]")
-	var stats = power.get_stats_string()
-	log_output(stats)
-
-	log_output("\n[color=green][b]✓ Power Core System Tests Complete![/b][/color]")
-
-func _on_test_propulsion_system_button_pressed() -> void:
-	log_output("\n[b]=== Testing Propulsion System ===[/b]")
-
-	# Create Propulsion instance
-	var propulsion = PropulsionSystem.new()
-	log_output("Created Propulsion System instance")
-
-	# Test Level 0 (no propulsion)
-	log_output("\n[b]Test: Level 0 (No Propulsion)[/b]")
-	log_output("  Speed: %.0fx" % propulsion.get_speed())
-	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
-	log_output("  Status: %s" % propulsion.get_status())
-
-	# Upgrade to Level 1
-	log_output("\n[b]Test: Upgrade to Level 1 (Chemical Thrusters)[/b]")
-	propulsion.upgrade()
-	log_output("  Speed: %.0fx" % propulsion.get_speed())
-	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
-	log_output("  Power Cost: %d PU" % propulsion.get_power_cost())
-	log_output("  [color=green]✓[/color] Expected: 1x speed, 5% dodge, 10 PU")
-
-	# Upgrade to Level 2
-	log_output("\n[b]Test: Upgrade to Level 2 (Ion Drive)[/b]")
-	propulsion.upgrade()
-	log_output("  Speed: %.0fx" % propulsion.get_speed())
-	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
-	log_output("  Power Cost: %d PU" % propulsion.get_power_cost())
-	log_output("  [color=green]✓[/color] Expected: 2x speed, 10% dodge, 15 PU")
-
-	# Upgrade to Level 3
-	log_output("\n[b]Test: Upgrade to Level 3 (Plasma Engine)[/b]")
-	propulsion.upgrade()
-	log_output("  Speed: %.0fx" % propulsion.get_speed())
-	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
-	log_output("  Power Cost: %d PU" % propulsion.get_power_cost())
-	log_output("  Evasive Maneuvers: %s" % ("Available" if propulsion.can_use_evasive_maneuvers() else "None"))
-	log_output("  [color=green]✓[/color] Expected: 4x speed, 18% dodge, 25 PU, Evasive Maneuvers")
-
-	# Test evasive maneuver
-	log_output("\n[b]Test: Use Evasive Maneuver[/b]")
-	var evasive_used = propulsion.use_evasive_maneuver()
-	log_output("  Used: %s" % ("Yes" if evasive_used else "No"))
-	log_output("  Can use again: %s" % ("Yes" if propulsion.can_use_evasive_maneuvers() else "No"))
-	propulsion.reset_evasive_maneuvers()
-	log_output("  After reset: %s" % ("Available" if propulsion.can_use_evasive_maneuvers() else "None"))
-
-	# Upgrade to Level 4
-	log_output("\n[b]Test: Upgrade to Level 4 (Gravitic Drive)[/b]")
-	propulsion.upgrade()
-	log_output("  Speed: %.0fx" % propulsion.get_speed())
-	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
-	log_output("  Power Cost: %d PU" % propulsion.get_power_cost())
-	log_output("  Emergency Burns: %s" % ("Available (2)" if propulsion.can_use_emergency_burn() else "None"))
-	log_output("  [color=green]✓[/color] Expected: 7x speed, 28% dodge, 40 PU, 2 Emergency Burns")
-
-	# Test emergency burns
-	log_output("\n[b]Test: Use Emergency Burns[/b]")
-	propulsion.use_emergency_burn()
-	log_output("  Used 1st: Remaining: %s" % ("1" if propulsion.can_use_emergency_burn() else "0"))
-	propulsion.use_emergency_burn()
-	log_output("  Used 2nd: Remaining: %s" % ("0"))
-	propulsion.reset_emergency_burns()
-	log_output("  After reset: Available (2)")
-
-	# Upgrade to Level 5
-	log_output("\n[b]Test: Upgrade to Level 5 (Inertial Dampener)[/b]")
-	propulsion.upgrade()
-	log_output("  Speed: %.0fx" % propulsion.get_speed())
-	log_output("  Dodge: %.0f%%" % propulsion.get_dodge_percent())
-	log_output("  Power Cost: %d PU" % propulsion.get_power_cost())
-	log_output("  Perfect Maneuverability: %s" % ("Yes" if propulsion.has_perfect_maneuverability() else "No"))
-	log_output("  Collision Immunity: %s" % ("Yes" if propulsion.is_collision_immune() else "No"))
-	log_output("  [color=green]✓[/color] Expected: 12x speed, 40% dodge, 60 PU, perfect control + collision immunity")
-
-	# Test GameState integration
-	log_output("\n[b]Test: GameState Integration[/b]")
-	log_output("  GameState power_consumption: %d PU" % GameState.ship.power_consumption)
-	log_output("  GameState systems[propulsion].level: %d" % GameState.ship.systems.propulsion.level)
-	log_output("  [color=green]✓[/color] Expected: 60 PU consumption (propulsion), Level 5")
-
-	# Test detailed stats
-	log_output("\n[b]Propulsion Stats:[/b]")
-	var stats = propulsion.get_stats_string()
-	log_output(stats)
-
-	log_output("\n[color=green][b]✓ Propulsion System Tests Complete![/b][/color]")
-
-func _on_workshop_button_pressed() -> void:
-	log_output("\n[b]Opening Workshop...[/b]")
+	# Navigate to workshop (tutorial will auto-start if needed)
 	get_tree().change_scene_to_file("res://scenes/workshop.tscn")
 
-func _on_quit_button_pressed() -> void:
-	log_output("\n[b]Quitting...[/b]")
+func _on_load_game_pressed() -> void:
+	"""Open load game screen"""
+	print("Main Menu: Opening load game screen...")
+	get_tree().change_scene_to_file("res://scenes/load_game.tscn")
+
+func _on_settings_pressed() -> void:
+	"""Open settings (placeholder)"""
+	EventBus.notify("Settings coming soon", "info")
+	print("Main Menu: Settings not implemented yet")
+
+func _on_quit_pressed() -> void:
+	"""Quit the game"""
+	print("Main Menu: Quitting game...")
 	get_tree().quit()
 
 # ============================================================================
-# EVENT BUS HANDLERS
+# BUTTON HOVER EFFECTS
 # ============================================================================
 
-func _on_xp_gained(amount: int, source: String) -> void:
-	log_output("[color=cyan]Event:[/color] Gained %d XP (from: %s)" % [amount, source if source else "unknown"])
+func _on_button_mouse_entered(button_path: NodePath) -> void:
+	"""Brighten button on hover"""
+	var button = get_node(button_path) as Button
+	if button and not button.disabled:
+		var tween = create_tween()
+		tween.tween_property(button, "modulate", Color(1.2, 1.2, 1.2), 0.15)
 
-func _on_level_up(new_level: int, old_level: int) -> void:
-	log_output("[color=green][b]Event:[/b] LEVEL UP! %d → %d[/color]" % [old_level, new_level])
-
-func _on_system_installed(system_name: String, level: int) -> void:
-	log_output("[color=cyan]Event:[/color] System installed: %s (Level %d)" % [system_name, level])
-
-func _on_game_saved(slot: int, timestamp: float) -> void:
-	log_output("[color=green]Event:[/color] Game saved to slot %d" % slot)
-
-func _on_game_loaded(slot: int, _game_state: Dictionary) -> void:
-	log_output("[color=green]Event:[/color] Game loaded from slot %d" % slot)
-
-func _on_chat_message_received(ai_personality: String, message: String, _metadata: Dictionary) -> void:
-	log_output("[color=cyan]Event:[/color] Chat message from %s: %s" % [ai_personality.to_upper(), message])
-
-# ============================================================================
-# UTILITY
-# ============================================================================
-
-func log_output(text: String) -> void:
-	"""Add line to output log"""
-	output_log.append_text(text + "\n")
+func _on_button_mouse_exited(button_path: NodePath) -> void:
+	"""Reset button brightness on hover exit"""
+	var button = get_node(button_path) as Button
+	if button:
+		var tween = create_tween()
+		tween.tween_property(button, "modulate", Color(1.0, 1.0, 1.0), 0.15)

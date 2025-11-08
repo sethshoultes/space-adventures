@@ -308,3 +308,20 @@ func get_formatted_save_info(slot: int) -> String:
 	lines.append("Saved: %s" % info.save_date)
 
 	return "\n".join(lines)
+
+## Get the most recent save slot number
+## Returns slot number (1-MAX_SAVE_SLOTS) or -1 if no saves exist
+func get_most_recent_save() -> int:
+	var most_recent_slot = -1
+	var most_recent_time = 0.0
+
+	for slot in range(1, MAX_SAVE_SLOTS + 1):
+		if save_exists(slot):
+			var info = get_save_info(slot)
+			if not info.is_empty():
+				var timestamp = info.get("timestamp", 0.0)
+				if timestamp > most_recent_time:
+					most_recent_time = timestamp
+					most_recent_slot = slot
+
+	return most_recent_slot

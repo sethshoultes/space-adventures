@@ -11,16 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_h8ij1")
 
-[node name="Background" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.1, 0.1, 0.15, 1)
-
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="BackgroundLayer" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,113 +19,255 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+[node name="BackgroundFallback" type="ColorRect" parent="BackgroundLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.102, 0.114, 0.18, 1)
+
+[node name="BackgroundImage" type="TextureRect" parent="BackgroundLayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MenuPanel" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -275.0
+offset_top = -150.0
+offset_right = 275.0
+offset_bottom = 450.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CyanBorder" type="Control" parent="MenuPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="YellowBracketTL" type="Control" parent="MenuPanel"]
+layout_mode = 1
+anchors_preset = 0
+offset_right = 50.0
+offset_bottom = 50.0
+
+[node name="YellowBracketTR" type="Control" parent="MenuPanel"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 500.0
+offset_right = 550.0
+offset_bottom = 50.0
+
+[node name="YellowBracketBL" type="Control" parent="MenuPanel"]
+layout_mode = 1
+anchors_preset = 0
+offset_top = 550.0
+offset_right = 50.0
+offset_bottom = 600.0
+
+[node name="YellowBracketBR" type="Control" parent="MenuPanel"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 500.0
+offset_top = 550.0
+offset_right = 550.0
+offset_bottom = 600.0
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="MainVBox" type="VBoxContainer" parent="MenuPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Spacer1" type="Control" parent="MenuPanel/MarginContainer/MainVBox"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="SystemStatusPanel" type="PanelContainer" parent="MenuPanel/MarginContainer/MainVBox"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuPanel/MarginContainer/MainVBox/SystemStatusPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuPanel/MarginContainer/MainVBox/SystemStatusPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Header" type="Label" parent="MenuPanel/MarginContainer/MainVBox/SystemStatusPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "SYSTEM STATUS"
+horizontal_alignment = 1
+
+[node name="StatusHBox" type="HBoxContainer" parent="MenuPanel/MarginContainer/MainVBox/SystemStatusPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="GatewayLabel" type="Label" parent="MenuPanel/MarginContainer/MainVBox/SystemStatusPanel/MarginContainer/VBoxContainer/StatusHBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 64
-text = "SPACE ADVENTURES"
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "Gateway: ● OK"
 horizontal_alignment = 1
 
-[node name="Subtitle" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="AILabel" type="Label" parent="MenuPanel/MarginContainer/MainVBox/SystemStatusPanel/MarginContainer/VBoxContainer/StatusHBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Phase 1 - Week 3 Test Build"
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "AI: ● OK"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer"]
+[node name="WhisperLabel" type="Label" parent="MenuPanel/MarginContainer/MainVBox/SystemStatusPanel/MarginContainer/VBoxContainer/StatusHBox"]
 layout_mode = 2
-
-[node name="ServiceStatus" type="Label" parent="CenterContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "Checking services..."
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "Whisper: ● OFFLINE"
 horizontal_alignment = 1
 
-[node name="HSeparator2" type="HSeparator" parent="CenterContainer/VBoxContainer"]
+[node name="Spacer2" type="Control" parent="MenuPanel/MarginContainer/MainVBox"]
+custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 
-[node name="TestServiceButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="MenuButtons" type="VBoxContainer" parent="MenuPanel/MarginContainer/MainVBox"]
 layout_mode = 2
-text = "Test Service Connection"
+theme_override_constants/separation = 10
+alignment = 1
 
-[node name="TestChatButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="ContinueButton" type="Button" parent="MenuPanel/MarginContainer/MainVBox/MenuButtons"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "Test AI Chat"
+size_flags_horizontal = 3
+disabled = true
+text = "CONTINUE ▶"
+alignment = 1
 
-[node name="TestMissionButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="NewGameButton" type="Button" parent="MenuPanel/MarginContainer/MainVBox/MenuButtons"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "Test Mission Generation"
+size_flags_horizontal = 3
+text = "NEW GAME"
 
-[node name="TestDialogueButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="LoadGameButton" type="Button" parent="MenuPanel/MarginContainer/MainVBox/MenuButtons"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "Test Dialogue Generation"
+size_flags_horizontal = 3
+text = "LOAD GAME"
 
-[node name="TestSaveButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="SettingsButton" type="Button" parent="MenuPanel/MarginContainer/MainVBox/MenuButtons"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "Test Save/Load"
+size_flags_horizontal = 3
+text = "SETTINGS"
 
-[node name="HSeparator4" type="HSeparator" parent="CenterContainer/VBoxContainer"]
+[node name="QuitButton" type="Button" parent="MenuPanel/MarginContainer/MainVBox/MenuButtons"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
+size_flags_horizontal = 3
+text = "QUIT"
 
-[node name="TestHullButton" type="Button" parent="CenterContainer/VBoxContainer"]
-layout_mode = 2
-text = "Test Hull System"
-
-[node name="TestPowerButton" type="Button" parent="CenterContainer/VBoxContainer"]
-layout_mode = 2
-text = "Test Power Core System"
-
-[node name="TestPropulsionButton" type="Button" parent="CenterContainer/VBoxContainer"]
-layout_mode = 2
-text = "Test Propulsion System"
-
-[node name="HSeparator5" type="HSeparator" parent="CenterContainer/VBoxContainer"]
+[node name="Spacer3" type="Control" parent="MenuPanel/MarginContainer/MainVBox"]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="WorkshopButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="SaveInfoPanel" type="VBoxContainer" parent="MenuPanel/MarginContainer/MainVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "OPEN WORKSHOP"
+theme_override_constants/separation = 5
 
-[node name="GameStateInfo" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="Separator" type="HSeparator" parent="MenuPanel/MarginContainer/MainVBox/SaveInfoPanel"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "Player: Level 1 Cadet"
+
+[node name="SaveLabel" type="Label" parent="MenuPanel/MarginContainer/MainVBox/SaveInfoPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "CURRENT SAVE"
 horizontal_alignment = 1
 
-[node name="HSeparator3" type="HSeparator" parent="CenterContainer/VBoxContainer"]
+[node name="SaveInfoLabel" type="Label" parent="MenuPanel/MarginContainer/MainVBox/SaveInfoPanel"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.69, 0.69, 0.69, 1)
+theme_override_font_sizes/font_size = 11
+text = "No save data found"
+horizontal_alignment = 1
 
-[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="SaveTimeLabel" type="Label" parent="MenuPanel/MarginContainer/MainVBox/SaveInfoPanel"]
 layout_mode = 2
-text = "Quit"
+theme_override_colors/font_color = Color(0.69, 0.69, 0.69, 1)
+theme_override_font_sizes/font_size = 11
+text = ""
+horizontal_alignment = 1
 
-[node name="Output" type="RichTextLabel" parent="."]
+[node name="Footer" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -180.0
+offset_top = -30.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_font_sizes/normal_font_size = 14
-bbcode_enabled = true
-text = "[b]Output Log:[/b]
-Ready..."
-scroll_following = true
-mouse_filter = 1
 
-[connection signal="pressed" from="CenterContainer/VBoxContainer/TestServiceButton" to="." method="_on_test_service_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/TestChatButton" to="." method="_on_test_chat_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/TestMissionButton" to="." method="_on_test_mission_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/TestDialogueButton" to="." method="_on_test_dialogue_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/TestSaveButton" to="." method="_on_test_save_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/TestHullButton" to="." method="_on_test_hull_system_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/TestPowerButton" to="." method="_on_test_power_system_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/TestPropulsionButton" to="." method="_on_test_propulsion_system_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/WorkshopButton" to="." method="_on_workshop_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+[node name="VersionLabel" type="Label" parent="Footer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.69, 0.69, 0.69, 1)
+theme_override_font_sizes/font_size = 12
+text = "v0.1.0-alpha | Phase 1 - Week 3 Test Build"
+
+[node name="Spacer" type="Control" parent="Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CopyrightLabel" type="Label" parent="Footer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.69, 0.69, 0.69, 1)
+theme_override_font_sizes/font_size = 12
+text = "© 2025 Space Adventures | Star Trek TNG Inspired"
+
+[connection signal="mouse_entered" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/ContinueButton" to="." method="_on_button_mouse_entered" binds= [NodePath("../MenuPanel/MarginContainer/MainVBox/MenuButtons/ContinueButton")]]
+[connection signal="mouse_exited" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/ContinueButton" to="." method="_on_button_mouse_exited" binds= [NodePath("../MenuPanel/MarginContainer/MainVBox/MenuButtons/ContinueButton")]]
+[connection signal="pressed" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/ContinueButton" to="." method="_on_continue_pressed"]
+[connection signal="mouse_entered" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/NewGameButton" to="." method="_on_button_mouse_entered" binds= [NodePath("../MenuPanel/MarginContainer/MainVBox/MenuButtons/NewGameButton")]]
+[connection signal="mouse_exited" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/NewGameButton" to="." method="_on_button_mouse_exited" binds= [NodePath("../MenuPanel/MarginContainer/MainVBox/MenuButtons/NewGameButton")]]
+[connection signal="pressed" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/NewGameButton" to="." method="_on_new_game_pressed"]
+[connection signal="mouse_entered" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/LoadGameButton" to="." method="_on_button_mouse_entered" binds= [NodePath("../MenuPanel/MarginContainer/MainVBox/MenuButtons/LoadGameButton")]]
+[connection signal="mouse_exited" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/LoadGameButton" to="." method="_on_button_mouse_exited" binds= [NodePath("../MenuPanel/MarginContainer/MainVBox/MenuButtons/LoadGameButton")]]
+[connection signal="pressed" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/LoadGameButton" to="." method="_on_load_game_pressed"]
+[connection signal="mouse_entered" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/SettingsButton" to="." method="_on_button_mouse_entered" binds= [NodePath("../MenuPanel/MarginContainer/MainVBox/MenuButtons/SettingsButton")]]
+[connection signal="mouse_exited" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/SettingsButton" to="." method="_on_button_mouse_exited" binds= [NodePath("../MenuPanel/MarginContainer/MainVBox/MenuButtons/SettingsButton")]]
+[connection signal="pressed" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/SettingsButton" to="." method="_on_settings_pressed"]
+[connection signal="mouse_entered" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/QuitButton" to="." method="_on_button_mouse_entered" binds= [NodePath("../MenuPanel/MarginContainer/MainVBox/MenuButtons/QuitButton")]]
+[connection signal="mouse_exited" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/QuitButton" to="." method="_on_button_mouse_exited" binds= [NodePath("../MenuPanel/MarginContainer/MainVBox/MenuButtons/QuitButton")]]
+[connection signal="pressed" from="MenuPanel/MarginContainer/MainVBox/MenuButtons/QuitButton" to="." method="_on_quit_pressed"]
