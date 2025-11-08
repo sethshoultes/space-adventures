@@ -145,14 +145,29 @@ class AIOrchestrator:
             # Extract response
             choice = response.choices[0]
 
-            # Check if function call was made
-            if hasattr(choice.message, 'function_call') and choice.message.function_call:
-                function_name = choice.message.function_call.name
+            # Check if function call was made (support both old and new OpenAI formats)
+            has_function_call = (
+                (hasattr(choice.message, 'function_call') and choice.message.function_call) or
+                (hasattr(choice.message, 'tool_calls') and choice.message.tool_calls)
+            )
+
+            if has_function_call:
+                # Extract function name and arguments from either format
+                if hasattr(choice.message, 'tool_calls') and choice.message.tool_calls:
+                    # New format (OpenAI tool_calls)
+                    tool_call = choice.message.tool_calls[0]
+                    function_name = tool_call.function.name
+                    function_args = tool_call.function.arguments
+                else:
+                    # Old format (OpenAI function_call)
+                    function_name = choice.message.function_call.name
+                    function_args = choice.message.function_call.arguments
+
                 logger.info(f"Agent requested function call: {function_name}")
 
                 # Parse arguments
                 try:
-                    arguments = json.loads(choice.message.function_call.arguments)
+                    arguments = json.loads(function_args)
                 except json.JSONDecodeError:
                     arguments = {}
 

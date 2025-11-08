@@ -15,13 +15,16 @@ Supports multiple providers:
 - OpenAI GPT (versatile content)
 """
 
-from .orchestrator import AIOrchestrator
-from .config import OrchestratorConfig
+from .orchestrator import AIOrchestrator, get_orchestrator, reset_orchestrator
+from .config import OrchestratorConfig, get_config
 from .agents import AgentType, get_agent_prompt
 
 __all__ = [
     "AIOrchestrator",
+    "get_orchestrator",
+    "reset_orchestrator",
     "OrchestratorConfig",
+    "get_config",
     "AgentType",
     "get_agent_prompt",
 ]
