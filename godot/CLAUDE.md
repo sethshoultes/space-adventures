@@ -282,6 +282,90 @@ push_warning("Warning message")
 push_error("Error message")
 ```
 
+## Workshop UI Layout (4-Column Design)
+
+The workshop scene (`scenes/workshop.tscn`) uses a 4-column layout to display all functionality simultaneously without hidden panels or scrolling.
+
+### Layout Structure
+
+```
+┌─────────────┬──────────────┬─────────────┬─────────────┐
+│  Left       │   Center     │   Chat      │   Right     │
+│  360px      │   600px      │   400px     │   330px     │
+├─────────────┼──────────────┼─────────────┼─────────────┤
+│ Ship        │   Ship       │   AI        │  Inventory  │
+│ Schematic   │   Systems    │   Chat      │  (4x grid)  │
+│             │   (2x5 grid) │   Panel     │             │
+│ Power       │   • Hull     │   • Agent   │  Upgrades   │
+│ Budget      │   • Engines  │     selector│  List       │
+│ • Meter     │   • Sensors  │   • History │             │
+│ • Stats     │   • Weapons  │   • Input   │  Actions    │
+│ • Hull HP   │   • Shields  │   • Send    │  • Missions │
+│             │   • Life Sup.│   • Status  │  • Crew     │
+│             │   • Comms    │             │  • Shipyard │
+│             │   • Warp     │             │             │
+│             │   • Computer │             │             │
+│             │   • Power    │             │             │
+└─────────────┴──────────────┴─────────────┴─────────────┘
+Total width: 1690px (fits in 1920x1080 window with margins)
+```
+
+### Column Details
+
+**LeftColumn (360px):**
+- **SchematicPanel**: Visual representation of ship with clickable system dots
+- **PowerBudgetPanel**: Circular power meter, generation/consumption stats, hull HP bar
+
+**CenterColumn (600px):**
+- **SystemsPanel**: Grid of 10 ship system cards (2 columns, 5 rows)
+  - Each card shows: name, level, status, power cost, upgrade button
+  - Color-coded: operational (green), offline (red)
+
+**ChatColumn (400px):**
+- **AIChatPanel**: Full-height AI conversation interface
+  - **Header**: "AI ASSISTANT" title + agent selector dropdown
+  - **Agents**: ATLAS (ship computer), Storyteller (narrative), Tactical (combat), Companion (support)
+  - **ChatHistory**: Scrollable message list with auto-scroll
+  - **MessageInput**: Text input with placeholder that changes per agent
+  - **SendButton**: Disabled when input empty, enabled when text present
+  - **StatusLabel**: Shows "Ready", "Sending...", or error states
+
+**RightColumn (330px):**
+- **InventoryPanel**: 4-column grid of inventory items
+- **UpgradesPanel**: List of available ship upgrades
+- **ActionsPanel**: Three primary action buttons
+
+### AI Chat Integration
+
+The ChatColumn integrates with the AI orchestrator backend:
+
+**Signals Connected:**
+```gdscript
+send_button.pressed → _on_send_message_pressed()
+message_input.text_submitted → _on_message_submitted()  # Enter key
+message_input.text_changed → _on_message_input_changed()  # Enable/disable button
+agent_selector.item_selected → _on_agent_selected()  # Switch agents
+```
+
+**Chat Flow:**
+1. User types message → send button enables
+2. Click send OR press Enter → message sent to AIService.chat_with_agent()
+3. Backend processes via orchestrator (LiteLLM + Redis persistence)
+4. Response displayed in chat history with color coding
+5. Function calls (if any) shown as system messages
+
+**Conversation Persistence:**
+- Each workshop session has unique `conversation_id` (e.g., `"workshop_1699564320"`)
+- Messages stored in Redis with timestamps and function call results
+- Conversation history maintained across agent switches within same session
+
+### Node Paths
+
+All chat UI nodes accessible via:
+```gdscript
+$MainContainer/ContentVBox/MainContentHBox/ChatColumn/AIChatPanel/...
+```
+
 ## Service Communication Flow
 
 ```
