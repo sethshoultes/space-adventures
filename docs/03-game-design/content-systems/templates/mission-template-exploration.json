@@ -1,0 +1,319 @@
+{
+  "_comment": "=== EXPLORATION MISSION TEMPLATE ===",
+  "_purpose": "Exploration missions focus on discovery, mystery, and science skill checks. Rewards emphasize knowledge, rare parts, and story progression.",
+
+  "mission_id": "template_exploration_mission",
+  "title": "The Silent Laboratory",
+  "type": "exploration",
+
+  "location": "Abandoned Research Facility, Arizona",
+  "description": "A research lab went dark during the exodus. No distress signal, no evacuation record. Just silence. Your sensors detect active power systems and something... unusual.",
+
+  "difficulty": 3,
+  "_comment_difficulty": "Exploration missions often higher difficulty (3-4) due to unknown threats and skill requirements",
+
+  "requirements": {
+    "min_level": 2,
+    "required_systems": ["sensors"],
+    "_comment_sensors": "Exploration missions often require sensors for scanning and discovery",
+    "completed_missions": []
+  },
+
+  "objectives": [
+    "Investigate the research facility",
+    "Discover what happened to the scientists",
+    "[OPTIONAL] Recover research data",
+    "[OPTIONAL] Preserve any experimental technology"
+  ],
+  "_comment_objectives": "Exploration has multiple optional objectives—discovery is the goal, not a single item",
+
+  "stages": [
+    {
+      "_comment": "=== STAGE 1: INITIAL INVESTIGATION ===",
+      "stage_id": "approach",
+      "title": "The Silent Facility",
+      "description": "The research facility is intact but eerily quiet. Power is on—lights glow in windows, ventilation hums. But there's no one here. Your sensors detect three areas of interest: the main lab, the computer core, and the living quarters.",
+      "image": "facility_exterior",
+
+      "choices": [
+        {
+          "choice_id": "scan_first",
+          "text": "Use sensors to scan the facility for threats",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "_comment_science_skill": "Science is the primary skill for exploration missions",
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "Your sensors reveal no life signs, but energy readings are off the charts in the main lab. Whatever they were researching, it's still active. No immediate threats detected.",
+              "next_stage": "investigation_informed",
+              "effects": ["scanned_facility", "knows_safe"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "Your scan is inconclusive. You'll have to explore blind.",
+              "next_stage": "investigation_blind",
+              "effects": []
+            }
+          }
+        },
+        {
+          "choice_id": "check_quarters",
+          "text": "Start with living quarters—look for personal logs",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The quarters are frozen in time. Beds made, personal effects in place. You find a scientist's datapad: 'Day 47 of the experiment. We're close to a breakthrough, but Dr. Chen is concerned about containment. I think he's being paranoid.' The log ends abruptly.",
+              "next_stage": "investigation_clues",
+              "effects": ["found_personal_log"],
+              "xp_bonus": 15
+            }
+          }
+        },
+        {
+          "choice_id": "main_lab",
+          "text": "Go straight to the main lab—get answers",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The lab is a cathedral of glass and steel. Equipment you don't recognize hums with power. In the center: a containment field surrounding... something that hurts to look at directly. Your instruments can't identify it.",
+              "next_stage": "discovery_immediate",
+              "effects": ["saw_experiment"],
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "_comment": "=== STAGE 2: INFORMED INVESTIGATION (Science check success) ===",
+      "stage_id": "investigation_informed",
+      "title": "The Research Data",
+      "description": "With your scan data in hand, you enter the computer core. Terminals still active, showing decades-old experiments. The research focused on exotic energy manipulation—a power source beyond fusion or antimatter. But the files are encrypted.",
+      "image": "computer_core",
+
+      "choices": [
+        {
+          "choice_id": "decrypt_files",
+          "text": "Attempt to decrypt the research files",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "_comment": "Exploration can combine multiple skill types—science AND engineering",
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "The encryption yields to your skills. You access the full research archive: theories, experiments, breakthrough data. This is revolutionary technology. You also find evacuation logs—they left in a hurry when containment started failing. The experiment is still running.",
+              "next_stage": "containment_decision",
+              "effects": ["decrypted_research", "knows_full_story"],
+              "xp_bonus": 40,
+              "_comment_high_bonus": "High skill checks (3-4) deserve higher bonuses (35-40 XP)"
+            },
+            "failure": {
+              "text": "The encryption is beyond you. You get fragments—mentions of 'zero-point energy' and 'catastrophic containment breach'—but not the full picture.",
+              "next_stage": "containment_decision",
+              "effects": ["partial_knowledge"]
+            }
+          }
+        },
+        {
+          "choice_id": "analyze_equipment",
+          "text": "Analyze the experimental equipment directly",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 4
+          },
+          "_comment_high_skill": "Level 4 skill checks are challenging and reward deep specialization",
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You study the machinery. This is a zero-point energy tap—drawing power from quantum vacuum fluctuations. It's stable now, but the containment is degrading. In a few years, it could rupture and release catastrophic energy. You understand the design well enough to replicate it... or shut it down safely.",
+              "next_stage": "containment_decision",
+              "effects": ["understood_technology", "can_replicate"],
+              "xp_bonus": 50,
+              "_comment_major_discovery": "Major discoveries (level 4+ skills) earn 40-50 XP bonuses"
+            },
+            "failure": {
+              "text": "The technology is beyond your understanding. You recognize components but not the underlying principles.",
+              "next_stage": "containment_decision",
+              "effects": []
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "_comment": "=== STAGE 3: ETHICAL DECISION (Core exploration theme) ===",
+      "stage_id": "containment_decision",
+      "title": "The Choice",
+      "description": "You stand before the experimental containment field. Inside is a technology that could revolutionize power generation—or destroy everything within kilometers if it fails. The scientists abandoned it for a reason. What do you do?",
+      "image": "containment_chamber",
+      "_comment_moral_choice": "Exploration missions often feature ethical dilemmas with no 'right' answer",
+
+      "conditional_text": {
+        "if_knows_full_story": "You've read the research. The scientists believed this could save humanity or end it. They couldn't decide either.",
+        "if_understood_technology": "You understand the technology now. It's brilliant but dangerous. You could shut it down safely.",
+        "default": "Without full knowledge, this is a guess. But it's your decision to make."
+      },
+      "_comment_conditional_text": "Text varies based on player's earlier choices (effects flags)",
+
+      "choices": [
+        {
+          "choice_id": "shut_down",
+          "text": "Shut down the experiment permanently—too dangerous",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You initiate the shutdown sequence. The containment field collapses safely, and the exotic energy dissipates. The threat is gone, but so is the knowledge. Sometimes that's the right call.",
+              "next_stage": "mission_complete_shutdown",
+              "mission_result": "success",
+              "effects": ["destroyed_experiment"],
+              "xp_bonus": 30,
+              "_comment_moral_reward": "All choices provide equal XP—no 'wrong' answer mechanically"
+            }
+          }
+        },
+        {
+          "choice_id": "steal_research",
+          "text": "Copy the research data and leave the experiment running",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You download the research archive to your datapad. The experiment stays active, still degrading. Maybe someone else will deal with it. Or maybe it'll be fine for another few decades. The knowledge is yours now.",
+              "next_stage": "mission_complete_research",
+              "mission_result": "success",
+              "effects": ["stole_research", "left_danger"],
+              "xp_bonus": 30
+            }
+          }
+        },
+        {
+          "choice_id": "safe_shutdown_with_data",
+          "text": "Safely shut down and preserve all research data [Requires understanding]",
+          "requirements": {},
+          "success_chance": 100,
+          "conditions": {
+            "requires_effect": "understood_technology"
+          },
+          "_comment_conditional_choice": "This choice only appears if player has 'understood_technology' effect from earlier",
+          "consequences": {
+            "success": {
+              "text": "You carefully extract key components before initiating shutdown. The experiment ends safely, and you preserve the research data AND physical samples. The best of both worlds. This knowledge could change everything—in the right hands.",
+              "next_stage": "mission_complete_perfect",
+              "mission_result": "success",
+              "effects": ["perfect_outcome", "has_breakthrough"],
+              "xp_bonus": 50,
+              "_comment_perfect_outcome": "Perfect outcome requires high skill check earlier. Rewards exceptional play."
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "mission_complete_shutdown",
+      "title": "Safety First",
+      "description": "The facility is dark now. Silent in truth, not just appearance. You made the safe choice.",
+      "image": "facility_dark",
+      "choices": []
+    },
+
+    {
+      "stage_id": "mission_complete_research",
+      "title": "Knowledge Acquired",
+      "description": "The research data is yours. What you do with it is up to you.",
+      "image": "research_data",
+      "choices": []
+    },
+
+    {
+      "stage_id": "mission_complete_perfect",
+      "title": "The Best Outcome",
+      "description": "Danger eliminated. Knowledge preserved. Technology acquired. This is why you explore.",
+      "image": "perfect_discovery",
+      "choices": []
+    }
+  ],
+
+  "rewards": {
+    "xp": 200,
+    "_comment_exploration_xp": "Exploration missions (difficulty 3) provide 150-200 base XP. Discovery focus = higher base.",
+
+    "credits": 500,
+    "_comment_credits": "Lower credits than salvage (not the focus), but still substantial for difficulty 3",
+
+    "items": [
+      {"part_id": "power_fusion_cell_l1_common", "quantity": 1}
+    ],
+    "_comment_items": "Base reward is modest—conditional rewards provide the real treasure",
+
+    "discovered_parts": [
+      "power_enhanced_fusion_l1_uncommon",
+      "power_compact_reactor_l1_rare"
+    ],
+    "_comment_discovered_exploration": "Exploration missions unlock more parts than salvage (discovery theme)",
+
+    "unlocks": [
+      "mission_energy_research_followup"
+    ]
+  },
+
+  "conditional_rewards": {
+    "_comment": "Exploration missions have substantial conditional rewards based on player choices",
+
+    "if_stole_research": {
+      "items": [
+        {"part_id": "power_compact_reactor_l1_rare", "quantity": 1}
+      ],
+      "xp_bonus": 25,
+      "_comment": "Stealing research provides immediate rare part"
+    },
+
+    "if_perfect_outcome": {
+      "items": [
+        {"part_id": "power_zero_point_tap_l3_rare", "quantity": 1}
+      ],
+      "discovered_parts": [
+        "power_zero_point_tap_l3_rare"
+      ],
+      "xp_bonus": 50,
+      "credits": 300,
+      "_comment_perfect": "Perfect outcome (high skill + best choice) deserves exceptional rewards"
+    },
+
+    "if_decrypted_research": {
+      "xp_bonus": 20,
+      "credits": 200,
+      "_comment": "Knowledge has value"
+    },
+
+    "if_scanned_facility": {
+      "xp_bonus": 10,
+      "_comment": "Using skills for preparation rewards forethought"
+    }
+  },
+
+  "failure_consequences": {
+    "xp": 50,
+    "effects": ["failed_investigation"],
+    "_comment": "Exploration missions rarely 'fail' outright—it's about what you discover and choose"
+  },
+
+  "_design_notes": {
+    "philosophy": "Exploration rewards curiosity, science skills, and ethical decision-making",
+    "structure": "Initial investigation (3 paths) -> Deep dive (2 skill checks) -> Moral choice (3 options)",
+    "skills": "Science 2 (accessible), Science 4 (mastery), Engineering 3 (cross-skill)",
+    "rewards": "Knowledge and rare parts over credits. Perfect play unlocks Level 3 rare part.",
+    "replayability": "Different skills unlock different discoveries. Moral choices provide variety.",
+    "difficulty": "Difficulty 3, but skill-dependent. High-skill players get much better outcomes."
+  }
+}

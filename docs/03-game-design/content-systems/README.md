@@ -7,6 +7,9 @@
 ### [mission-framework.md](./mission-framework.md)
 Complete mission system: structure, types, JSON schema.
 
+### [mission-reward-guidelines.md](./mission-reward-guidelines.md)
+Comprehensive guide for designing balanced mission rewards. Includes XP/credit scaling, part distribution, choice-based bonuses, PartRegistry integration, examples, common mistakes, AI generation rules, and testing checklists.
+
 ### [crew-companion-system.md](./crew-companion-system.md)
 Crew management and companion mechanics.
 

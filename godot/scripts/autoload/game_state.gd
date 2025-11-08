@@ -24,7 +24,8 @@ var player: Dictionary = {
 		"diplomacy": 0,
 		"combat": 0,
 		"science": 0
-	}
+	},
+	"achievements": {}  # Achievement tracking (populated in _ready)
 }
 
 # ============================================================================
@@ -74,18 +75,112 @@ var progress: Dictionary = {
 }
 
 # ============================================================================
+# ACHIEVEMENT DEFINITIONS
+# ============================================================================
+
+## Achievement definitions
+## Each achievement has: id, name, description, and tracking data
+const ACHIEVEMENTS: Dictionary = {
+	"first_mission": {
+		"name": "First Steps",
+		"description": "Complete your first mission",
+		"hidden": false
+	},
+	"level_3": {
+		"name": "Rising Star",
+		"description": "Reach level 3",
+		"hidden": false
+	},
+	"level_5": {
+		"name": "Experienced Explorer",
+		"description": "Reach level 5",
+		"hidden": false
+	},
+	"level_10": {
+		"name": "Veteran Commander",
+		"description": "Reach level 10",
+		"hidden": false
+	},
+	"first_upgrade": {
+		"name": "Engineer's Touch",
+		"description": "Upgrade your first ship system",
+		"hidden": false
+	},
+	"all_systems_level_1": {
+		"name": "Launch Ready",
+		"description": "Bring all ship systems to Level 1",
+		"hidden": false
+	},
+	"ten_systems": {
+		"name": "Complete Ship",
+		"description": "Unlock all 10 ship systems",
+		"hidden": false
+	},
+	"five_missions": {
+		"name": "Mission Runner",
+		"description": "Complete 5 missions",
+		"hidden": false
+	},
+	"ten_missions": {
+		"name": "Mission Master",
+		"description": "Complete 10 missions",
+		"hidden": false
+	},
+	"credits_1000": {
+		"name": "Entrepreneur",
+		"description": "Collect 1000 credits",
+		"hidden": false
+	},
+	"credits_5000": {
+		"name": "Wealthy Trader",
+		"description": "Collect 5000 credits",
+		"hidden": false
+	},
+	"skill_master": {
+		"name": "Skill Master",
+		"description": "Raise any skill to level 10",
+		"hidden": false
+	},
+	"ten_successful_checks": {
+		"name": "Lucky Streak",
+		"description": "Successfully pass 10 skill checks",
+		"hidden": false
+	},
+	"ten_parts": {
+		"name": "Scavenger",
+		"description": "Discover 10 different ship parts",
+		"hidden": false
+	},
+	"twenty_parts": {
+		"name": "Master Scavenger",
+		"description": "Discover 20 different ship parts",
+		"hidden": false
+	}
+}
+
+# ============================================================================
 # RUNTIME DATA (Not saved)
 # ============================================================================
 
 var _playtime_offset: float = 0.0  # For tracking current session
+var _successful_skill_checks: int = 0  # Runtime counter for skill check achievements
 
 func _ready() -> void:
 	print("GameState initialized")
 	print("Version: ", VERSION)
 
+	# Initialize achievements if empty
+	if player.achievements.is_empty():
+		_initialize_achievements()
+
+	# Connect to EventBus signals for achievement tracking
+	EventBus.part_discovered.connect(_on_part_discovered)
+
 	# Try to load auto-save first
 	if SaveManager.auto_load():
 		print("GameState: Auto-save loaded successfully")
+		# Ensure any new achievements are added to existing save
+		_initialize_achievements()
 	else:
 		print("GameState: No auto-save found, starting new game")
 		_initialize_game()
@@ -102,7 +197,23 @@ func _initialize_game() -> void:
 	"""Initialize a new game with default values"""
 	progress.game_started = Time.get_unix_time_from_system()
 	_playtime_offset = 0.0
+	_initialize_achievements()
 	_recalculate_ship_stats()
+
+## Initialize achievements dictionary with all defined achievements
+func _initialize_achievements() -> void:
+	"""Initialize or update achievements dictionary"""
+	for achievement_id in ACHIEVEMENTS:
+		# Only add if not already exists (preserves existing progress)
+		if not player.achievements.has(achievement_id):
+			player.achievements[achievement_id] = {
+				"id": achievement_id,
+				"name": ACHIEVEMENTS[achievement_id].name,
+				"description": ACHIEVEMENTS[achievement_id].description,
+				"hidden": ACHIEVEMENTS[achievement_id].hidden,
+				"unlocked": false,
+				"unlocked_at": 0.0  # Unix timestamp when unlocked
+			}
 
 ## Create a ship system dictionary
 func _create_system(system_name: String, level: int) -> Dictionary:
@@ -142,6 +253,9 @@ func add_xp(amount: int, source: String = "") -> void:
 		# Emit level up signal
 		EventBus.level_up.emit(player.level, skill_points_gained)
 		print("Player leveled up! New level: %d, gained %d skill points" % [player.level, skill_points_gained])
+
+		# Check level achievements
+		_check_level_achievements()
 
 	_update_player_rank()
 
@@ -186,6 +300,9 @@ func increase_skill(skill_name: String, amount: int) -> void:
 	player.skills[skill_name] += amount
 	EventBus.skill_increased.emit(skill_name, player.skills[skill_name], old_value)
 
+	# Check skill achievements
+	_check_skill_achievements()
+
 # ============================================================================
 # ECONOMY FUNCTIONS
 # ============================================================================
@@ -199,6 +316,9 @@ func add_credits(amount: int) -> void:
 	player.credits += amount
 	EventBus.credits_changed.emit(player.credits)
 	print("Credits added: +%d (Total: %d)" % [amount, player.credits])
+
+	# Check credit achievements
+	_check_credit_achievements()
 
 ## Spend credits if player can afford it
 ## Returns true if successful, false if insufficient funds
@@ -251,6 +371,168 @@ func get_available_skill_points() -> int:
 	return player.skill_points
 
 # ============================================================================
+# ACHIEVEMENT FUNCTIONS
+# ============================================================================
+
+## Unlock an achievement
+## Returns true if newly unlocked, false if already unlocked
+func unlock_achievement(achievement_id: String) -> bool:
+	if not ACHIEVEMENTS.has(achievement_id):
+		push_error("Unknown achievement: " + achievement_id)
+		return false
+
+	# Initialize achievements if needed
+	if not player.achievements.has(achievement_id):
+		_initialize_achievements()
+
+	var achievement = player.achievements[achievement_id]
+
+	# Already unlocked - don't unlock again
+	if achievement.unlocked:
+		return false
+
+	# Unlock achievement
+	achievement.unlocked = true
+	achievement.unlocked_at = Time.get_unix_time_from_system()
+
+	# Emit signal
+	EventBus.achievement_unlocked.emit(achievement_id, achievement)
+
+	print("Achievement unlocked: %s - %s" % [achievement.name, achievement.description])
+	return true
+
+## Check if an achievement is unlocked
+func is_achievement_unlocked(achievement_id: String) -> bool:
+	if not player.achievements.has(achievement_id):
+		return false
+	return player.achievements[achievement_id].unlocked
+
+## Get achievement progress summary
+## Returns: {total: int, unlocked: int, percentage: float, achievements: Array}
+func get_achievement_progress() -> Dictionary:
+	var total = ACHIEVEMENTS.size()
+	var unlocked = 0
+	var achievements_list = []
+
+	for achievement_id in player.achievements:
+		var achievement = player.achievements[achievement_id]
+		achievements_list.append(achievement)
+		if achievement.unlocked:
+			unlocked += 1
+
+	var percentage = (float(unlocked) / float(total)) * 100.0 if total > 0 else 0.0
+
+	return {
+		"total": total,
+		"unlocked": unlocked,
+		"percentage": percentage,
+		"achievements": achievements_list
+	}
+
+## Get all achievements (for UI display)
+func get_all_achievements() -> Array:
+	var achievements_list = []
+	for achievement_id in player.achievements:
+		achievements_list.append(player.achievements[achievement_id])
+	return achievements_list
+
+## Get only unlocked achievements
+func get_unlocked_achievements() -> Array:
+	var unlocked = []
+	for achievement_id in player.achievements:
+		var achievement = player.achievements[achievement_id]
+		if achievement.unlocked:
+			unlocked.append(achievement)
+	return unlocked
+
+## Record successful skill check (for achievement tracking)
+func record_skill_check_success() -> void:
+	_successful_skill_checks += 1
+	_check_skill_check_achievements()
+
+# ============================================================================
+# ACHIEVEMENT AUTO-UNLOCK LOGIC
+# ============================================================================
+
+## Check and unlock level-based achievements
+func _check_level_achievements() -> void:
+	if player.level >= 3:
+		unlock_achievement("level_3")
+	if player.level >= 5:
+		unlock_achievement("level_5")
+	if player.level >= 10:
+		unlock_achievement("level_10")
+
+## Check and unlock credit-based achievements
+func _check_credit_achievements() -> void:
+	if player.credits >= 1000:
+		unlock_achievement("credits_1000")
+	if player.credits >= 5000:
+		unlock_achievement("credits_5000")
+
+## Check and unlock mission-based achievements
+func _check_mission_achievements() -> void:
+	var completed_count = get_completed_missions_count()
+
+	if completed_count >= 1:
+		unlock_achievement("first_mission")
+	if completed_count >= 5:
+		unlock_achievement("five_missions")
+	if completed_count >= 10:
+		unlock_achievement("ten_missions")
+
+## Check and unlock system-based achievements
+func _check_system_achievements() -> void:
+	# Count installed systems (level > 0)
+	var installed_count = 0
+	var all_level_1 = true
+
+	for system_name in ship.systems:
+		var system = ship.systems[system_name]
+		if system.level > 0:
+			installed_count += 1
+		if system.level < 1:
+			all_level_1 = false
+
+	# First upgrade achievement
+	if installed_count >= 1:
+		unlock_achievement("first_upgrade")
+
+	# All 10 systems unlocked
+	if installed_count >= 10:
+		unlock_achievement("ten_systems")
+
+	# All systems at Level 1
+	if all_level_1 and installed_count == 10:
+		unlock_achievement("all_systems_level_1")
+
+## Check and unlock skill-based achievements
+func _check_skill_achievements() -> void:
+	# Check if any skill reached level 10
+	for skill_name in player.skills:
+		if player.skills[skill_name] >= 10:
+			unlock_achievement("skill_master")
+			break
+
+## Check and unlock skill check achievements
+func _check_skill_check_achievements() -> void:
+	if _successful_skill_checks >= 10:
+		unlock_achievement("ten_successful_checks")
+
+## Check and unlock part discovery achievements
+func _check_part_discovery_achievements() -> void:
+	var discovered_count = progress.discovered_parts.size()
+
+	if discovered_count >= 10:
+		unlock_achievement("ten_parts")
+	if discovered_count >= 20:
+		unlock_achievement("twenty_parts")
+
+## Signal handler for part discovery (connected to EventBus.part_discovered)
+func _on_part_discovered(_part_id: String, _part_name: String) -> void:
+	_check_part_discovery_achievements()
+
+# ============================================================================
 # SHIP FUNCTIONS
 # ============================================================================
 
@@ -270,6 +552,9 @@ func install_system(system_name: String, level: int, part_id: String = "") -> vo
 	EventBus.system_installed.emit(system_name, level)
 	_recalculate_ship_stats()
 	_update_ship_class()
+
+	# Check system achievements
+	_check_system_achievements()
 
 ## Damage a ship system
 func damage_system(system_name: String, damage: int) -> void:
@@ -561,6 +846,9 @@ func complete_mission(mission_id: String) -> void:
 	if mission_id not in progress.completed_missions:
 		progress.completed_missions.append(mission_id)
 
+		# Check mission achievements
+		_check_mission_achievements()
+
 ## Check if mission is completed
 func is_mission_completed(mission_id: String) -> bool:
 	return mission_id in progress.completed_missions
@@ -630,7 +918,8 @@ func _migrate_player_data(loaded: Dictionary) -> Dictionary:
 			"diplomacy": 0,
 			"combat": 0,
 			"science": 0
-		}
+		},
+		"achievements": {}
 	}
 
 	# Merge: loaded values override defaults, but defaults fill in missing fields
@@ -643,6 +932,10 @@ func _migrate_player_data(loaded: Dictionary) -> Dictionary:
 		for skill in default_player.skills:
 			if not loaded.skills.has(skill):
 				loaded.skills[skill] = 0
+
+	# Ensure achievements dictionary is present (will be populated by _initialize_achievements)
+	if not loaded.has("achievements"):
+		loaded.achievements = {}
 
 	return loaded.duplicate(true)
 
@@ -692,7 +985,8 @@ func reset_to_new_game() -> void:
 			"diplomacy": 0,
 			"combat": 0,
 			"science": 0
-		}
+		},
+		"achievements": {}
 	}
 
 	# Reset all ship systems

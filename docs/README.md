@@ -50,7 +50,9 @@ Complete game design specifications.
 - **[Ship Documentation](./03-game-design/ship-systems/ship-documentation.md)** - Complete specs
 
 #### [Content Systems](./03-game-design/content-systems/)
-- **[Mission Framework](./03-game-design/content-systems/mission-framework.md)** - Mission structure
+- **[Mission Framework](./03-game-design/content-systems/mission-framework.md)** - Mission structure and JSON schema
+- **[Mission Reward Guidelines](./03-game-design/content-systems/mission-reward-guidelines.md)** - Comprehensive reward balancing
+- **[Content Creator Guide](./03-game-design/content-systems/CONTENT-CREATOR-GUIDE.md)** - Complete mission creation workflow
 - **[Crew Companion System](./03-game-design/content-systems/crew-companion-system.md)** - Crew mechanics
 
 #### [Future Features](./03-game-design/future-features/)
@@ -75,6 +77,7 @@ User interface and graphics guidelines.
 AI-powered content generation systems.
 - **[AI Integration](./05-ai-content/ai-integration.md)** - Multi-provider AI
 - **[AI Chat & Storytelling](./05-ai-content/ai-chat-storytelling-system.md)** - 4 personalities
+- **[AI Mission Generation Prompts](./05-ai-content/ai-mission-generation-prompts.md)** - Mission generation guide
 - **[Whisper Voice Transcription](./05-ai-content/whisper-voice-transcription.md)** - Voice input
 
 ### [06-technical-reference](./06-technical-reference/) - Technical Reference
@@ -105,6 +108,11 @@ Templates and guidelines for AI development assistants.
 1. Start with [Game Design Document](./03-game-design/core-systems/game-design-document.md)
 2. Review [Ship Systems](./03-game-design/ship-systems/ship-systems.md)
 3. Check [Mission Framework](./03-game-design/content-systems/mission-framework.md)
+
+**Create Game Content**
+1. Read [Content Creator Guide](./03-game-design/content-systems/CONTENT-CREATOR-GUIDE.md)
+2. Use [Mission Reward Guidelines](./03-game-design/content-systems/mission-reward-guidelines.md)
+3. Reference [Mission Templates](../godot/assets/data/mission_templates/)
 
 **Work on AI Features**
 1. Read [AI Integration](./05-ai-content/ai-integration.md)

@@ -1,0 +1,294 @@
+{
+  "mission_id": "test_rewards_comprehensive",
+  "title": "Reward System Test Mission",
+  "type": "salvage",
+  "location": "Test Environment",
+  "description": "A comprehensive test mission designed to validate all reward types, conditions, and achievements. This mission tests: XP (base and bonus), credits, parts (with valid part_ids), discoveries, unlocks, conditional rewards, and achievement triggers.",
+  "difficulty": 2,
+  "requirements": {
+    "min_level": 1,
+    "required_systems": [],
+    "completed_missions": []
+  },
+  "objectives": [
+    "Test all reward types",
+    "Validate conditional rewards",
+    "Trigger achievement unlocks",
+    "Test part discovery system",
+    "Test mission unlock chains"
+  ],
+  "stages": [
+    {
+      "stage_id": "start",
+      "title": "Test Mission Start",
+      "description": "Welcome to the reward system test mission. This mission will test all reward types and conditions. Choose your path to test different reward scenarios.",
+      "image": "test_start",
+      "choices": [
+        {
+          "choice_id": "test_basic_rewards",
+          "text": "Test Basic Rewards (XP, Credits, Parts)",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You've chosen to test basic rewards. You will receive standard XP, credits, and parts.",
+              "next_stage": "basic_rewards",
+              "effects": ["tested_basic"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "test_conditional_rewards",
+          "text": "Test Conditional Rewards (Skill-based bonus)",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "Your engineering skill allows you to extract maximum value! Bonus rewards earned.",
+              "next_stage": "conditional_success",
+              "effects": ["skill_success", "bonus_earned"],
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "Your engineering skill wasn't quite high enough. You still get base rewards.",
+              "next_stage": "conditional_failure",
+              "effects": ["skill_failure"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "test_discovery",
+          "text": "Test Part Discovery System",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You discover several new ship parts that will be unlocked for future use!",
+              "next_stage": "discovery_test",
+              "effects": ["tested_discovery"],
+              "xp_bonus": 25
+            }
+          }
+        },
+        {
+          "choice_id": "test_achievements",
+          "text": "Test Achievement Unlocks",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "This path is designed to trigger multiple achievements through various reward thresholds.",
+              "next_stage": "achievement_test",
+              "effects": ["tested_achievements"],
+              "xp_bonus": 30
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "basic_rewards",
+      "title": "Basic Rewards Test",
+      "description": "Testing basic reward application: XP, credits, and parts.",
+      "image": "test_basic",
+      "choices": [
+        {
+          "choice_id": "complete_basic",
+          "text": "Complete basic rewards test",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Basic rewards test complete! You received 100 XP, 300 credits, and 2 common parts.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "conditional_success",
+      "title": "Conditional Rewards - Success Path",
+      "description": "Your high engineering skill earned you bonus rewards!",
+      "image": "test_conditional_success",
+      "choices": [
+        {
+          "choice_id": "claim_bonus",
+          "text": "Claim your bonus rewards",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Bonus rewards claimed! You received extra XP, credits, and a rare part!",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "conditional_failure",
+      "title": "Conditional Rewards - Standard Path",
+      "description": "You still complete the mission, but without the skill-based bonuses.",
+      "image": "test_conditional_failure",
+      "choices": [
+        {
+          "choice_id": "complete_standard",
+          "text": "Complete with standard rewards",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Mission complete with standard rewards. Consider improving your engineering skill for future missions!",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "discovery_test",
+      "title": "Part Discovery Test",
+      "description": "Testing the part discovery system with multiple new parts.",
+      "image": "test_discovery",
+      "choices": [
+        {
+          "choice_id": "discover_parts",
+          "text": "Discover all test parts",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You've discovered multiple new parts! These are now unlocked for use in your workshop.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 25
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "achievement_test",
+      "title": "Achievement Unlock Test",
+      "description": "Testing achievement unlocks through reward thresholds.",
+      "image": "test_achievements",
+      "choices": [
+        {
+          "choice_id": "trigger_achievements",
+          "text": "Trigger achievement unlocks",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Completing this mission should trigger multiple achievements: first mission, credits threshold, and XP milestones.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 150
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete",
+      "title": "Test Mission Complete",
+      "description": "Reward system test mission completed successfully! Check the console for detailed test results.",
+      "image": "test_complete",
+      "choices": []
+    }
+  ],
+  "rewards": {
+    "xp": 100,
+    "credits": 500,
+    "items": [
+      {"part_id": "hull_scrap_plates_l1_common", "quantity": 2},
+      {"part_id": "power_fusion_cell_l1_common", "quantity": 1}
+    ],
+    "discovered_parts": [
+      "hull_scrap_plates_l1_common",
+      "power_fusion_cell_l1_common",
+      "propulsion_chemical_thruster_l1_common",
+      "warp_basic_nacelle_l1_common"
+    ],
+    "unlocks": [
+      "mission_test_conditional",
+      "mission_test_discovery",
+      "workshop_advanced_testing"
+    ]
+  },
+  "conditional_rewards": {
+    "skill_success": {
+      "description": "Bonus for passing engineering skill check",
+      "xp": 50,
+      "credits": 200,
+      "items": [
+        {"part_id": "hull_scrap_plates_l1_common", "quantity": 1}
+      ]
+    },
+    "tested_discovery": {
+      "description": "Bonus for testing discovery system",
+      "xp": 25,
+      "discovered_parts": [
+        "sensors_basic_array_l1_common",
+        "shields_deflector_l1_common"
+      ]
+    },
+    "tested_achievements": {
+      "description": "Bonus designed to trigger achievements",
+      "xp": 150,
+      "credits": 1000
+    }
+  },
+  "failure_consequences": {
+    "xp": 25,
+    "credits": 50,
+    "effects": ["test_incomplete"]
+  },
+  "test_metadata": {
+    "purpose": "Comprehensive reward system testing",
+    "tests_covered": [
+      "Basic XP awarding",
+      "Credit awarding",
+      "Part awarding with valid part_ids",
+      "Part discovery system",
+      "Conditional rewards based on skill checks",
+      "Bonus XP calculations",
+      "Achievement unlocks",
+      "Mission unlock chains",
+      "Inventory integration",
+      "PartRegistry integration"
+    ],
+    "expected_achievements": [
+      "first_mission (if first mission completed)",
+      "credits_1000 (from achievement test path)",
+      "level_3 (from accumulated XP if starting at level 1)"
+    ],
+    "valid_part_ids_used": [
+      "hull_scrap_plates_l1_common",
+      "power_fusion_cell_l1_common",
+      "propulsion_chemical_thruster_l1_common",
+      "warp_basic_nacelle_l1_common",
+      "sensors_basic_array_l1_common",
+      "shields_deflector_l1_common"
+    ],
+    "test_scenarios": {
+      "basic": "Tests standard reward application",
+      "conditional_success": "Tests bonus rewards from skill checks",
+      "conditional_failure": "Tests base rewards when skill check fails",
+      "discovery": "Tests part discovery system",
+      "achievements": "Tests achievement unlock triggers"
+    }
+  }
+}

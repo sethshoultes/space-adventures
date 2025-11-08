@@ -1,0 +1,313 @@
+{
+  "_comment": "=== STORY MISSION TEMPLATE ===",
+  "_purpose": "Story missions drive narrative, develop characters, and create memorable moments. They have branching paths but guarantee progression.",
+
+  "mission_id": "template_story_mission",
+  "title": "The Rival",
+  "type": "story",
+
+  "location": "Your Workshop, Nevada",
+  "description": "You return from a salvage run to find someone in your workshop. A woman around your age, examining your ship. She looks up as you enter. 'Nice frame. Shame about the amateur welding.' She grins. 'Name's Sarah. I think we got off on the wrong foot at the museum. Let's start over.'",
+
+  "difficulty": 2,
+  "_comment_story_difficulty": "Story missions often lower difficulty (1-3) because they gate progression—can't be too hard",
+
+  "requirements": {
+    "min_level": 1,
+    "required_systems": [],
+    "completed_missions": ["tutorial_first_salvage"],
+    "_comment_story_chain": "Story missions ALWAYS require previous story mission(s)"
+  },
+
+  "objectives": [
+    "Decide how to handle Sarah's intrusion",
+    "Learn about Sarah's goals",
+    "[OPTIONAL] Form an alliance or make a rival"
+  ],
+  "_comment_story_objectives": "Story objectives focus on character development and choices, not tasks",
+
+  "stages": [
+    {
+      "_comment": "=== STAGE 1: THE INTRUSION ===",
+      "stage_id": "confrontation",
+      "title": "Uninvited Guest",
+      "description": "Sarah stands in your workshop like she owns the place. She's got a plasma cutter on her hip—not drawn, but visible. Her eyes are sharp, assessing. 'Relax,' she says. 'I'm not here to steal your stuff. I want to talk business.' Behind her, you notice the younger scavenger from the museum—Dex—keeping watch at the door.",
+      "image": "sarah_workshop",
+
+      "choices": [
+        {
+          "choice_id": "aggressive",
+          "text": "Tell her to get out—this is your workshop",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Sarah's grin doesn't waver. 'Fair enough. It's your place.' She heads for the door, then pauses. 'But you're making a mistake. Out here, alone? You won't last six months. Think about it.' She leaves. Dex gives you an apologetic shrug and follows.",
+              "next_stage": "sarah_rival",
+              "effects": ["rejected_sarah", "made_enemy"],
+              "xp_bonus": 0,
+              "_comment_story_consequence": "All choices are valid, but have different story consequences"
+            }
+          }
+        },
+        {
+          "choice_id": "diplomatic",
+          "text": "Hear her out—she helped at the museum",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 1
+          },
+          "_comment_low_skill": "Story missions use low skill checks (1-2) to give players access regardless of build",
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "'Smart,' Sarah says, relaxing slightly. She explains: she and Dex run salvage operations across Nevada. They've got connections, trade routes, and information. 'We help each other out. I find a lead on parts you need, you do the same. We both survive longer.' It's a compelling pitch.",
+              "next_stage": "sarah_proposition",
+              "effects": ["heard_sarah_out", "diplomatic_approach"],
+              "xp_bonus": 20
+            },
+            "failure": {
+              "text": "You try to keep it civil, but your tone comes out harsh. Sarah picks up on it. 'You're not ready to talk yet. Fine. Come find me when you are.' She leaves, but not angrily—just disappointed.",
+              "next_stage": "sarah_neutral",
+              "effects": ["failed_diplomacy", "sarah_waiting"]
+            }
+          }
+        },
+        {
+          "choice_id": "cautious",
+          "text": "Ask what she wants—but keep your distance",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "'Straight to business. I respect that.' Sarah outlines her network: she knows scavengers across three states, trade routes to settlements, and locations of pre-exodus caches. 'I'm not asking you to join a crew. Just... share intel. You scratch my back, I scratch yours. Interested?'",
+              "next_stage": "sarah_proposition",
+              "effects": ["cautious_approach"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "_comment": "=== STAGE 2: THE PROPOSITION ===",
+      "stage_id": "sarah_proposition",
+      "title": "An Offer",
+      "description": "Sarah pulls out a datapad. 'Here's how it works: I've got a line on a military depot two hours north. Weapons, shields, maybe even a warp coil. Too big for me and Dex alone, but perfect for three. We split the haul evenly. You in?'",
+      "image": "sarah_proposition",
+
+      "conditional_text": {
+        "if_diplomatic_approach": "Sarah seems more open now, trusting your judgment.",
+        "if_cautious_approach": "Sarah keeps it professional, but there's potential here.",
+        "default": "Sarah watches you carefully, trying to read your decision."
+      },
+
+      "choices": [
+        {
+          "choice_id": "accept_partnership",
+          "text": "Accept—you could use allies out here",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "'Smart choice.' Sarah grins and extends a hand. Her grip is firm. 'We leave tomorrow at dawn. Bring your toolkit—the depot's locked down tight.' Dex gives you a thumbs up from the doorway. You've made an ally. Maybe even a friend.",
+              "next_stage": "alliance_formed",
+              "effects": ["allied_with_sarah", "depot_mission_unlocked"],
+              "xp_bonus": 30,
+              "_comment_alliance": "Alliance path unlocks cooperative missions and trade benefits"
+            }
+          }
+        },
+        {
+          "choice_id": "negotiate",
+          "text": "Negotiate terms—you want more than an even split",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 3
+          },
+          "_comment_negotiation": "Higher skill check (3) for better deal",
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "Sarah raises an eyebrow. 'You've got guts, I'll give you that.' You outline your terms: 60/40 split in your favor, or you provide intel in exchange for first pick of parts. She considers, then nods. 'Deal. But you better pull your weight on the run.' You shake hands. This is a partnership of equals.",
+              "next_stage": "alliance_formed",
+              "effects": ["allied_with_sarah", "better_deal", "depot_mission_unlocked"],
+              "xp_bonus": 40,
+              "_comment_better_deal": "Successful negotiation improves alliance terms (better trade prices, more intel)"
+            },
+            "failure": {
+              "text": "Sarah shakes her head. 'You're pushing too hard. Even split or nothing.' You've insulted her by being greedy. She waits for your answer, but the moment of trust is gone.",
+              "next_stage": "strained_alliance",
+              "effects": ["strained_relations", "depot_mission_available"]
+            }
+          }
+        },
+        {
+          "choice_id": "decline_politely",
+          "text": "Decline—you work better alone",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Sarah nods slowly. 'I get it. Some people are lone wolves.' She pockets the datapad. 'But the offer stands. You change your mind, I'm at the old trading post in Boulder City. And hey—good luck out there. You'll need it.' She leaves on good terms. The door is still open.",
+              "next_stage": "stayed_independent",
+              "effects": ["independent_path", "sarah_available"],
+              "xp_bonus": 20,
+              "_comment_independence": "Solo path is valid. Harder but rewards self-reliance."
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "_comment": "=== BRANCHING ENDINGS BASED ON PLAYER CHOICE ===",
+      "stage_id": "alliance_formed",
+      "title": "New Allies",
+      "description": "Sarah and Dex leave with plans to meet tomorrow. You watch them go. Having allies changes things. The wasteland feels a little less empty now. You've got people watching your back.",
+      "image": "alliance_sunset",
+
+      "choices": [
+        {
+          "choice_id": "continue",
+          "text": "Prepare for tomorrow's depot run",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You spend the evening checking your tools and systems. Tomorrow will be interesting. A real crew operation. Your grandfather would approve—he always said the stars are better explored with companions.",
+              "next_stage": "mission_complete",
+              "mission_result": "success"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "sarah_rival",
+      "title": "A Rival Made",
+      "description": "You watch Sarah's vehicle disappear into the desert. You've made an enemy today. Or at least, you didn't make a friend. In this world, that might be the same thing.",
+      "image": "alone_workshop",
+
+      "choices": [
+        {
+          "choice_id": "continue",
+          "text": "Return to work—you don't need anyone",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You lock the workshop and get back to welding. Alone, like always. It's worked so far. But Sarah's words linger: 'You won't last six months.' You'll prove her wrong.",
+              "next_stage": "mission_complete",
+              "mission_result": "success"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "stayed_independent",
+      "title": "The Solo Path",
+      "description": "You chose independence, but Sarah respected your choice. The option to ally remains open. Some bridges don't burn—they just take longer to cross.",
+      "image": "workshop_solo",
+
+      "choices": [
+        {
+          "choice_id": "continue",
+          "text": "Focus on your ship",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You return to work, but Sarah's offer rattles in your mind. Allies could be useful. Or dangerous. For now, you trust yourself more than strangers. The ship is coming along. That's what matters.",
+              "next_stage": "mission_complete",
+              "mission_result": "success"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "mission_complete",
+      "title": "Chapter Closed",
+      "description": "Your relationship with Sarah is defined. How it evolves from here depends on the choices you make going forward.",
+      "image": "story_complete",
+      "choices": []
+    }
+  ],
+
+  "rewards": {
+    "xp": 150,
+    "_comment_story_xp": "Story missions provide moderate XP (100-150). Focus is narrative, not grinding.",
+
+    "credits": 400,
+    "_comment_story_credits": "Decent credits, but not exceptional. Story unlocks are the real reward.",
+
+    "items": [],
+    "_comment_story_items": "Story missions often provide NO direct part rewards—they unlock MISSIONS that provide parts",
+
+    "discovered_parts": [
+      "hull_reinforced_plates_l1_uncommon"
+    ],
+    "_comment_discovered": "Story missions unlock parts for future purchase/discovery",
+
+    "unlocks": []
+    "_comment_conditional_unlocks": "Unlocks are handled by conditional_rewards based on player choices"
+  },
+
+  "conditional_rewards": {
+    "if_allied_with_sarah": {
+      "unlocks": [
+        "mission_military_depot",
+        "mission_trade_network",
+        "sarah_trading_post"
+      ],
+      "xp_bonus": 25,
+      "_comment_alliance_path": "Alliance unlocks cooperative missions and trading"
+    },
+
+    "if_better_deal": {
+      "credits": 200,
+      "xp_bonus": 10,
+      "_comment_negotiation_success": "Skilled negotiation provides better economic terms"
+    },
+
+    "if_made_enemy": {
+      "unlocks": [
+        "mission_sarah_rivalry",
+        "mission_competition"
+      ],
+      "xp_bonus": 15,
+      "_comment_rivalry_path": "Rivalry unlocks competitive missions and confrontations"
+    },
+
+    "if_independent_path": {
+      "unlocks": [
+        "mission_solo_depot_hard",
+        "mission_lone_wolf"
+      ],
+      "xp_bonus": 20,
+      "_comment_solo_path": "Solo path unlocks harder missions but maintains independence"
+    }
+  },
+
+  "failure_consequences": {
+    "xp": 75,
+    "_comment_story_failure": "Story missions rarely fail completely, but provide reduced rewards if player makes poor choices"
+  },
+
+  "_design_notes": {
+    "philosophy": "Story missions define character relationships and unlock narrative branches",
+    "structure": "Character introduction -> Proposition -> Choice with lasting consequences",
+    "skills": "Low skill checks (1-3) ensure accessibility. Diplomacy featured heavily.",
+    "branching": "3 major paths: Alliance, Rivalry, Independence. All are valid.",
+    "rewards": "Mission unlocks are the primary reward. Different paths = different future content.",
+    "consequences": "Player choices in story missions affect future story missions and trade opportunities",
+    "replayability": "High. Each path unlocks different content. Players want to see all branches.",
+    "writing": "Character-focused. Dialogue-driven. Moral choices without 'correct' answer."
+  }
+}

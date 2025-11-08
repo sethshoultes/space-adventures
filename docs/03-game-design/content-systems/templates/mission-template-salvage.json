@@ -1,0 +1,283 @@
+{
+  "_comment_mission_metadata": "This section defines the mission's core identity and requirements",
+  "mission_id": "template_salvage_mission",
+  "_comment_mission_id": "Unique identifier. Format: lowercase_with_underscores. Must be unique across all missions.",
+
+  "title": "The Abandoned Warehouse",
+  "_comment_title": "Player-facing mission name. Should be evocative and hint at content without spoiling it.",
+
+  "type": "salvage",
+  "_comment_type": "Mission type determines structure and rewards. Options: salvage, exploration, trade, rescue, combat, story",
+
+  "location": "Nevada Desert Industrial Zone",
+  "_comment_location": "Where the mission takes place. Helps establish atmosphere and world-building.",
+
+  "description": "A pre-exodus industrial warehouse still has functioning power. Sensors indicate valuable ship parts inside, but automated security may still be active.",
+  "_comment_description": "Mission briefing text. 2-3 sentences. Sets up the situation and stakes.",
+
+  "difficulty": 2,
+  "_comment_difficulty": "1-5 stars. Affects rewards and expected player level. 1=Tutorial/Easy, 2=Easy, 3=Medium, 4=Hard, 5=Very Hard",
+
+  "_comment_requirements": "What the player needs to access this mission",
+  "requirements": {
+    "min_level": 1,
+    "_comment_min_level": "Minimum player level required. 1=no requirement, 2-5=gated content",
+
+    "required_systems": [],
+    "_comment_required_systems": "Array of system names required at Level 1+. Example: ['sensors', 'computer']",
+
+    "completed_missions": [],
+    "_comment_completed_missions": "Array of mission_ids that must be completed first. Creates mission chains."
+  },
+
+  "_comment_objectives": "Mission goals shown to player in mission UI",
+  "objectives": [
+    "Retrieve ship parts from the warehouse",
+    "[OPTIONAL] Avoid triggering security alarms"
+  ],
+  "_comment_objectives_format": "First objective is always primary goal. Additional objectives marked [OPTIONAL] provide bonus rewards.",
+
+  "_comment_stages": "Mission stages represent major decision points. Salvage missions typically have 3-4 stages: Approach, Navigate, Retrieve, Escape",
+  "stages": [
+    {
+      "_comment_stage_approach": "First stage: How does the player approach the situation?",
+      "stage_id": "approach",
+      "title": "Approaching the Warehouse",
+      "description": "The warehouse looms ahead, solar panels still collecting energy after decades. Security drones patrol the perimeter in lazy circles. There's a main entrance, and your sensors detect a maintenance shaft on the east side.",
+      "image": "warehouse_exterior",
+      "_comment_image": "Asset reference for this stage. Format: asset_name (no extension)",
+
+      "choices": [
+        {
+          "choice_id": "front_door",
+          "_comment_choice_id": "Unique within this stage. Format: action_descriptor",
+
+          "text": "Enter through the front door—direct approach",
+          "_comment_text": "Choice button text. Should be clear and action-oriented.",
+
+          "requirements": {},
+          "_comment_requirements": "If empty, choice is always available. Can require: skill (engineering/diplomacy/combat/science) + skill_level (0-10)",
+
+          "success_chance": 100,
+          "_comment_success_chance": "100 = always succeeds, skill_based = roll against skill level, 0-99 = fixed percentage",
+
+          "consequences": {
+            "success": {
+              "text": "The front door opens to a dusty lobby. Security terminal is right there, but it's active. The drones know you're here.",
+              "next_stage": "warehouse_alerted",
+              "_comment_next_stage": "stage_id of the next stage to go to",
+
+              "effects": ["security_alerted"],
+              "_comment_effects": "Array of effect flags. Used in conditional_text and rewards_modified. Format: lowercase_with_underscores",
+
+              "xp_bonus": 0
+              "_comment_xp_bonus": "Additional XP for this choice. Base mission XP is in rewards section."
+            }
+          }
+        },
+        {
+          "choice_id": "maintenance_shaft",
+          "text": "Use the maintenance shaft—quieter approach",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The shaft is tight and dusty, but you emerge in the storage area undetected. The parts are right ahead.",
+              "next_stage": "warehouse_undetected",
+              "effects": ["avoided_security"],
+              "xp_bonus": 15
+            },
+            "_comment_failure": "If success_chance < 100, include a failure consequence"
+          }
+        },
+        {
+          "choice_id": "hack_security",
+          "text": "Hack the security terminal remotely",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "_comment_requirements_skill": "Skill checks: engineering, diplomacy, combat, science. skill_level 0-10 determines difficulty.",
+
+          "success_chance": "skill_based",
+          "_comment_success_chance_skill": "skill_based means the game calculates success based on player's skill level",
+
+          "consequences": {
+            "success": {
+              "text": "You tap into the warehouse network. Security drones power down. The facility is yours.",
+              "next_stage": "warehouse_controlled",
+              "effects": ["security_disabled"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "The security AI detects your intrusion attempt. Alarms blare. Multiple drones converge on your position.",
+              "next_stage": "warehouse_combat",
+              "effects": ["security_hostile"]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "_comment_stage_navigate": "Second stage: Dealing with challenges inside",
+      "stage_id": "warehouse_undetected",
+      "title": "Inside the Warehouse",
+      "description": "Rows of storage crates stretch into darkness. Your scanner leads you to the parts section. Hull plates, power cells, and thruster components—jackpot. But one crate is sealed with a biometric lock.",
+      "image": "warehouse_interior",
+
+      "choices": [
+        {
+          "choice_id": "take_available_parts",
+          "text": "Take what you can access and leave quietly",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You gather accessible parts: hull plates and a power cell. Not a huge haul, but you're in and out clean.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "_comment_mission_result": "Use 'success' or 'failure' to mark mission completion",
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "force_locked_crate",
+          "text": "Force open the locked crate",
+          "requirements": {},
+          "success_chance": 70,
+          "_comment_success_chance_percentage": "70% chance means 30% chance of failure. Used for risky actions.",
+
+          "consequences": {
+            "success": {
+              "text": "The crate pops open, revealing rare thruster components. Worth the risk.",
+              "next_stage": "escape_with_bonus",
+              "effects": ["got_rare_parts"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "The crate's alarm screams. Security drones activate. Time to run!",
+              "next_stage": "escape_pursued",
+              "effects": ["triggered_alarm"]
+            }
+          }
+        },
+        {
+          "choice_id": "bypass_biometric",
+          "text": "Bypass the biometric lock with engineering",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 4
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You trick the lock into accepting your biometric signature. Inside: high-quality thruster components. The best salvage you've seen in weeks.",
+              "next_stage": "escape_clean",
+              "effects": ["got_rare_parts", "silent_entry"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "The lock rejects your attempt and triggers security. Drones incoming!",
+              "next_stage": "escape_pursued",
+              "effects": ["triggered_alarm"]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "_comment_stage_escape": "Final stage: Leaving the location",
+      "stage_id": "escape_clean",
+      "title": "Clean Exit",
+      "description": "Parts secured, no alarms triggered. You head for the exit, job well done.",
+      "image": "warehouse_exit",
+
+      "choices": [
+        {
+          "choice_id": "leave",
+          "text": "Return to your workshop",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You slip out the way you came. Another successful salvage run. These parts will keep you flying.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "mission_complete",
+      "title": "Mission Complete",
+      "description": "Salvage successful. Parts acquired. Time to get back to work.",
+      "image": "mission_success",
+      "choices": []
+    }
+  ],
+
+  "_comment_rewards": "Base rewards for completing the mission successfully",
+  "rewards": {
+    "xp": 150,
+    "_comment_xp": "Base XP. Difficulty 2 salvage = 100-150 XP. Bonuses from choices add to this.",
+
+    "credits": 400,
+    "_comment_credits": "Currency reward. Difficulty 2 = 200-400 credits. Used to purchase parts.",
+
+    "items": [
+      {"part_id": "hull_scrap_plates_l1_common", "quantity": 1},
+      {"part_id": "power_fusion_cell_l1_common", "quantity": 1}
+    ],
+    "_comment_items": "Physical parts added to inventory. Format: {part_id: valid_part_id, quantity: positive_int}. See PartRegistry for valid IDs.",
+
+    "discovered_parts": [
+      "hull_scrap_plates_l1_common",
+      "propulsion_chemical_thrusters_l1_common"
+    ],
+    "_comment_discovered_parts": "Parts unlocked in workshop catalog. Player can now find/buy these. Can overlap with items (you get the part AND unlock it for future).",
+
+    "unlocks": [
+      "mission_warehouse_followup"
+    ],
+    "_comment_unlocks": "Mission IDs unlocked by completing this mission. Creates quest chains and progression gates."
+  },
+
+  "_comment_conditional_rewards": "Rewards that depend on player choices (effects flags)",
+  "conditional_rewards": {
+    "if_got_rare_parts": {
+      "_comment": "If player forced open the locked crate or bypassed the biometric lock",
+      "items": [
+        {"part_id": "propulsion_ion_drive_l1_uncommon", "quantity": 1}
+      ],
+      "xp_bonus": 25
+    },
+    "if_silent_entry": {
+      "_comment": "If player completed mission without triggering alarms",
+      "xp_bonus": 20,
+      "credits": 100
+    }
+  },
+
+  "_comment_failure_consequences": "What happens if the mission fails",
+  "failure_consequences": {
+    "xp": 50,
+    "_comment_failure_xp": "Even failure provides some XP (learning experience). Typically 25-50 XP.",
+
+    "effects": ["failed_warehouse_salvage"],
+    "_comment_failure_effects": "Story flags for failed missions. Can affect future content."
+  },
+
+  "_comment_design_notes": "=== MISSION DESIGN NOTES ===",
+  "_design_philosophy": "Salvage missions focus on risk/reward decisions. Skilled players can get better outcomes, but even cautious play succeeds.",
+  "_stage_structure": "Approach (3 choices) -> Navigate (3 choices) -> Escape (1-2 choices). Total playtime: 5-10 minutes.",
+  "_skill_checks": "Engineering 3 (accessible) and Engineering 4 (challenging). Rewards scale with difficulty.",
+  "_reward_balance": "Base 150 XP + 400 credits = fair for difficulty 2. Bonuses can add 65-105 XP for perfect play.",
+  "_part_rewards": "2 common parts guaranteed. 1 uncommon part for skilled/lucky play. Follows rarity distribution.",
+  "_replayability": "Multiple paths, different outcomes. Players can retry for better rewards or different story beats."
+}

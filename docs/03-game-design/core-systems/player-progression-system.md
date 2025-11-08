@@ -1804,6 +1804,256 @@ async def perform_skill_check(request: SkillCheckRequest):
 
 ---
 
+## Achievement System
+
+### Overview
+
+The achievement system tracks player accomplishments and provides additional progression goals beyond levels and ship systems. Achievements unlock automatically based on gameplay events and persist across save/load cycles.
+
+**Key Features:**
+- 15 achievements tracking major milestones
+- Auto-unlock on gameplay events
+- EventBus signal integration for UI notifications
+- Full save/load support
+- Extensible architecture for future additions
+
+### Achievement Categories
+
+#### Progression Achievements (6 achievements)
+
+| Achievement ID | Name | Description | Unlock Condition |
+|----------------|------|-------------|------------------|
+| `first_mission` | First Steps | Complete your first mission | Complete 1 mission |
+| `five_missions` | Mission Runner | Complete 5 missions | Complete 5 missions |
+| `ten_missions` | Mission Master | Complete 10 missions | Complete 10 missions |
+| `level_3` | Rising Star | Reach level 3 | Player level ≥ 3 |
+| `level_5` | Experienced Explorer | Reach level 5 | Player level ≥ 5 |
+| `level_10` | Veteran Commander | Reach level 10 | Player level ≥ 10 |
+
+**Milestone Tracking:**
+- Level 1-3: 2 achievements (level_3)
+- Level 4-5: 1 achievement (level_5)
+- Level 6-10: 1 achievement (level_10)
+- Missions: 3 achievements (1, 5, 10 missions)
+
+#### Ship System Achievements (3 achievements)
+
+| Achievement ID | Name | Description | Unlock Condition |
+|----------------|------|-------------|------------------|
+| `first_upgrade` | Engineer's Touch | Upgrade your first ship system | Install any system at level 1+ |
+| `ten_systems` | Complete Ship | Unlock all 10 ship systems | All 10 systems at level 1+ |
+| `all_systems_level_1` | Launch Ready | Bring all ship systems to Level 1 | All 10 systems exactly at level 1 |
+
+**Significance:**
+- `first_upgrade`: Celebrates first step in ship building
+- `ten_systems`: Major milestone - ship fully functional
+- `all_systems_level_1`: Phase 2 unlock condition (leave Earth)
+
+#### Economy Achievements (2 achievements)
+
+| Achievement ID | Name | Description | Unlock Condition |
+|----------------|------|-------------|------------------|
+| `credits_1000` | Entrepreneur | Collect 1000 credits | Total credits ≥ 1000 |
+| `credits_5000` | Wealthy Trader | Collect 5000 credits | Total credits ≥ 5000 |
+
+**Economic Context:**
+- 1000 credits: ~3-4 missions worth, significant savings
+- 5000 credits: ~10-15 missions, substantial wealth
+- Tracks total credits earned, not current balance
+
+#### Skill Achievements (2 achievements)
+
+| Achievement ID | Name | Description | Unlock Condition |
+|----------------|------|-------------|------------------|
+| `skill_master` | Skill Master | Raise any skill to level 10 | Any skill ≥ 10 |
+| `ten_successful_checks` | Lucky Streak | Successfully pass 10 skill checks | 10+ successful skill checks |
+
+**Skill Investment Rewards:**
+- `skill_master`: Recognizes specialization (max skill in Milestone 1)
+- `ten_successful_checks`: Celebrates player skill usage
+
+#### Discovery Achievements (2 achievements)
+
+| Achievement ID | Name | Description | Unlock Condition |
+|----------------|------|-------------|------------------|
+| `ten_parts` | Scavenger | Discover 10 different ship parts | 10+ parts discovered |
+| `twenty_parts` | Master Scavenger | Discover 20 different ship parts | 20+ parts discovered |
+
+**Discovery Tracking:**
+- Tied to `discovered_parts` mission rewards
+- Encourages exploration and optional content
+- Recognizes thorough players
+
+### Achievement Integration with Progression
+
+**Automatic Unlock Triggers:**
+
+| Game Event | Triggered Function | Achievements Checked |
+|------------|-------------------|---------------------|
+| Player levels up | `GameState.add_xp()` | Level achievements |
+| Credits added | `GameState.add_credits()` | Credit achievements |
+| Mission completed | `GameState.complete_mission()` | Mission count achievements |
+| System installed | `GameState.install_system()` | System achievements |
+| Skill increased | `GameState.increase_skill()` | Skill achievements |
+| Part discovered | `EventBus.part_discovered` | Discovery achievements |
+| Skill check passed | `GameState.record_skill_check_success()` | Skill check achievements |
+
+**Example: Mission Completion Achievement Flow**
+
+```gdscript
+# In MissionManager when mission completes
+func complete_mission(mission_id: String, outcome: String):
+    # Award rewards
+    award_mission_rewards(mission)
+
+    # Mark mission complete
+    GameState.completed_missions.append(mission_id)
+
+    # Trigger achievement checks (automatic)
+    # GameState checks:
+    # - first_mission (1 mission)
+    # - five_missions (5 missions)
+    # - ten_missions (10 missions)
+
+    # If achievement unlocks, EventBus.achievement_unlocked emits
+    # UI automatically shows achievement notification
+```
+
+### Achievement Milestones Table
+
+**Expected Achievement Unlocks by Player Level:**
+
+| Player Level | Expected Achievements | Cumulative Total |
+|--------------|----------------------|------------------|
+| 1-2 | first_mission, first_upgrade, ten_successful_checks | 3 |
+| 3 | level_3, five_missions, credits_1000, ten_parts | 7 |
+| 4-5 | level_5, ten_missions | 9 |
+| 6-9 | credits_5000, twenty_parts, skill_master | 12 |
+| 10 | level_10, ten_systems, all_systems_level_1 | 15 |
+
+**Achievement Completion Rate:**
+- Level 3: ~45% achievements (7/15)
+- Level 5: ~60% achievements (9/15)
+- Level 10: 100% achievements (15/15) if thorough
+
+### UI Notification System
+
+**Achievement Unlock Flow:**
+
+1. **Condition Met:** Player completes qualifying action
+2. **Auto-Check:** GameState checks achievement conditions
+3. **Unlock:** If unlocked, `GameState.unlock_achievement()` called
+4. **Signal Emitted:** `EventBus.achievement_unlocked(achievement_id, data)` fires
+5. **UI Notification:** Achievement popup appears
+6. **Persistence:** Achievement saved with game state
+
+**Example Achievement Popup:**
+
+```
+┌────────────────────────────────────────┐
+│  🏆 ACHIEVEMENT UNLOCKED!              │
+├────────────────────────────────────────┤
+│                                        │
+│  Rising Star                           │
+│  Reach level 3                         │
+│                                        │
+│  Your skills are growing. The galaxy   │
+│  awaits your exploration.              │
+│                                        │
+│  [Continue]                            │
+│                                        │
+└────────────────────────────────────────┘
+```
+
+### Achievement Progress Tracking
+
+**Player Profile Achievement Display:**
+
+```
+┌──────────────────────────────────────────┐
+│ ACHIEVEMENTS: 7 / 15 Unlocked (47%)      │
+├──────────────────────────────────────────┤
+│                                          │
+│ ✅ First Steps - Complete first mission │
+│ ✅ Rising Star - Reach level 3          │
+│ ✅ Engineer's Touch - First upgrade     │
+│ ✅ Mission Runner - 5 missions          │
+│ ✅ Lucky Streak - 10 skill checks       │
+│ ✅ Scavenger - 10 parts discovered      │
+│ ✅ Entrepreneur - 1000 credits          │
+│                                          │
+│ 🔒 Experienced Explorer - Reach level 5 │
+│ 🔒 Mission Master - 10 missions         │
+│ 🔒 Veteran Commander - Reach level 10   │
+│ 🔒 Complete Ship - 10 systems unlocked  │
+│ 🔒 Launch Ready - All systems Level 1   │
+│ 🔒 Wealthy Trader - 5000 credits        │
+│ 🔒 Skill Master - Skill level 10        │
+│ 🔒 Master Scavenger - 20 parts          │
+│                                          │
+│ [View Locked] [Sort by Category]        │
+│                                          │
+└──────────────────────────────────────────┘
+```
+
+**Progress API:**
+
+```gdscript
+# Get achievement progress summary
+var progress = GameState.get_achievement_progress()
+print("Unlocked: %d/%d (%.1f%%)" % [
+    progress.unlocked,
+    progress.total,
+    progress.percentage
+])
+
+# Get all achievements
+var all_achievements = GameState.get_all_achievements()
+
+# Get only unlocked achievements
+var unlocked = GameState.get_unlocked_achievements()
+```
+
+### Future Achievement Expansions
+
+**Potential Phase 2 Achievements:**
+
+**Exploration Achievements:**
+- `first_warp_jump` - Jump to warp for the first time
+- `five_systems_explored` - Visit 5 different star systems
+- `discover_anomaly` - Discover your first anomaly
+
+**Combat Achievements:**
+- `first_victory` - Win your first ship combat
+- `perfect_defense` - Win combat without taking damage
+- `ace_pilot` - Win 10 ship combats
+
+**Social Achievements:**
+- `allied_faction` - Reach Allied status with a faction
+- `master_diplomat` - Resolve 10 conflicts peacefully
+- `first_crew_member` - Recruit your first crew member
+
+**Ship Class Achievements:**
+- `scout_class` - Build your first Scout-class ship
+- `dreadnought_class` - Build a Dreadnought-class ship
+- `legendary_ship` - Install all Level 5 systems
+
+**Technical Implementation:**
+
+See **[Achievement System Documentation](../../ACHIEVEMENTS.md)** for:
+- Complete API reference
+- Code examples
+- Testing procedures
+- Save/load integration
+- Adding new achievements
+
+---
+
 **Document Complete**
-**Total Length:** ~1,800 lines | 24,000+ words
-**Last Updated:** November 6, 2025
+**Total Length:** ~2,100 lines | 28,000+ words
+**Last Updated:** November 7, 2025
+**Related Documentation:**
+- [Achievement System](../../ACHIEVEMENTS.md) - Technical implementation
+- [Mission Framework](../content-systems/mission-framework.md) - Mission rewards
+- [Ship Systems](../ship-systems/ship-systems.md) - System upgrades
+- [Mission Reward Guidelines](../content-systems/mission-reward-guidelines.md) - Balancing

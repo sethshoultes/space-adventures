@@ -1,0 +1,155 @@
+[gd_scene load_steps=2 format=3 uid="uid://test_rewards_scene"]
+
+[ext_resource type="Script" path="res://scripts/tests/test_rewards_scene.gd" id="1"]
+
+[node name="TestRewards" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -350.0
+offset_right = 300.0
+offset_bottom = 350.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Reward System Manual Testing"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Separator1" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="StateLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Current Game State"
+horizontal_alignment = 1
+
+[node name="StatePanel" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StateText" type="RichTextLabel" parent="VBoxContainer/StatePanel"]
+layout_mode = 2
+bbcode_enabled = true
+text = "Loading..."
+
+[node name="Separator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="RewardButtons" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Test Reward Scenarios"
+horizontal_alignment = 1
+
+[node name="ButtonsGrid" type="GridContainer" parent="VBoxContainer"]
+layout_mode = 2
+columns = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+
+[node name="BtnAwardXP" type="Button" parent="VBoxContainer/ButtonsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Award 100 XP"
+
+[node name="BtnAwardCredits" type="Button" parent="VBoxContainer/ButtonsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Award 300 Credits"
+
+[node name="BtnAwardPart" type="Button" parent="VBoxContainer/ButtonsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Award Hull Part"
+
+[node name="BtnDiscoverPart" type="Button" parent="VBoxContainer/ButtonsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Discover New Part"
+
+[node name="BtnLevelUp" type="Button" parent="VBoxContainer/ButtonsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Award 500 XP (Level Up)"
+
+[node name="BtnCompleteMission" type="Button" parent="VBoxContainer/ButtonsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Complete Test Mission"
+
+[node name="BtnFullReward" type="Button" parent="VBoxContainer/ButtonsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Award Full Mission Rewards"
+
+[node name="BtnUnlockAchievement" type="Button" parent="VBoxContainer/ButtonsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Unlock Test Achievement"
+
+[node name="BtnTestInventoryLimit" type="Button" parent="VBoxContainer/ButtonsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Test Inventory Weight"
+
+[node name="BtnInvalidPart" type="Button" parent="VBoxContainer/ButtonsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Test Invalid Part"
+
+[node name="Separator3" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ControlButtons" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BtnReset" type="Button" parent="VBoxContainer/ControlButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Reset Game State"
+
+[node name="BtnRefresh" type="Button" parent="VBoxContainer/ControlButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Refresh Display"
+
+[node name="BtnRunTests" type="Button" parent="VBoxContainer/ControlButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Run Automated Tests"
+
+[node name="ResultsLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Results will appear here"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="VBoxContainer/ButtonsGrid/BtnAwardXP" to="." method="_on_btn_award_xp_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonsGrid/BtnAwardCredits" to="." method="_on_btn_award_credits_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonsGrid/BtnAwardPart" to="." method="_on_btn_award_part_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonsGrid/BtnDiscoverPart" to="." method="_on_btn_discover_part_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonsGrid/BtnLevelUp" to="." method="_on_btn_level_up_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonsGrid/BtnCompleteMission" to="." method="_on_btn_complete_mission_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonsGrid/BtnFullReward" to="." method="_on_btn_full_reward_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonsGrid/BtnUnlockAchievement" to="." method="_on_btn_unlock_achievement_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonsGrid/BtnTestInventoryLimit" to="." method="_on_btn_test_inventory_limit_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonsGrid/BtnInvalidPart" to="." method="_on_btn_invalid_part_pressed"]
+[connection signal="pressed" from="VBoxContainer/ControlButtons/BtnReset" to="." method="_on_btn_reset_pressed"]
+[connection signal="pressed" from="VBoxContainer/ControlButtons/BtnRefresh" to="." method="_on_btn_refresh_pressed"]
+[connection signal="pressed" from="VBoxContainer/ControlButtons/BtnRunTests" to="." method="_on_btn_run_tests_pressed"]

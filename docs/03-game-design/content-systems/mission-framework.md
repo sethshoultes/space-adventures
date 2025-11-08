@@ -524,42 +524,72 @@ Choices affect:
 
 ## Reward System
 
+### Comprehensive Reward Guidelines
+
+**For complete reward balancing and design guidelines, see:**
+- **[Mission Reward Guidelines](./mission-reward-guidelines.md)** - Comprehensive reward scaling, part selection, and balancing
+
+**Quick Reference:**
+
+| Difficulty | Stars | Base XP | Credits | Common Parts | Rare Parts |
+|------------|-------|---------|---------|--------------|------------|
+| Tutorial | ★☆☆☆☆ | 100-150 | 300-500 | 2-3 | 0 |
+| Easy | ★★☆☆☆ | 100-150 | 200-400 | 1-2 | 0-1 |
+| Medium | ★★★☆☆ | 150-200 | 300-600 | 1-2 | 1 |
+| Hard | ★★★★☆ | 200-300 | 400-800 | 2-3 | 1-2 |
+| Very Hard | ★★★★★ | 300-400 | 500-1000 | 2-3 | 2-3 |
+
 ### Experience Points (XP)
 
 **XP Sources:**
-- Complete mission: 50-200 XP
-- Skill check success: +25 XP
-- Discover location: +100 XP
+- Complete mission: 50-400 XP (scaled by difficulty)
+- Skill check success: +25 XP (standard), +40 XP (high-level)
+- Discover location: +15-50 XP (based on importance)
 - Win combat: +50-150 XP
-- Make meaningful choice: +25 XP
+- Perfect completion: +50-100 XP
 
 **Level Up:**
-- Level 2: 200 XP
-- Level 3: 500 XP
-- Level 4: 1000 XP
-- Level 5: 2000 XP
-- Each level: ×2 previous
+- Level 2: 100 XP total
+- Level 3: 250 XP total (+150)
+- Level 4: 450 XP total (+200)
+- Level 5: 700 XP total (+250)
 
 **Level Benefits:**
-- +2 skill points to distribute
-- +5% to all checks
+- +1 skill point per level
+- +1 attribute point every 2 levels
 - Unlock new mission types
-- Better rewards in missions
+- Rank progression (see player-progression-system.md)
 
 ### Ship Parts
 
-**Rarity Distribution:**
-- Common (White): 50% of drops
-- Uncommon (Green): 30% of drops
-- Rare (Blue): 15% of drops
-- Epic (Purple): 4% of drops
-- Legendary (Orange): 1% of drops
+**Part Rarity Distribution by Mission Type:**
+- **Story missions:** 100% common (guaranteed progression)
+- **Salvage missions:** 70% common, 25% uncommon, 5% rare
+- **Exploration missions:** 50% common, 35% uncommon, 15% rare
+- **Combat missions:** 60% common, 30% uncommon, 10% rare
+- **Trade missions:** 80% common, 15% uncommon, 5% rare
+
+**Part Award vs Discovery:**
+- **Awarded parts** (`items`): Added to inventory immediately
+- **Discovered parts** (`discovered_parts`): Unlocked in PartRegistry for future acquisition
 
 **Guaranteed Rewards:**
-- Story missions: Always give required parts for progression
-- Optional missions: Random quality, higher difficulty → better chance
+- Story missions: Always provide progression-critical parts
+- Optional missions: Balanced rarity based on difficulty
 
-### Reputation System
+### Achievement Integration
+
+**Achievements Unlock From Missions:**
+- First mission completion → `first_mission` achievement
+- 5 missions → `five_missions` achievement
+- 10 missions → `ten_missions` achievement
+- Perfect skill check streaks → `lucky_streak` achievement
+- System installations → `first_upgrade`, `ten_systems` achievements
+- Part discoveries → `ten_parts`, `twenty_parts` achievements
+
+**See:** [ACHIEVEMENTS.md](../../ACHIEVEMENTS.md) for complete achievement list and unlock conditions.
+
+### Reputation System (Phase 2)
 
 **Factions (Space Phase):**
 - Federation (explorers, diplomats)
@@ -582,7 +612,7 @@ Choices affect:
 - Emergency assistance
 - Story implications
 
-### Karma System
+### Karma System (Phase 2)
 
 **Karma Points:**
 - Earned through moral choices
@@ -874,7 +904,13 @@ func complete_mission(result: Dictionary):
 
 ## AI Generation Integration
 
-### Mission Generation Prompt
+### AI Mission Generation System
+
+**For complete AI generation prompts and guidelines, see:**
+- **[AI Mission Generation Prompts](../../05-ai-content/ai-mission-generation-prompts.md)** - Complete prompt engineering guide
+- **[Mission Reward Guidelines](./mission-reward-guidelines.md)** - Reward balancing for AI-generated content
+
+### Mission Generation Prompt Template
 
 ```python
 # See ai-integration.md for full prompt templates
@@ -889,30 +925,109 @@ Game Context:
 - Tone: Serious sci-fi (Star Trek TNG)
 - Completed Missions: {completed_missions}
 
-Required Reward: {reward_type} (ship part)
+Mission Requirements:
+- Type: {mission_type}
+- Difficulty: {difficulty} stars (1-5)
+- Reward Focus: {reward_focus}
 
 Generate a mission with:
 1. Title (evocative, mysterious)
-2. Type: salvage, exploration, trade, or rescue
-3. Description (2-3 sentences)
-4. 2-3 stages with meaningful choices
-5. Outcomes that reflect player's skills/systems
-6. Appropriate difficulty rating
+2. Description (2-3 sentences)
+3. 2-4 stages with meaningful choices
+4. Skill-based requirements that reflect player skills
+5. Consequences that matter (success/failure paths)
+6. Balanced rewards following reward guidelines
+
+Reward Requirements (see mission-reward-guidelines.md):
+- Base XP: {base_xp} ± 25
+- Credits: {base_credits} ± 100
+- Parts: {num_parts} parts at level {part_level}
+- Skill check bonuses: 15/25/40 XP based on skill level
+- Discovery bonuses: 15-50 XP for optional content
+
+Validate all part_ids against PartRegistry:
+Format: {system}_{type}_l{level}_{rarity}
 
 The mission should feel unique but fit the established world.
 Format as JSON following the mission template.
 """
 ```
 
-### Quality Control
+### Quality Control & Validation
 
-**AI-Generated Missions:**
-1. Always reviewed by mission validator
-2. Must fit JSON schema
-3. Rewards balanced automatically
-4. Player can "reroll" if unsatisfying (max 3x per session)
+**AI-Generated Mission Review Process:**
+
+1. **Schema Validation:**
+   - Validate JSON structure matches mission template
+   - Check all required fields present
+   - Verify stage/choice relationships valid
+
+2. **Reward Validation:**
+   - XP within acceptable range for difficulty
+   - Credits balanced with economy
+   - Part IDs exist in PartRegistry
+   - Rarity distribution matches mission type
+   - Total possible XP (with bonuses) < 400
+
+3. **Narrative Quality:**
+   - Tone matches Star Trek TNG style
+   - Choices are meaningful (not obvious "right" answer)
+   - Consequences reflect player skills/systems
+   - Story coherent and engaging
+
+4. **Balance Validation:**
+   - Difficulty appropriate for player level
+   - Skill checks match available player skills
+   - Rewards justify time investment
+   - No progression blockers
+
+**Validation Checklist:**
+```
+✓ XP matches difficulty tier
+✓ Credits appropriate for mission type
+✓ All part_ids validated against PartRegistry
+✓ Rarity distribution logical
+✓ Skill bonuses assigned correctly (15/25/40 XP)
+✓ Discovery rewards justified
+✓ Unlocks narratively coherent
+✓ No circular dependencies in unlock chain
+✓ Mission completable with player's current systems
+```
+
+**Player Reroll System:**
+- Player can reject AI-generated mission
+- Max 3 rerolls per session
+- New mission generated with same parameters
+- Encourages quality over quantity
+
+### Mission Templates
+
+**Pre-built Templates for Common Scenarios:**
+
+Available in `/godot/assets/data/mission_templates/`:
+- `salvage_template.json` - Basic salvage structure
+- `exploration_template.json` - Discovery-focused missions
+- `trade_template.json` - Negotiation and economy
+- `rescue_template.json` - Time-pressure scenarios
+- `combat_template.json` - Tactical encounters
+- `story_template.json` - Narrative-driven missions
+
+**See:** [Mission Templates README](../../godot/assets/data/mission_templates/README.md) for usage guide.
+
+### Content Creator Quick Links
+
+- **[Mission Reward Guidelines](./mission-reward-guidelines.md)** - Reward balancing
+- **[AI Mission Generation Prompts](../../05-ai-content/ai-mission-generation-prompts.md)** - AI prompt engineering
+- **[Mission Templates](../../godot/assets/data/mission_templates/)** - Pre-built structures
+- **[Content Creator Guide](./CONTENT-CREATOR-GUIDE.md)** - Complete workflow
 
 ---
 
-**Document Status:** Complete v1.0
-**Last Updated:** November 5, 2025
+**Document Status:** Complete v1.1
+**Last Updated:** November 7, 2025
+**Related Documentation:**
+- [Mission Reward Guidelines](./mission-reward-guidelines.md)
+- [AI Mission Generation Prompts](../../05-ai-content/ai-mission-generation-prompts.md)
+- [Player Progression System](../core-systems/player-progression-system.md)
+- [Ship Systems](../ship-systems/ship-systems.md)
+- [Achievement System](../../ACHIEVEMENTS.md)

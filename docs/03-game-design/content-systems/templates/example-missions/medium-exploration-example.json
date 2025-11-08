@@ -1,0 +1,423 @@
+{
+  "_example_mission": "Difficulty 3 exploration mission demonstrating discovery mechanics, science skills, and ethical choices",
+  "_design_philosophy": "Exploration emphasizes mystery, science skill checks, and meaningful discoveries. Players uncover story through investigation.",
+
+  "mission_id": "example_quantum_anomaly",
+  "title": "The Quantum Echo",
+  "type": "exploration",
+  "location": "Abandoned Quantum Research Lab, Colorado",
+  "description": "A research facility studying quantum mechanics went dark during the exodus. Local scavengers report 'strange lights' and 'impossible sounds' coming from inside. Your sensors detect massive energy signatures—technology that shouldn't exist yet. Or shouldn't exist at all.",
+
+  "difficulty": 3,
+
+  "requirements": {
+    "min_level": 2,
+    "required_systems": ["sensors"],
+    "completed_missions": ["tutorial_first_salvage", "example_trading_post_salvage"]
+  },
+
+  "objectives": [
+    "Investigate the quantum research facility",
+    "Determine the source of the energy anomaly",
+    "[OPTIONAL] Recover research data without destroying the experiment",
+    "[OPTIONAL] Understand the quantum technology well enough to replicate it"
+  ],
+
+  "stages": [
+    {
+      "_design": "Initial approach emphasizes sensor/science use for information gathering",
+      "stage_id": "approach",
+      "title": "Strange Readings",
+      "description": "The facility sits in a valley, unmarked and unremarkable from the outside. But your sensors are going crazy. Energy readings fluctuate wildly—sometimes zero, sometimes off the scale. Temporal distortions are detected. Your instruments claim time is moving at different speeds in different parts of the building. This should be impossible.",
+      "image": "facility_valley",
+
+      "choices": [
+        {
+          "_design_choice": "Science scan: Primary exploration skill, reveals full situation",
+          "choice_id": "detailed_scan",
+          "text": "Perform a detailed sensor analysis of the facility",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You run comprehensive scans. The data is staggering: a stable quantum superposition state, maintained artificially. Something inside the facility exists in multiple states simultaneously. The experiment is still running—has been running for 30 years without human intervention. This is revolutionary physics, functioning decades beyond predicted timelines. You understand enough to know this is dangerous. And incredible.",
+              "next_stage": "investigation_informed",
+              "effects": ["full_scan_complete", "understands_danger", "knows_quantum_state"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "Your scan results are contradictory and confusing. You get fragments—mentions of quantum superposition, temporal anomalies—but no coherent picture. You'll need to investigate the old-fashioned way: go inside and look.",
+              "next_stage": "investigation_blind",
+              "effects": ["scan_inconclusive"]
+            }
+          }
+        },
+        {
+          "_design_choice": "Physical investigation: Bypass science, go straight to hands-on discovery",
+          "choice_id": "enter_directly",
+          "text": "Enter the facility and investigate directly",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You approach the entrance. The door slides open—automated systems still functional. Inside, the main lab is pristine, as if the scientists just stepped out for lunch. But dust tells a different story: decades of abandonment. At the center of the room, a device hums with barely-contained power. Around it, reality... flickers. You see afterimages, echoes of movement that hasn't happened yet. Or already happened. Temporal displacement.",
+              "next_stage": "lab_discovery",
+              "effects": ["entered_unprepared"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "_design_choice": "Check local records: Alternative information path, less technical",
+          "choice_id": "check_local_settlements",
+          "text": "Ask nearby settlers what they know about this place",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You find a settlement 10 kilometers away. An old woman remembers the facility: 'They were trying to build a computer that could think in multiple timelines at once. Quantum computing, they called it. But something went wrong during the exodus. The scientists evacuated, but the machine... they couldn't shut it down. Said it would collapse reality if they tried. So they just left it running.' Her eyes are distant. 'Sometimes at night, we see ghosts walking around the facility. Echoes, maybe, of what could have been.'",
+              "next_stage": "investigation_informed",
+              "effects": ["learned_history", "knows_danger"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "The settlers avoid your questions. They're scared of the facility, refuse to talk about it. You'll have to investigate yourself.",
+              "next_stage": "investigation_blind",
+              "effects": []
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "_design": "Informed investigation: Player has context, can make educated decisions",
+      "stage_id": "investigation_informed",
+      "title": "Understanding the Anomaly",
+      "description": "Armed with knowledge, you enter the facility. The quantum computer sits in the central chamber, suspended in a containment field. It exists in a state of superposition—simultaneously on and off, working and idle, here and not here. Your instruments show it's processing calculations across multiple timelines. The research data is stored in a database terminal nearby.",
+      "image": "quantum_chamber",
+
+      "choices": [
+        {
+          "_design_choice": "Download research: Primary objective, moderate skill check",
+          "choice_id": "download_research",
+          "text": "Download the research data to your datapad",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You interface with the terminal. The data transfer is massive—30 years of continuous quantum computation, research notes, experimental logs. You're downloading decades of breakthrough physics. The database includes instructions for building a quantum computer of your own. Incredible. But the download is stressing the system. The containment field flickers.",
+              "next_stage": "critical_decision",
+              "effects": ["downloaded_research", "containment_stressed"],
+              "xp_bonus": 35
+            },
+            "failure": {
+              "text": "The database is protected by quantum encryption that shifts its own key continuously. You can't crack it without risking system collapse. The research is beyond your reach.",
+              "next_stage": "critical_decision",
+              "effects": ["research_locked"]
+            }
+          }
+        },
+        {
+          "_design_choice": "Analyze the device: High science check, deeper understanding",
+          "choice_id": "analyze_quantum_computer",
+          "text": "Analyze the quantum computer itself—understand how it works",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 4
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You study the device for hours. The design is elegant, brilliant, and terrifying. It maintains superposition by continuously collapsing and re-establishing quantum states across microseconds. It's computing answers to problems that won't be asked for centuries. You understand the fundamental principles now. You could build a smaller version. Or you could shut this down safely—you know the exact sequence required.",
+              "next_stage": "critical_decision",
+              "effects": ["understood_technology", "can_replicate", "knows_shutdown_sequence"],
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "The mathematics are beyond you. The device is incomprehensible—a black box producing miracles. You'll never understand how it works, only what it does.",
+              "next_stage": "critical_decision",
+              "effects": ["technology_too_advanced"]
+            }
+          }
+        },
+        {
+          "_design_choice": "Examine personal logs: Story discovery, optional content",
+          "choice_id": "read_personal_logs",
+          "text": "Read the scientists' personal logs and notes",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You find Dr. Chen's final log entry, dated the day of the exodus: 'We've done it. True quantum computation. But I'm afraid. The machine showed us calculations from timelines where we shut it down—in 83% of them, the collapse causes a quantum cascade that destroys everything within 50 kilometers. We can't turn it off. We can only leave it running and hope someone smarter than us figures it out. If you're reading this, you're the someone. God help you.' The weight of responsibility settles on your shoulders.",
+              "next_stage": "critical_decision",
+              "effects": ["read_logs", "knows_stakes", "moral_burden"],
+              "xp_bonus": 30
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "_design": "Critical decision: Ethical choice with no perfect answer, consequences matter",
+      "stage_id": "critical_decision",
+      "title": "The Choice",
+      "description": "You stand before the quantum computer. It has been calculating for 30 years. It contains knowledge that could revolutionize human civilization. But it's also a ticking time bomb—the containment field shows signs of degradation. In a few years, maybe decades, it will fail catastrophically. What do you do?",
+      "image": "decision_moment",
+
+      "conditional_text": {
+        "if_knows_shutdown_sequence": "You know how to safely shut it down. But doing so erases 30 years of calculations in progress.",
+        "if_downloaded_research": "You have the research data. The knowledge is preserved, at least.",
+        "if_understood_technology": "You understand it well enough to build your own. Smaller, safer, controllable.",
+        "if_moral_burden": "Dr. Chen's final words echo: 'God help you.' The decision is yours.",
+        "default": "The fate of this technology rests in your hands."
+      },
+
+      "choices": [
+        {
+          "_design_choice": "Destroy it: Safe, ethical, loses potential knowledge",
+          "choice_id": "destroy_device",
+          "text": "Destroy the device—it's too dangerous to exist",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You initiate a controlled shutdown sequence. The quantum states collapse gracefully, one by one. The containment field dissipates. The hum fades to silence. The device is dead. 30 years of calculations: gone. But the threat is eliminated. No one will die from this technology's failure. You leave the facility feeling lighter.",
+              "next_stage": "destroyed_ending",
+              "mission_result": "success",
+              "effects": ["destroyed_device", "safe_choice"],
+              "xp_bonus": 30
+            }
+          }
+        },
+        {
+          "_design_choice": "Leave it running: Preserves knowledge, kicks can down road",
+          "choice_id": "leave_running",
+          "text": "Leave it running—let someone else deal with it",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You back away from the device. Not your problem. Not your responsibility. The machine continues its calculations, humming quietly in the abandoned facility. Maybe it'll keep running for another 30 years. Maybe it'll explode tomorrow. You don't look back as you leave.",
+              "next_stage": "abandoned_ending",
+              "mission_result": "success",
+              "effects": ["left_running", "passed_burden"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "_design_choice": "Extract key components: Compromise, requires engineering",
+          "choice_id": "salvage_safely",
+          "text": "Extract critical components before shutting down",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 4
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You carefully dismantle the quantum processing cores while the device is still in superposition. It's delicate work—one mistake could cause collapse. Three hours later, you have five quantum processor modules in your bag. You initiate safe shutdown. The device dies cleanly. You've preserved the critical technology while eliminating the threat. The best of both worlds.",
+              "next_stage": "salvage_ending",
+              "mission_result": "success",
+              "effects": ["salvaged_cores", "safe_shutdown", "preserved_technology"],
+              "xp_bonus": 60
+            },
+            "failure": {
+              "text": "Your hand slips. The containment field destabilizes. Alarms blare. You have seconds to run before the quantum collapse. You sprint for the exit as reality fractures behind you. You make it out, barely. The facility is gone—erased from existence, replaced by a crater. You failed. The knowledge is lost. And you nearly died.",
+              "next_stage": "failure_ending",
+              "mission_result": "failure",
+              "effects": ["catastrophic_failure", "facility_destroyed"]
+            }
+          }
+        },
+        {
+          "_design_choice": "Perfect outcome: Only available if player has deep understanding",
+          "choice_id": "transfer_calculations",
+          "text": "Transfer ongoing calculations to a stable medium before shutdown [Requires understanding]",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 5
+          },
+          "conditions": {
+            "requires_effect": "understood_technology"
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You access the quantum computer at the deepest level. Using your understanding of its architecture, you design a protocol to transfer the ongoing calculations—30 years of quantum superposition—into a classical storage format. It takes six hours. The data fills three petabytes. But you capture it all. Then you safely shut down the device. The knowledge is preserved. The threat is eliminated. You've done what Dr. Chen couldn't: saved the work without the danger.",
+              "next_stage": "perfect_ending",
+              "mission_result": "success",
+              "effects": ["transferred_data", "perfect_outcome", "dr_chen_redeemed"],
+              "xp_bonus": 100
+            },
+            "failure": {
+              "text": "The transfer protocol destabilizes the quantum states. You abort the process and shut down immediately, losing the calculations. At least the facility is safe now.",
+              "next_stage": "destroyed_ending",
+              "effects": ["failed_transfer", "safe_shutdown"]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "destroyed_ending",
+      "title": "Safety First",
+      "description": "The facility is silent now. The anomaly is gone. Future generations won't face the danger this device posed. It was the right call.",
+      "image": "peaceful_facility",
+      "choices": []
+    },
+
+    {
+      "stage_id": "abandoned_ending",
+      "title": "Not Your Problem",
+      "description": "You drive away from the facility. In your rearview mirror, the strange lights still flicker. Someone else's problem. You tell yourself that's okay.",
+      "image": "facility_distant",
+      "choices": []
+    },
+
+    {
+      "stage_id": "salvage_ending",
+      "title": "Salvaged Knowledge",
+      "description": "The quantum processor cores hum softly in your bag. You've preserved the breakthrough without the risk. Dr. Chen would be proud.",
+      "image": "cores_secured",
+      "choices": []
+    },
+
+    {
+      "stage_id": "perfect_ending",
+      "title": "Legacy Preserved",
+      "description": "Three petabytes of quantum calculations. Thirty years of breakthrough research. All saved. All safe. You've given humanity a gift Dr. Chen could only dream of providing.",
+      "image": "data_preserved",
+      "choices": []
+    },
+
+    {
+      "stage_id": "failure_ending",
+      "title": "Catastrophe",
+      "description": "The crater smolders. The facility is gone. You survived, but at what cost? The knowledge is lost forever.",
+      "image": "crater",
+      "choices": []
+    },
+
+    {
+      "stage_id": "mission_complete",
+      "title": "Investigation Complete",
+      "description": "The quantum anomaly has been resolved. One way or another.",
+      "image": "mission_end",
+      "choices": []
+    }
+  ],
+
+  "rewards": {
+    "xp": 200,
+    "credits": 550,
+
+    "items": [],
+
+    "discovered_parts": [
+      "computer_basic_core_l1_common",
+      "computer_enhanced_processor_l2_uncommon"
+    ],
+
+    "unlocks": [
+      "mission_quantum_followup"
+    ]
+  },
+
+  "conditional_rewards": {
+    "if_downloaded_research": {
+      "items": [
+        {"part_id": "computer_enhanced_processor_l2_uncommon", "quantity": 1}
+      ],
+      "credits": 300,
+      "xp_bonus": 25
+    },
+
+    "if_salvaged_cores": {
+      "items": [
+        {"part_id": "computer_quantum_core_l3_rare", "quantity": 1}
+      ],
+      "discovered_parts": [
+        "computer_quantum_core_l3_rare"
+      ],
+      "credits": 500,
+      "xp_bonus": 50
+    },
+
+    "if_perfect_outcome": {
+      "items": [
+        {"part_id": "computer_quantum_core_l3_rare", "quantity": 1}
+      ],
+      "discovered_parts": [
+        "computer_quantum_core_l3_rare"
+      ],
+      "credits": 800,
+      "xp_bonus": 100,
+      "unlocks": [
+        "mission_quantum_research_tree"
+      ]
+    },
+
+    "if_full_scan_complete": {
+      "xp_bonus": 30
+    },
+
+    "if_understood_technology": {
+      "xp_bonus": 40,
+      "credits": 200
+    },
+
+    "if_knows_stakes": {
+      "xp_bonus": 20
+    }
+  },
+
+  "failure_consequences": {
+    "xp": 50,
+    "effects": ["destroyed_quantum_facility", "lost_knowledge"]
+  },
+
+  "_design_summary": {
+    "total_stages": 8,
+    "playtime_estimate": "12-18 minutes (depends on player investigation depth)",
+    "skill_checks": {
+      "science_3": "Detailed sensor scan (+40 XP) - reveals full situation",
+      "science_4": "Analyze quantum computer (+50 XP) - deep understanding",
+      "science_5": "Transfer calculations (+100 XP) - perfect outcome",
+      "engineering_3": "Download research (+35 XP) - preserve data",
+      "engineering_4": "Salvage cores (+60 XP) - best compromise",
+      "diplomacy_2": "Learn from settlers (+25 XP) - alternative info path"
+    },
+    "total_possible_xp": "Base 200 + Max bonuses 215 = 415 XP (exceptional for difficulty 3)",
+    "possible_outcomes": [
+      "Destroyed device (safe, no knowledge)",
+      "Abandoned (passed burden to future)",
+      "Salvaged cores (compromise, preserved tech)",
+      "Perfect outcome (saved everything, requires Science 5)"
+    ],
+    "design_strengths": [
+      "Science skills heavily featured (Science 3, 4, 5 checks)",
+      "Cross-skill integration (Science, Engineering, Diplomacy)",
+      "Ethical dilemma with no 'correct' answer",
+      "Multiple information-gathering paths",
+      "Optional discovery content (personal logs)",
+      "Perfect outcome requires exceptional skill (Science 5)",
+      "Failure is possible and meaningful",
+      "Rewards scale dramatically with skill level",
+      "Replayability through different investigation approaches"
+    ],
+    "why_this_works": "Exploration archetype: mystery, discovery, knowledge vs safety, high skill ceiling, meaningful choices"
+  }
+}

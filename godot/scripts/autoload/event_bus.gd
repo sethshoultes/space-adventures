@@ -64,6 +64,9 @@ signal skill_increased(skill_name: String, new_value: int, old_value: int)
 ## Emitted when a skill point is allocated
 signal skill_allocated(skill_name: String, new_value: int)
 
+## Emitted when an achievement is unlocked
+signal achievement_unlocked(achievement_id: String, achievement_data: Dictionary)
+
 # ============================================================================
 # ECONOMY EVENTS
 # ============================================================================
