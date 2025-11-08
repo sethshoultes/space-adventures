@@ -333,7 +333,7 @@ func check_spontaneous_event() -> Dictionary:
 
 ## Prepare game state for API requests (simplified for transmission)
 func _prepare_game_state() -> Dictionary:
-	return {
+	var state = {
 		"player": {
 			"name": GameState.player.name,
 			"level": GameState.player.level,
@@ -350,6 +350,25 @@ func _prepare_game_state() -> Dictionary:
 			"completed_missions_count": GameState.get_completed_missions_count()
 		}
 	}
+
+	# Add active mission summary (if any)
+	if MissionManager.is_mission_active():
+		var mission = MissionManager.get_active_mission()
+		var current_stage = MissionManager.get_current_stage()
+
+		state["mission"] = {
+			"mission_id": mission.get("mission_id", "unknown"),
+			"title": mission.get("title", "Unknown Mission"),
+			"type": mission.get("type", "unknown"),
+			"location": mission.get("location", "Unknown"),
+			"difficulty": mission.get("difficulty", 1),
+			"description": mission.get("description", ""),
+			"current_stage": MissionManager.current_stage_id,
+			"current_stage_title": current_stage.get("title", ""),
+			"current_stage_description": current_stage.get("description", "")
+		}
+
+	return state
 
 ## Make HTTP POST request
 func _make_post_request(url: String, body: Dictionary) -> Dictionary:
