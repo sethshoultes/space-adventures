@@ -89,13 +89,13 @@ const SYSTEM_DISPLAY_NAMES = {
 @onready var manage_crew_button: Button = $MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel/MarginContainer/VBox/ManageCrewButton
 
 # AI Chat Panel
-@onready var ai_chat_panel: PanelContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel
-@onready var agent_selector: OptionButton = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/HeaderHBox/AgentSelector
-@onready var chat_history: ScrollContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/ChatHistory
-@onready var messages_vbox: VBoxContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/ChatHistory/MessagesVBox
-@onready var message_input: LineEdit = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/InputHBox/MessageInput
-@onready var send_button: Button = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/InputHBox/SendButton
-@onready var status_label: Label = $MainContainer/ContentVBox/MainContentHBox/RightColumn/AIChatPanel/MarginContainer/VBox/StatusLabel
+@onready var ai_chat_panel: PanelContainer = $MainContainer/ContentVBox/MainContentHBox/ChatColumn/AIChatPanel
+@onready var agent_selector: OptionButton = $MainContainer/ContentVBox/MainContentHBox/ChatColumn/AIChatPanel/MarginContainer/VBox/HeaderHBox/AgentSelector
+@onready var chat_history: ScrollContainer = $MainContainer/ContentVBox/MainContentHBox/ChatColumn/AIChatPanel/MarginContainer/VBox/ChatHistory
+@onready var messages_vbox: VBoxContainer = $MainContainer/ContentVBox/MainContentHBox/ChatColumn/AIChatPanel/MarginContainer/VBox/ChatHistory/MessagesVBox
+@onready var message_input: LineEdit = $MainContainer/ContentVBox/MainContentHBox/ChatColumn/AIChatPanel/MarginContainer/VBox/InputHBox/MessageInput
+@onready var send_button: Button = $MainContainer/ContentVBox/MainContentHBox/ChatColumn/AIChatPanel/MarginContainer/VBox/InputHBox/SendButton
+@onready var status_label: Label = $MainContainer/ContentVBox/MainContentHBox/ChatColumn/AIChatPanel/MarginContainer/VBox/StatusLabel
 
 # AI Chat State
 var current_agent: String = "atlas"

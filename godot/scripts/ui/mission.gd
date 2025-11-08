@@ -38,9 +38,14 @@ var stage_count: int = 0  # For stardate generation
 var base_stardate: float = 2247.05  # Starting stardate
 var is_first_stage: bool = true  # First stage has no separator
 var scroll_indicator: Button = null  # Manual scroll button indicator
+var conversation_id: String = ""  # AI orchestrator conversation ID
 
 func _ready() -> void:
 	print("Mission scene initialized - Three-panel layout mode")
+
+	# Initialize AI conversation
+	conversation_id = "mission_" + str(Time.get_ticks_msec())
+	print("Mission: ATLAS conversation ID: %s" % conversation_id)
 
 	# Connect ATLAS input signals
 	atlas_input.text_submitted.connect(_on_atlas_input_submitted)
@@ -692,10 +697,32 @@ func _send_atlas_message(message: String) -> void:
 	# Clear input
 	atlas_input.text = ""
 
-	# TODO: Call AI service to get ATLAS response
-	# For now, add a placeholder response
-	await get_tree().create_timer(0.5).timeout
-	_add_atlas_message("I'm processing your question: '%s'. AI integration coming soon!" % message)
+	# Call AI orchestrator to get ATLAS response
+	var result = await AIService.chat_with_agent(
+		"atlas",
+		message,
+		conversation_id,
+		true  # include_functions
+	)
+
+	if result.success:
+		var response = result.data.response
+		if response and response != "":
+			_add_atlas_message(response)
+
+		# Handle function calls
+		if result.data.has("function_call") and result.data.function_call:
+			var func_name = result.data.function_call.name
+			var func_result = result.data.function_call.result
+			print("ATLAS executed function: %s" % func_name)
+
+			# Optionally show function execution feedback
+			if func_result.has("message"):
+				_add_atlas_message("[%s]" % func_result.message)
+	else:
+		var error = result.get("error", "Unknown error")
+		_add_atlas_message("Error: %s" % error)
+		print("ATLAS chat error: %s" % error)
 
 func _update_status_ticker() -> void:
 	"""Update status ticker with current game state"""
