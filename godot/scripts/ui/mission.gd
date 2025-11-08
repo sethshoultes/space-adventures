@@ -226,6 +226,12 @@ func _display_choices() -> void:
 	# Show choices section
 	choices_label.visible = current_choices.size() > 0
 
+	# If no choices, check if this is a completion stage
+	if current_choices.size() == 0:
+		# Mission has ended - trigger completion
+		await get_tree().create_timer(0.5).timeout  # Brief pause to read final text
+		await _append_mission_complete()
+
 func _get_requirement_info(choice: Dictionary) -> Dictionary:
 	"""Get detailed requirement information for a choice
 	Returns: {met: bool, tooltip: String}"""
