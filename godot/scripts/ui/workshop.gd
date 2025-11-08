@@ -485,7 +485,7 @@ func _update_inventory() -> void:
 			var qty_label = Label.new()
 			qty_label.text = "+%d" % part_counts[unique_parts[i]]
 			qty_label.add_theme_font_size_override("font_size", 10)
-			qty_label.add_theme_color_override("font_color", COLOR_GREEN)
+			qty_label.add_theme_color_override("font_color", Color.BLACK)  # Black for contrast on white icon
 			qty_label.position = Vector2(40, 2)
 			slot.add_child(qty_label)
 
