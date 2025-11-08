@@ -52,31 +52,41 @@ const SYSTEM_DISPLAY_NAMES = {
 # ============================================================================
 
 # Header
-@onready var title_label: Label = $MainVBox/Header/MarginContainer/HBox/TitleLabel
-@onready var ship_name_label: Label = $MainVBox/Header/MarginContainer/HBox/ShipNameLabel
-@onready var credits_label: Label = $MainVBox/Header/MarginContainer/HBox/StatsContainer/CreditsLabel
-@onready var level_label: Label = $MainVBox/Header/MarginContainer/HBox/StatsContainer/LevelLabel
-@onready var xp_label: Label = $MainVBox/Header/MarginContainer/HBox/StatsContainer/XPContainer/XPLabel
-@onready var xp_bar: ProgressBar = $MainVBox/Header/MarginContainer/HBox/StatsContainer/XPContainer/XPBar
-@onready var skill_points_label: Label = $MainVBox/Header/MarginContainer/HBox/StatsContainer/SkillPointsBadge/MarginContainer/SkillPointsLabel
-@onready var skill_points_badge: PanelContainer = $MainVBox/Header/MarginContainer/HBox/StatsContainer/SkillPointsBadge
+@onready var title_label: Label = $MainContainer/ContentVBox/HeaderPanel/MarginContainer/VBox/TopRow/TitleLabel
+@onready var ship_name_label: Label = $MainContainer/ContentVBox/HeaderPanel/MarginContainer/VBox/TopRow/ShipNameLabel
+@onready var credits_label: Label = $MainContainer/ContentVBox/HeaderPanel/MarginContainer/VBox/TopRow/StatsHBox/CreditsLabel
+@onready var level_label: Label = $MainContainer/ContentVBox/HeaderPanel/MarginContainer/VBox/TopRow/StatsHBox/LevelLabel
+@onready var xp_label: Label = $MainContainer/ContentVBox/HeaderPanel/MarginContainer/VBox/BottomRow/XPVBox/XPLabel
+@onready var xp_bar: ProgressBar = $MainContainer/ContentVBox/HeaderPanel/MarginContainer/VBox/BottomRow/XPVBox/XPBar
+@onready var skill_points_label: Label = $MainContainer/ContentVBox/HeaderPanel/MarginContainer/VBox/BottomRow/SkillPointsBadge/MarginContainer/SkillPointsLabel
+@onready var skill_points_badge: PanelContainer = $MainContainer/ContentVBox/HeaderPanel/MarginContainer/VBox/BottomRow/SkillPointsBadge
+
+# Panels (for styling)
+@onready var header_panel: PanelContainer = $MainContainer/ContentVBox/HeaderPanel
+@onready var schematic_panel: PanelContainer = $MainContainer/ContentVBox/MainContentHBox/LeftColumn/SchematicPanel
+@onready var power_budget_panel: PanelContainer = $MainContainer/ContentVBox/MainContentHBox/LeftColumn/PowerBudgetPanel
+@onready var systems_panel: PanelContainer = $MainContainer/ContentVBox/MainContentHBox/CenterColumn/SystemsPanel
+@onready var inventory_panel: PanelContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/InventoryPanel
+@onready var upgrades_panel: PanelContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/UpgradesPanel
+@onready var actions_panel: PanelContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel
+@onready var bottom_panel: PanelContainer = $MainContainer/ContentVBox/BottomPanel
 
 # Left Column
-@onready var schematic_area: Control = $MainVBox/ContentHBox/LeftColumn/SchematicPanel/MarginContainer/VBox/SchematicArea
-@onready var power_circle: ProgressBar = $MainVBox/ContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/CenterContainer/PowerMeterContainer/PowerCircle
-@onready var power_label: Label = $MainVBox/ContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/CenterContainer/PowerMeterContainer/PowerLabel
-@onready var generation_label: Label = $MainVBox/ContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/StatsVBox/GenerationLabel
-@onready var consumption_label: Label = $MainVBox/ContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/StatsVBox/ConsumptionLabel
-@onready var hull_label: Label = $MainVBox/ContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/StatsVBox/HullLabel
-@onready var hull_bar: ProgressBar = $MainVBox/ContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/StatsVBox/HullBar
+@onready var schematic_area: Control = $MainContainer/ContentVBox/MainContentHBox/LeftColumn/SchematicPanel/MarginContainer/VBox/SchematicArea
+@onready var power_circle: ProgressBar = $MainContainer/ContentVBox/MainContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/CenterContainer/PowerMeterContainer/PowerCircle
+@onready var power_label: Label = $MainContainer/ContentVBox/MainContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/CenterContainer/PowerMeterContainer/PowerLabel
+@onready var generation_label: Label = $MainContainer/ContentVBox/MainContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/StatsVBox/GenerationLabel
+@onready var consumption_label: Label = $MainContainer/ContentVBox/MainContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/StatsVBox/ConsumptionLabel
+@onready var hull_label: Label = $MainContainer/ContentVBox/MainContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/StatsVBox/HullLabel
+@onready var hull_bar: ProgressBar = $MainContainer/ContentVBox/MainContentHBox/LeftColumn/PowerBudgetPanel/MarginContainer/VBox/StatsVBox/HullBar
 
 # Center Column
-@onready var systems_grid: GridContainer = $MainVBox/ContentHBox/CenterColumn/ScrollContainer/SystemsGrid
+@onready var systems_grid: GridContainer = $MainContainer/ContentVBox/MainContentHBox/CenterColumn/SystemsPanel/MarginContainer/VBox/ScrollContainer/SystemsGrid
 
 # Right Column
-@onready var inventory_grid: GridContainer = $MainVBox/ContentHBox/RightColumn/InventoryPanel/MarginContainer/VBox/InventoryGrid
-@onready var upgrades_list: VBoxContainer = $MainVBox/ContentHBox/RightColumn/UpgradesPanel/MarginContainer/VBox/UpgradesList
-@onready var manage_crew_button: Button = $MainVBox/ContentHBox/RightColumn/ActionsPanel/ManageCrewButton
+@onready var inventory_grid: GridContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/InventoryPanel/MarginContainer/VBox/InventoryGrid
+@onready var upgrades_list: VBoxContainer = $MainContainer/ContentVBox/MainContentHBox/RightColumn/UpgradesPanel/MarginContainer/VBox/UpgradesList
+@onready var manage_crew_button: Button = $MainContainer/ContentVBox/MainContentHBox/RightColumn/ActionsPanel/MarginContainer/VBox/ManageCrewButton
 
 # Schematic system dots (created dynamically)
 var system_dots: Dictionary = {}
@@ -101,7 +111,7 @@ func _ready() -> void:
 	_update_all_displays()
 
 func _apply_color_theme() -> void:
-	"""Apply color palette to UI elements"""
+	"""Apply color palette and semi-transparent panels"""
 	# Header title
 	title_label.add_theme_color_override("font_color", COLOR_CYAN)
 
@@ -126,6 +136,36 @@ func _apply_color_theme() -> void:
 	var hull_stylebox = StyleBoxFlat.new()
 	hull_stylebox.bg_color = COLOR_GREEN
 	hull_bar.add_theme_stylebox_override("fill", hull_stylebox)
+
+	# Semi-transparent panels with rounded corners and borders
+	_apply_panel_style(header_panel, Color(0.1, 0.12, 0.15, 0.75))
+	_apply_panel_style(schematic_panel, Color(0.08, 0.1, 0.13, 0.7))
+	_apply_panel_style(power_budget_panel, Color(0.08, 0.1, 0.13, 0.7))
+	_apply_panel_style(systems_panel, Color(0.08, 0.1, 0.13, 0.7))
+	_apply_panel_style(inventory_panel, Color(0.08, 0.1, 0.13, 0.7))
+	_apply_panel_style(upgrades_panel, Color(0.08, 0.1, 0.13, 0.7))
+	_apply_panel_style(actions_panel, Color(0.08, 0.1, 0.13, 0.7))
+	_apply_panel_style(bottom_panel, Color(0.1, 0.12, 0.15, 0.75))
+
+func _apply_panel_style(panel: PanelContainer, bg_color: Color) -> void:
+	"""Apply semi-transparent style with border to a panel"""
+	var panel_style = StyleBoxFlat.new()
+	panel_style.bg_color = bg_color
+
+	# Rounded corners
+	panel_style.corner_radius_top_left = 8
+	panel_style.corner_radius_top_right = 8
+	panel_style.corner_radius_bottom_left = 8
+	panel_style.corner_radius_bottom_right = 8
+
+	# Subtle border
+	panel_style.border_width_left = 1
+	panel_style.border_width_top = 1
+	panel_style.border_width_right = 1
+	panel_style.border_width_bottom = 1
+	panel_style.border_color = Color(0.2, 0.3, 0.4, 0.5)  # Subtle cyan tint
+
+	panel.add_theme_stylebox_override("panel", panel_style)
 
 func _connect_signals() -> void:
 	"""Connect to EventBus signals for reactive updates"""
