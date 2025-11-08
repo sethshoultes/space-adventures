@@ -12,6 +12,7 @@ from litellm import completion
 from .config import OrchestratorConfig, get_config
 from .agents import AgentType, get_agent_prompt, is_valid_agent
 from .functions import get_functions_for_agent, execute_function, FUNCTION_REGISTRY
+from .persistence import get_conversation_store, ConversationStore
 
 logger = logging.getLogger(__name__)
 
@@ -27,24 +28,41 @@ class AIOrchestrator:
     - Companion: Personal AI friend (emotional support)
     """
 
-    def __init__(self, config: Optional[OrchestratorConfig] = None, game_state: Optional[Dict[str, Any]] = None):
+    def __init__(
+        self,
+        config: Optional[OrchestratorConfig] = None,
+        game_state: Optional[Dict[str, Any]] = None,
+        enable_persistence: bool = True
+    ):
         """
         Initialize orchestrator
 
         Args:
             config: Configuration (uses global config if not provided)
             game_state: Current game state (optional, used for function calling)
+            enable_persistence: Whether to enable conversation persistence
         """
         self.config = config or get_config()
         self.game_state = game_state or {}
+        self.enable_persistence = enable_persistence
 
-        # Conversation history per agent (session-based, not persisted here)
+        # Conversation history per agent (in-memory cache)
         self.conversation_history: Dict[str, List[Dict[str, str]]] = {
             AgentType.ATLAS: [],
             AgentType.STORYTELLER: [],
             AgentType.TACTICAL: [],
             AgentType.COMPANION: []
         }
+
+        # Conversation store for persistence
+        self.store: Optional[ConversationStore] = None
+        if enable_persistence:
+            try:
+                self.store = get_conversation_store()
+                logger.info("Conversation persistence enabled")
+            except Exception as e:
+                logger.warning(f"Failed to initialize persistence: {e}")
+                self.enable_persistence = False
 
         logger.info("AI Orchestrator initialized")
 
@@ -78,6 +96,18 @@ class AIOrchestrator:
             }
 
         try:
+            # Load conversation history if conversation_id provided and persistence enabled
+            if conversation_id and self.enable_persistence and self.store:
+                try:
+                    db_history = self.store.get_conversation_history(
+                        conversation_id,
+                        agent_name_lower
+                    )
+                    # Update in-memory cache with database history
+                    self.conversation_history[AgentType(agent_name_lower)] = db_history
+                except Exception as e:
+                    logger.warning(f"Failed to load conversation history: {e}")
+
             # Build messages
             system_prompt = get_agent_prompt(AgentType(agent_name_lower))
             messages = [{"role": "system", "content": system_prompt}]
@@ -136,13 +166,36 @@ class AIOrchestrator:
                 # Get assistant's text (may be empty if just calling function)
                 assistant_message = choice.message.content if choice.message.content else f"[Called {function_name}]"
 
-                # Save to history
+                # Save to history (in-memory)
                 self.conversation_history[AgentType(agent_name_lower)].append(
                     {"role": "user", "content": message}
                 )
                 self.conversation_history[AgentType(agent_name_lower)].append(
                     {"role": "assistant", "content": assistant_message}
                 )
+
+                # Save to persistence if enabled
+                if conversation_id and self.enable_persistence and self.store:
+                    try:
+                        self.store.add_message(
+                            conversation_id,
+                            agent_name_lower,
+                            "user",
+                            message
+                        )
+                        self.store.add_message(
+                            conversation_id,
+                            agent_name_lower,
+                            "assistant",
+                            assistant_message,
+                            function_call={
+                                "name": function_name,
+                                "arguments": arguments,
+                                "result": function_result
+                            }
+                        )
+                    except Exception as e:
+                        logger.warning(f"Failed to persist messages: {e}")
 
                 return {
                     "success": True,
@@ -160,13 +213,31 @@ class AIOrchestrator:
                 # Regular text response
                 assistant_message = choice.message.content
 
-                # Save to history
+                # Save to history (in-memory)
                 self.conversation_history[AgentType(agent_name_lower)].append(
                     {"role": "user", "content": message}
                 )
                 self.conversation_history[AgentType(agent_name_lower)].append(
                     {"role": "assistant", "content": assistant_message}
                 )
+
+                # Save to persistence if enabled
+                if conversation_id and self.enable_persistence and self.store:
+                    try:
+                        self.store.add_message(
+                            conversation_id,
+                            agent_name_lower,
+                            "user",
+                            message
+                        )
+                        self.store.add_message(
+                            conversation_id,
+                            agent_name_lower,
+                            "assistant",
+                            assistant_message
+                        )
+                    except Exception as e:
+                        logger.warning(f"Failed to persist messages: {e}")
 
                 return {
                     "success": True,
