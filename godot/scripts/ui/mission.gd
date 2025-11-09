@@ -1199,16 +1199,10 @@ func _generate_choice_outcome(choice: Dictionary, outcome_type: String) -> Dicti
 	if result.success:
 		print("[Mission] Outcome generated (%dms)" % result.get("generation_time_ms", 0))
 
-		# Return outcome in the same format as MissionManager expects
+		# Return narrative at root level (matching API format)
 		return {
-			"consequence": {
-				"text": result.narrative,
-				"next_stage": result.get("next_stage"),
-				"effects": result.get("consequences", {}).get("effects", []),
-				"xp_bonus": result.get("consequences", {}).get("xp_bonus", 0),
-				"story_flags": result.get("consequences", {}).get("story_flags", {}),
-				"relationships": result.get("consequences", {}).get("relationships", {})
-			}
+			"narrative": result.narrative,
+			"cached": result.get("cached", false)
 		}
 	else:
 		push_error("[Mission] Outcome generation failed: %s" % result.get("error", "Unknown"))

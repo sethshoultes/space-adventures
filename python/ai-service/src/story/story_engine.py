@@ -299,24 +299,31 @@ Generate narrative now:"""
         Raises:
             asyncio.TimeoutError: If LLM call exceeds timeout
         """
-        # TODO: Implement actual LLM call with timeout
-        # For now, return placeholder
-        #
-        # Example implementation with timeout:
-        # if self.llm:
-        #     try:
-        #         response = await asyncio.wait_for(
-        #             self.llm.generate(prompt),
-        #             timeout=timeout
-        #         )
-        #         return response.text
-        #     except asyncio.TimeoutError:
-        #         logger.error(f"LLM generation timed out after {timeout}s")
-        #         raise
-        #
-        # For development, return formatted prompt snippet
-        logger.warning("LLM client not configured, using placeholder narrative")
-        return "The scene unfolds before you. You must make a choice."
+        if not self.llm:
+            logger.warning("LLM client not configured, using placeholder narrative")
+            return "The scene unfolds before you. You must make a choice."
+
+        try:
+            # Import AITaskType for routing
+            from ..ai.client import AITaskType
+
+            # Call AI client with timeout protection
+            response = await asyncio.wait_for(
+                self.llm.generate(
+                    task_type=AITaskType.STORY_MISSION,
+                    prompt=prompt,
+                    system="You are a narrative AI for a space adventure game. Generate vivid, concise sci-fi narratives."
+                ),
+                timeout=timeout
+            )
+            return response
+        except asyncio.TimeoutError:
+            logger.error(f"LLM generation timed out after {timeout}s")
+            raise
+        except Exception as e:
+            logger.error(f"LLM generation failed: {e}")
+            # Return fallback instead of raising
+            return "The scene unfolds before you. You must make a choice."
 
     async def generate_choice_outcome(
         self,

@@ -18,6 +18,7 @@ from typing import Dict, Any, Optional
 from pydantic import BaseModel, Field
 
 from ..story import MemoryManager, StoryEngine, WorldState, MissionPool
+from ..ai.client import get_ai_client
 import redis.asyncio as redis
 import os
 
@@ -152,7 +153,7 @@ def get_redis_client():
 async def get_story_components():
     """Get story engine component instances."""
     redis_client = get_redis_client()
-    llm_client = None  # TODO: Get from AI client
+    llm_client = get_ai_client()  # Get global AI client instance
 
     memory_manager = MemoryManager(redis_client)
     story_engine = StoryEngine(redis_client, llm_client, memory_manager)
