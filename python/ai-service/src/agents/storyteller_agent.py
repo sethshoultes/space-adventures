@@ -507,20 +507,107 @@ class StorytellerAgent(BaseAgent):
             ]
         ]
 
-    async def run(
+    async def _run_chat_mode(
+        self,
+        user_message: str,
+        game_state: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Chat mode - Answer lore/story questions directly
+
+        This mode is used when player asks questions in the chat panel.
+        Focuses on explaining lore, story elements, and narrative context.
+        Does NOT generate autonomous narrative.
+
+        Args:
+            user_message: Player's question
+            game_state: Current game state for context
+
+        Returns:
+            Dictionary with direct answer
+        """
+        # Build context from game state
+        progress = game_state.get("progress", {})
+        mission = game_state.get("mission", {})
+        player = game_state.get("player", {})
+
+        completed_missions = progress.get("completed_missions", [])
+        mission_count = len(completed_missions) if isinstance(completed_missions, list) else 0
+        player_level = player.get("level", 1)
+
+        # Build system prompt for chat mode
+        system_prompt = f"""You are Storyteller, the narrative AI for Space Adventures.
+
+The player is asking you a question about the story, lore, or narrative.
+
+Current Context:
+- Player Level: {player_level}
+- Missions Completed: {mission_count}
+- Current Mission: {mission.get('title', 'None')} ({mission.get('type', 'N/A')})
+- Phase: {progress.get('phase', 1)} (1=Earth scavenging, 2=Space exploration)
+
+Your Role in Chat Mode:
+- Answer questions about lore, story, characters, and world
+- Explain narrative elements and themes
+- Provide context for missions and events
+- Stay grounded and informative (not overly poetic)
+- Reference specific events from the player's journey when relevant
+- DO NOT generate new narrative or story moments
+- DO NOT make up facts not established in the game
+
+Tone: Knowledgeable storyteller explaining the world, slightly mysterious but helpful.
+Length: 2-4 sentences, concise and clear."""
+
+        # Call LLM for direct answer
+        try:
+            response = await self.llm_client.chat.completions.create(
+                model="gpt-3.5-turbo",  # Fast model for chat
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message}
+                ],
+                temperature=0.7,
+                max_tokens=200
+            )
+
+            answer = response.choices[0].message.content.strip()
+
+            return {
+                "should_act": True,
+                "message": answer,
+                "urgency": "INFO",
+                "tools_used": [],
+                "reasoning": "Direct Q&A response",
+                "mode": "chat"
+            }
+
+        except Exception as e:
+            return {
+                "should_act": True,
+                "message": "The narrative threads are tangled at the moment. Perhaps rephrase your question?",
+                "urgency": "INFO",
+                "tools_used": [],
+                "reasoning": f"Error in chat mode: {str(e)}",
+                "mode": "chat"
+            }
+
+    async def _run_story_mode(
         self,
         game_state: Dict[str, Any],
         force_check: bool = False
     ) -> Dict[str, Any]:
         """
-        Main entry point - run the Storyteller agent
+        Story mode - Autonomous narrative generation
+
+        This mode is used for generating narrative during mission stages.
+        Uses full ReAct loop to analyze context and generate evocative narrative.
 
         Args:
             game_state: Current game state
             force_check: Bypass throttling (for testing)
 
         Returns:
-            Dictionary with agent response
+            Dictionary with narrative message (or None if no moment detected)
         """
         # Check throttling (unless forced)
         if not force_check:
@@ -532,7 +619,8 @@ class StorytellerAgent(BaseAgent):
                     "reasoning": "Storyteller resting - too soon since last tale",
                     "next_check_in": self.min_message_interval,
                     "urgency": "INFO",
-                    "tools_used": []
+                    "tools_used": [],
+                    "mode": "story"
                 }
 
         # Initialize state
@@ -559,5 +647,54 @@ class StorytellerAgent(BaseAgent):
             "urgency": final_state["metadata"].get("urgency", "INFO"),
             "tools_used": tools_used,
             "reasoning": final_state.get("reasoning", "No narrative moment detected"),
-            "next_check_in": 90  # Recommend checking again in 90 seconds
+            "next_check_in": 90,  # Recommend checking again in 90 seconds
+            "mode": "story"
         }
+
+    async def run(
+        self,
+        game_state: Dict[str, Any],
+        mode: str = "story",
+        user_message: Optional[str] = None,
+        force_check: bool = False
+    ) -> Dict[str, Any]:
+        """
+        Main entry point - run the Storyteller agent
+
+        Supports two modes:
+        - "chat": Direct Q&A about lore/story (requires user_message)
+        - "story": Autonomous narrative generation (default)
+
+        Args:
+            game_state: Current game state
+            mode: "chat" or "story" (default: "story")
+            user_message: Required for chat mode - player's question
+            force_check: Bypass throttling (for testing, story mode only)
+
+        Returns:
+            Dictionary with agent response
+        """
+        if mode == "chat":
+            if not user_message:
+                return {
+                    "should_act": False,
+                    "message": None,
+                    "reasoning": "Chat mode requires user_message",
+                    "urgency": "INFO",
+                    "tools_used": [],
+                    "mode": "chat"
+                }
+            return await self._run_chat_mode(user_message, game_state)
+
+        elif mode == "story":
+            return await self._run_story_mode(game_state, force_check)
+
+        else:
+            return {
+                "should_act": False,
+                "message": None,
+                "reasoning": f"Invalid mode: {mode}. Use 'chat' or 'story'",
+                "urgency": "INFO",
+                "tools_used": [],
+                "mode": mode
+            }
