@@ -1242,7 +1242,19 @@ func _handle_hybrid_choice(choice: Dictionary) -> void:
 		return
 
 	# Step 3: Generate dynamic narrative for this outcome
+	# Show loading indicator
+	var loading_label = Label.new()
+	loading_label.text = "⏳ Generating outcome..."
+	loading_label.add_theme_font_size_override("font_size", 18)
+	loading_label.add_theme_color_override("font_color", Color(0.7, 0.8, 1.0, 1.0))
+	narrative_log.add_child(loading_label)
+	await get_tree().process_frame  # Allow UI to update
+
 	var result = await _generate_choice_outcome(choice, outcome_type)
+
+	# Remove loading indicator
+	narrative_log.remove_child(loading_label)
+	loading_label.queue_free()
 
 	var narrative = ""
 	if not result.is_empty() and result.has("narrative"):
