@@ -10,19 +10,20 @@ Tests player story memory tracking:
 """
 
 import pytest
+import pytest_asyncio
 import json
 from datetime import datetime
 from fakeredis import FakeAsyncRedis
 from src.story.memory_manager import MemoryManager
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def redis_client():
     """Create fake Redis client for testing."""
     return FakeAsyncRedis(decode_responses=True)
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def memory_manager(redis_client):
     """Create MemoryManager instance with fake Redis."""
     return MemoryManager(redis_client)
