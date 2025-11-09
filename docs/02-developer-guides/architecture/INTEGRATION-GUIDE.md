@@ -727,6 +727,149 @@ EventBus.notify("Game saved!", "success", 3.0)
 EventBus.error("Save Failed", "Disk full")
 ```
 
+## Dynamic Story System Integration
+
+The dynamic story engine provides AI-generated narratives that adapt to player choices and game state.
+
+### Architecture
+
+```
+Godot (Mission Scene)
+    ↓
+StoryService Singleton
+    ↓ HTTP POST
+Story API (/api/story/*)
+    ↓
+StoryEngine + MemoryManager + WorldState
+    ↓
+LLM (OpenAI/Ollama)
+    ↓
+Redis Cache (1-hour TTL)
+```
+
+### Godot Side: StoryService Singleton
+
+**Location:** `godot/scripts/autoload/story_service.gd`
+
+**Key Methods:**
+- `generate_narrative(request_data: Dictionary) -> Dictionary`
+- `generate_outcome(request_data: Dictionary) -> Dictionary`
+- `get_memory_context(player_id: String) -> Dictionary`
+- `build_player_state() -> Dictionary`
+- `get_player_id() -> String`
+- `is_available() -> bool`
+
+**Example Usage:**
+
+```gdscript
+# Check if service is available
+if StoryService.is_available():
+    # Generate narrative for current stage
+    var result = await StoryService.generate_narrative({
+        "player_id": StoryService.get_player_id(),
+        "mission_template": current_mission,
+        "stage_id": current_stage.stage_id,
+        "player_state": StoryService.build_player_state()
+    })
+
+    if result.success:
+        narrative_label.text = result.narrative
+        print("Cached: ", result.cached)
+        print("Generation time: ", result.generation_time_ms, "ms")
+    else:
+        # Fallback to static content
+        narrative_label.text = current_stage.description
+else:
+    # Service unavailable, use static content
+    narrative_label.text = current_stage.description
+```
+
+### Hybrid Mission Detection
+
+```gdscript
+func _is_hybrid_mission() -> bool:
+    for stage in mission.stages:
+        if stage.has("narrative_structure"):
+            return true
+    return false
+
+func _load_stage(stage: Dictionary) -> void:
+    if _is_hybrid_mission():
+        # Use dynamic narrative generation
+        var narrative = await _generate_stage_narrative(stage)
+        display_narrative(narrative)
+    else:
+        # Use static description
+        display_narrative(stage.description)
+```
+
+### Memory Management
+
+Player choices are automatically tracked and influence future narratives:
+
+```gdscript
+func _handle_choice(choice: Dictionary) -> void:
+    # Choice is sent to story engine
+    var outcome = await StoryService.generate_outcome({
+        "player_id": StoryService.get_player_id(),
+        "choice": choice,
+        "stage_id": current_stage.stage_id,
+        # ... other context
+    })
+
+    # Memory manager automatically:
+    # - Adds choice to player history (last 100)
+    # - Updates relationships if specified
+    # - Tracks consequences
+```
+
+### Cache Invalidation
+
+Cache is automatically invalidated when player state changes (level up, mission completion). Manual invalidation:
+
+```gdscript
+func _on_major_state_change() -> void:
+    var result = await StoryService.invalidate_cache(
+        player_id,
+        mission_id,
+        player_state
+    )
+    print("Invalidated ", result.deleted_count, " cache entries")
+```
+
+### Error Handling
+
+```gdscript
+var result = await StoryService.generate_narrative(request_data)
+
+if not result.success:
+    match result.error:
+        "HTTP 503":
+            show_error("AI service temporarily unavailable")
+        "timeout":
+            show_error("Generation timed out, using fallback")
+        _:
+            show_error("Unknown error: " + result.error)
+
+    # Always fallback to static content
+    display_narrative(stage.get("description", "Story continues..."))
+```
+
+### Performance Considerations
+
+- **First request:** 800-2000ms (LLM generation)
+- **Cached request:** 10-50ms (Redis retrieval)
+- **Cache hit rate:** ~60-80% during normal gameplay
+- **Cache TTL:** 1 hour
+
+### Related Documentation
+
+- [Story API Reference](../../06-technical-reference/STORY-API-REFERENCE.md)
+- [Dynamic Story Engine](../../05-ai-content/story-engine/README.md)
+- [Godot Story Integration](../../05-ai-content/godot-story-integration.md)
+- [Memory Manager Reference](../../06-technical-reference/MEMORY-MANAGER-REFERENCE.md)
+- [World State Reference](../../06-technical-reference/WORLD-STATE-REFERENCE.md)
+
 ## Conclusion
 
 The integration between Godot and backend services is complete and functional. The architecture supports:

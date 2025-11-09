@@ -121,9 +121,16 @@ class MemoryManager:
         """
         key = f"player_relationships:{player_id}"
 
-        # Get current score (default 0)
+        # Get current score (default 0) with type safety
         current = await self.redis.hget(key, character)
-        current_score = int(current) if current else 0
+        try:
+            current_score = int(current) if current else 0
+        except (ValueError, TypeError) as e:
+            logger.warning(
+                f"Invalid relationship score for {character} (player {player_id}): "
+                f"'{current}'. Resetting to 0. Error: {e}"
+            )
+            current_score = 0
 
         # Calculate new score (clamped)
         new_score = max(-100, min(100, current_score + delta))
@@ -155,11 +162,17 @@ class MemoryManager:
 
         relationships_raw = await self.redis.hgetall(key)
 
-        # Convert to int scores
-        relationships = {
-            name: int(score)
-            for name, score in relationships_raw.items()
-        }
+        # Convert to int scores with type safety
+        relationships = {}
+        for name, score in relationships_raw.items():
+            try:
+                relationships[name] = int(score)
+            except (ValueError, TypeError) as e:
+                logger.warning(
+                    f"Invalid relationship score for {name} (player {player_id}): "
+                    f"'{score}'. Skipping. Error: {e}"
+                )
+                # Skip invalid entries rather than crash
 
         logger.debug(f"Retrieved {len(relationships)} relationships for player {player_id}")
         return relationships

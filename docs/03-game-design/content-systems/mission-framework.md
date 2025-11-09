@@ -6,6 +6,22 @@
 
 ---
 
+> **⚠️ IMPORTANT: Mission Format Update**
+>
+> This document describes the **LEGACY static mission format**. A new **hybrid mission format** with dynamic AI-generated narratives is now available.
+>
+> - **For new missions:** Use the [Dynamic Story Engine](../../05-ai-content/story-engine/README.md) with hybrid format
+> - **For existing missions:** This static format is still supported for backward compatibility
+> - **Migration guide:** See [Migration Guide](../../05-ai-content/story-engine/migration-guide.md) (if available)
+>
+> **Key Differences:**
+> - Static format: Pre-written `description` fields
+> - Hybrid format: AI-generated narratives from `narrative_structure` prompts
+>
+> See [Hybrid vs Static Comparison](../../05-ai-content/dynamic-story-engine.md#hybrid-vs-static-missions)
+
+---
+
 ## Table of Contents
 1. [Mission System Overview](#mission-system-overview)
 2. [Mission Types](#mission-types)
@@ -909,6 +925,18 @@ func complete_mission(result: Dictionary):
 **For complete AI generation prompts and guidelines, see:**
 - **[AI Mission Generation Prompts](../../05-ai-content/ai-mission-generation-prompts.md)** - Complete prompt engineering guide
 - **[Mission Reward Guidelines](./mission-reward-guidelines.md)** - Reward balancing for AI-generated content
+
+## Integration with Dynamic Story Engine
+
+The mission framework now supports two modes:
+
+1. **Static Missions** (this document) - Pre-written content
+2. **Hybrid Missions** - AI-generated narratives
+
+For AI-powered missions, see:
+- [Dynamic Story Engine Specification](../../05-ai-content/dynamic-story-engine.md)
+- [Story API Reference](../../06-technical-reference/STORY-API-REFERENCE.md)
+- [Godot Story Integration](../../05-ai-content/godot-story-integration.md)
 
 ### Mission Generation Prompt Template
 

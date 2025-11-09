@@ -910,6 +910,40 @@ class AIResponseCache:
 
 ---
 
+## Story Engine API Endpoints
+
+The dynamic story engine provides dedicated endpoints for contextual narrative generation:
+
+### Core Endpoints
+
+- `POST /api/story/generate_narrative` - Generate stage narrative
+- `POST /api/story/generate_outcome` - Generate choice outcome
+- `GET /api/story/memory/{player_id}` - Get player memory context
+- `GET /api/story/mission_pool` - Get side mission from pool
+- `GET /api/story/world_context` - Get world state
+- `DELETE /api/story/invalidate_cache` - Invalidate cached narratives
+
+For complete API documentation, see [Story API Reference](../06-technical-reference/STORY-API-REFERENCE.md).
+
+### Integration Pattern
+
+```gdscript
+# Godot integration example
+var story_result = await StoryService.generate_narrative({
+    "player_id": "player_123",
+    "mission_template": mission_data,
+    "stage_id": "stage_1",
+    "player_state": GameState.get_player_state()
+})
+
+if story_result.success:
+    display_narrative(story_result.narrative)
+```
+
+See [Godot Story Integration Guide](godot-story-integration.md) for complete integration patterns.
+
+---
+
 ## Implementation Examples
 
 ### Complete API Endpoint

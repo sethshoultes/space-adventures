@@ -80,13 +80,17 @@ class WorldState:
         key = f"world_economy:{sector}"
         economy_raw = await self.redis.hgetall(key)
 
-        # Convert string values to appropriate types
+        # Convert string values to appropriate types with error handling
         economy = {}
         for field, value in economy_raw.items():
             # Try to convert to number
             try:
-                economy[field] = float(value) if '.' in value else int(value)
-            except ValueError:
+                economy[field] = float(value) if '.' in str(value) else int(value)
+            except (ValueError, TypeError) as e:
+                logger.warning(
+                    f"Invalid economy value for {field} in {sector}: "
+                    f"'{value}'. Keeping as string. Error: {e}"
+                )
                 economy[field] = value
 
         logger.debug(f"Retrieved economy for {sector}: {len(economy)} fields")
@@ -131,7 +135,18 @@ class WorldState:
         key = "world_factions"
         standing = await self.redis.hget(key, faction)
 
-        return int(standing) if standing else 50  # Default to neutral
+        # Type-safe conversion with default fallback
+        if not standing:
+            return 50  # Default to neutral
+
+        try:
+            return int(standing)
+        except (ValueError, TypeError) as e:
+            logger.warning(
+                f"Invalid faction standing for {faction}: '{standing}'. "
+                f"Defaulting to neutral (50). Error: {e}"
+            )
+            return 50  # Default to neutral
 
     async def get_all_factions(self) -> Dict[str, int]:
         """
@@ -143,7 +158,18 @@ class WorldState:
         key = "world_factions"
         factions_raw = await self.redis.hgetall(key)
 
-        factions = {name: int(standing) for name, standing in factions_raw.items()}
+        # Type-safe conversion with error handling
+        factions = {}
+        for name, standing in factions_raw.items():
+            try:
+                factions[name] = int(standing)
+            except (ValueError, TypeError) as e:
+                logger.warning(
+                    f"Invalid faction standing for {name}: '{standing}'. "
+                    f"Defaulting to neutral (50). Error: {e}"
+                )
+                factions[name] = 50  # Default to neutral
+
         logger.debug(f"Retrieved {len(factions)} faction standings")
         return factions
 
