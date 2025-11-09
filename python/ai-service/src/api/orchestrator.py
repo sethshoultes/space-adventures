@@ -380,7 +380,7 @@ async def agent_loop_check(request: AgentLoopRequest) -> AgentLoopResponse:
     """
     Agent Loop - Autonomous agent periodic check
 
-    This endpoint is called periodically (every 45-60s) by the Godot client
+    This endpoint is called periodically (every 45-120s) by the Godot client
     to allow autonomous agents to monitor game state and provide proactive
     interjections.
 
@@ -404,70 +404,84 @@ async def agent_loop_check(request: AgentLoopRequest) -> AgentLoopResponse:
         logger.info(f"Agent loop check for {request.agent}")
 
         # Validate agent name
-        from ..orchestrator.agents import is_valid_agent
-        if not is_valid_agent(request.agent):
+        valid_agents = ["atlas", "storyteller", "tactical", "companion"]
+        if request.agent not in valid_agents:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Unknown agent: {request.agent}. Valid agents: atlas, storyteller, tactical, companion"
+                detail=f"Unknown agent: {request.agent}. Valid agents: {', '.join(valid_agents)}"
             )
 
-        # Get orchestrator with game state context
-        orchestrator = get_orchestrator(game_state=request.game_state)
+        # Import agent classes
+        from ..agents.atlas_agent import ATLASAgent
+        from ..agents.storyteller_agent import StorytellerAgent
+        from ..agents.tactical_agent import TacticalAgent
+        from ..agents.companion_agent import CompanionAgent
+        import redis.asyncio as redis
+        import os
 
-        # For Phase 1, we only support ATLAS
-        if request.agent != "atlas":
-            logger.warning(f"Agent {request.agent} not yet implemented, returning silent response")
-            return AgentLoopResponse(
-                success=True,
-                data={
-                    "should_act": False,
-                    "message": None,
-                    "reasoning": f"Agent {request.agent} not yet implemented (Phase 2)",
-                    "next_check_in": 60
-                }
+        # Get Redis client for agent memory
+        redis_host = os.getenv("REDIS_HOST", "localhost")
+        redis_port = int(os.getenv("REDIS_PORT", "6379"))
+        redis_db = int(os.getenv("REDIS_DB", "0"))
+
+        redis_client = redis.Redis(
+            host=redis_host,
+            port=redis_port,
+            db=redis_db,
+            decode_responses=True
+        )
+
+        # Get LLM client (if needed - currently agents use template-based responses)
+        llm_client = None  # Can be added later for LLM-powered messages
+
+        # Instantiate the requested agent
+        agent = None
+        if request.agent == "atlas":
+            agent = ATLASAgent(
+                redis_client=redis_client,
+                llm_client=llm_client,
+                min_message_interval=60,
+                max_messages_per_hour=30
+            )
+        elif request.agent == "storyteller":
+            agent = StorytellerAgent(
+                redis_client=redis_client,
+                llm_client=llm_client,
+                min_message_interval=90,
+                max_messages_per_hour=20
+            )
+        elif request.agent == "tactical":
+            agent = TacticalAgent(
+                redis_client=redis_client,
+                llm_client=llm_client,
+                min_message_interval=30,
+                max_messages_per_hour=50
+            )
+        elif request.agent == "companion":
+            agent = CompanionAgent(
+                redis_client=redis_client,
+                llm_client=llm_client,
+                min_message_interval=120,
+                max_messages_per_hour=15
             )
 
-        # TODO: Implement actual agent loop logic
-        # For now, return a placeholder response
-        # This will be replaced with actual LangGraph ReAct loop implementation
-
-        # Check throttling (unless force_check is True)
-        if not request.force_check:
-            # TODO: Implement Redis-based throttling check
-            # Check if agent sent message in last 60 seconds
-            # Check if hourly rate limit exceeded
-            pass
-
-        # Placeholder: Analyze game state
-        hull_hp = request.game_state.get("ship", {}).get("hull_hp", 100)
-        max_hull_hp = request.game_state.get("ship", {}).get("max_hull_hp", 100)
-        hull_percentage = (hull_hp / max_hull_hp * 100) if max_hull_hp > 0 else 100
-
-        # Simple logic for demonstration
-        if hull_percentage < 50:
-            # Agent should act - hull critical
-            return AgentLoopResponse(
-                success=True,
-                data={
-                    "should_act": True,
-                    "message": f"Captain, hull integrity at {int(hull_percentage)}%. Recommend immediate repair.",
-                    "urgency": "MEDIUM" if hull_percentage > 30 else "URGENT",
-                    "tools_used": ["get_system_status"],
-                    "reasoning": f"Hull below 50% threshold ({int(hull_percentage)}%)",
-                    "next_check_in": 45
-                }
+        if not agent:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to instantiate agent: {request.agent}"
             )
-        else:
-            # Agent stays silent - all nominal
-            return AgentLoopResponse(
-                success=True,
-                data={
-                    "should_act": False,
-                    "message": None,
-                    "reasoning": "All systems nominal, no changes requiring attention",
-                    "next_check_in": 60
-                }
-            )
+
+        # Run the agent's autonomous check
+        result = await agent.run(
+            game_state=request.game_state,
+            force_check=request.force_check
+        )
+
+        # Return the agent's decision
+        return AgentLoopResponse(
+            success=True,
+            data=result
+        )
 
     except HTTPException:
         raise

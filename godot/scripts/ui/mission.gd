@@ -40,8 +40,11 @@ var is_first_stage: bool = true  # First stage has no separator
 var scroll_indicator: Button = null  # Manual scroll button indicator
 var conversation_id: String = ""  # AI orchestrator conversation ID
 
-# Autonomous AI agent timer
+# Autonomous AI agent timers
 var atlas_timer: Timer = null
+var storyteller_timer: Timer = null
+var tactical_timer: Timer = null
+var companion_timer: Timer = null
 
 func _ready() -> void:
 	print("Mission scene initialized - Three-panel layout mode")
@@ -54,8 +57,8 @@ func _ready() -> void:
 	atlas_input.text_submitted.connect(_on_atlas_input_submitted)
 	send_button.pressed.connect(_on_atlas_send_pressed)
 
-	# Initialize autonomous ATLAS agent timer
-	_initialize_atlas_timer()
+	# Initialize autonomous AI agent timers
+	_initialize_agent_timers()
 
 	# Initialize status ticker
 	_update_status_ticker()
@@ -816,16 +819,59 @@ func _trigger_tutorial_interjections(stage_id: String, effects: Array) -> void:
 				"Mission complete, Captain. Your grandfather would be proud. Ship classification: Scout, Level 1. Current capabilities: limited. But every starship begins with a single flight. Where shall we go next?"
 			)
 
-## Autonomous ATLAS Agent System
+## Autonomous AI Agent System
 
-func _initialize_atlas_timer() -> void:
-	"""Initialize timer for autonomous ATLAS agent checks"""
+func _initialize_agent_timers() -> void:
+	"""Initialize timers for all autonomous AI agent checks with staggered delays"""
+
+	# ATLAS timer (45s interval, immediate start)
 	atlas_timer = Timer.new()
-	atlas_timer.wait_time = 45.0  # Check every 45 seconds
+	atlas_timer.wait_time = 45.0
 	atlas_timer.timeout.connect(_on_atlas_agent_check)
 	atlas_timer.autostart = true
 	add_child(atlas_timer)
-	print("Mission: ATLAS autonomous agent timer initialized (45s interval)")
+	print("Mission: ATLAS autonomous agent timer initialized (45s interval, immediate start)")
+
+	# Storyteller timer (90s interval, delay 20s)
+	storyteller_timer = Timer.new()
+	storyteller_timer.wait_time = 90.0
+	storyteller_timer.one_shot = false
+	storyteller_timer.timeout.connect(_on_storyteller_agent_check)
+	add_child(storyteller_timer)
+
+	# Start storyteller after 20s delay
+	get_tree().create_timer(20.0).timeout.connect(func():
+		storyteller_timer.start()
+		print("Mission: Storyteller autonomous agent timer started (90s interval)")
+	)
+
+	# Tactical timer (30s interval, delay 10s)
+	tactical_timer = Timer.new()
+	tactical_timer.wait_time = 30.0
+	tactical_timer.one_shot = false
+	tactical_timer.timeout.connect(_on_tactical_agent_check)
+	add_child(tactical_timer)
+
+	# Start tactical after 10s delay
+	get_tree().create_timer(10.0).timeout.connect(func():
+		tactical_timer.start()
+		print("Mission: Tactical autonomous agent timer started (30s interval)")
+	)
+
+	# Companion timer (120s interval, delay 30s)
+	companion_timer = Timer.new()
+	companion_timer.wait_time = 120.0
+	companion_timer.one_shot = false
+	companion_timer.timeout.connect(_on_companion_agent_check)
+	add_child(companion_timer)
+
+	# Start companion after 30s delay
+	get_tree().create_timer(30.0).timeout.connect(func():
+		companion_timer.start()
+		print("Mission: Companion autonomous agent timer started (120s interval)")
+	)
+
+	print("Mission: All autonomous agent timers initialized with staggered delays")
 
 func _on_atlas_agent_check() -> void:
 	"""Handle ATLAS autonomous agent check timer"""
@@ -848,19 +894,139 @@ func _on_atlas_agent_check() -> void:
 
 			print("Mission: ATLAS autonomous message (%s): %s" % [urgency, message.substr(0, 50)])
 
-			# Add message to chat with urgency color
-			var color_map = {
-				"INFO": Color(0.9, 0.9, 1.0),
-				"MEDIUM": Color(1.0, 0.9, 0.5),
-				"URGENT": Color(1.0, 0.7, 0.4),
-				"CRITICAL": Color(1.0, 0.4, 0.4)
-			}
-			var message_color = color_map.get(urgency, Color.WHITE)
-
-			# Add to chat (not as player message)
+			# Add to chat (light blue color for ATLAS)
 			_add_atlas_message(message)
 		else:
 			print("Mission: ATLAS staying silent (no message)")
 	else:
 		if result.has("error"):
 			print("Mission: ATLAS agent check error: %s" % result.error)
+
+func _on_storyteller_agent_check() -> void:
+	"""Handle Storyteller autonomous agent check timer"""
+	print("Mission: Storyteller agent check triggered")
+
+	# Skip if AI service unavailable
+	if not ServiceManager.is_service_available("ai"):
+		print("Mission: AI service unavailable, skipping Storyteller check")
+		return
+
+	# Call agent loop endpoint
+	var result = await AIService.agent_loop_check("storyteller")
+
+	if result.success and result.data.has("should_act"):
+		var should_act = result.data.get("should_act", false)
+
+		if should_act and result.data.has("message"):
+			var message = result.data.message
+			var urgency = result.data.get("urgency", "INFO")
+
+			print("Mission: Storyteller autonomous message (%s): %s" % [urgency, message.substr(0, 50)])
+
+			# Add to chat (purple/violet color for Storyteller)
+			var storyteller_label = RichTextLabel.new()
+			storyteller_label.bbcode_enabled = true
+			storyteller_label.fit_content = true
+			storyteller_label.scroll_active = false
+			storyteller_label.add_theme_font_size_override("normal_font_size", 14)
+			storyteller_label.add_theme_color_override("default_color", Color(0.576, 0.439, 0.859))  # #9370DB
+			storyteller_label.text = "[b]Storyteller:[/b] %s" % message
+
+			var message_container = HBoxContainer.new()
+			message_container.add_child(storyteller_label)
+			chat_history.add_child(message_container)
+
+			# Auto-scroll to bottom
+			await get_tree().process_frame
+			chat_scroll.scroll_vertical = chat_scroll.get_v_scroll_bar().max_value
+		else:
+			print("Mission: Storyteller staying silent (no message)")
+	else:
+		if result.has("error"):
+			print("Mission: Storyteller agent check error: %s" % result.error)
+
+func _on_tactical_agent_check() -> void:
+	"""Handle Tactical autonomous agent check timer"""
+	print("Mission: Tactical agent check triggered")
+
+	# Skip if AI service unavailable
+	if not ServiceManager.is_service_available("ai"):
+		print("Mission: AI service unavailable, skipping Tactical check")
+		return
+
+	# Call agent loop endpoint
+	var result = await AIService.agent_loop_check("tactical")
+
+	if result.success and result.data.has("should_act"):
+		var should_act = result.data.get("should_act", false)
+
+		if should_act and result.data.has("message"):
+			var message = result.data.message
+			var urgency = result.data.get("urgency", "INFO")
+
+			print("Mission: Tactical autonomous message (%s): %s" % [urgency, message.substr(0, 50)])
+
+			# Add to chat (orange/red color for Tactical)
+			var tactical_label = RichTextLabel.new()
+			tactical_label.bbcode_enabled = true
+			tactical_label.fit_content = true
+			tactical_label.scroll_active = false
+			tactical_label.add_theme_font_size_override("normal_font_size", 14)
+			tactical_label.add_theme_color_override("default_color", Color(1.0, 0.42, 0.208))  # #FF6B35
+			tactical_label.text = "[b]Tactical:[/b] %s" % message
+
+			var message_container = HBoxContainer.new()
+			message_container.add_child(tactical_label)
+			chat_history.add_child(message_container)
+
+			# Auto-scroll to bottom
+			await get_tree().process_frame
+			chat_scroll.scroll_vertical = chat_scroll.get_v_scroll_bar().max_value
+		else:
+			print("Mission: Tactical staying silent (no message)")
+	else:
+		if result.has("error"):
+			print("Mission: Tactical agent check error: %s" % result.error)
+
+func _on_companion_agent_check() -> void:
+	"""Handle Companion autonomous agent check timer"""
+	print("Mission: Companion agent check triggered")
+
+	# Skip if AI service unavailable
+	if not ServiceManager.is_service_available("ai"):
+		print("Mission: AI service unavailable, skipping Companion check")
+		return
+
+	# Call agent loop endpoint
+	var result = await AIService.agent_loop_check("companion")
+
+	if result.success and result.data.has("should_act"):
+		var should_act = result.data.get("should_act", false)
+
+		if should_act and result.data.has("message"):
+			var message = result.data.message
+			var urgency = result.data.get("urgency", "INFO")
+
+			print("Mission: Companion autonomous message (%s): %s" % [urgency, message.substr(0, 50)])
+
+			# Add to chat (cyan/teal color for Companion)
+			var companion_label = RichTextLabel.new()
+			companion_label.bbcode_enabled = true
+			companion_label.fit_content = true
+			companion_label.scroll_active = false
+			companion_label.add_theme_font_size_override("normal_font_size", 14)
+			companion_label.add_theme_color_override("default_color", Color(0.125, 0.698, 0.667))  # #20B2AA
+			companion_label.text = "[b]Companion:[/b] %s" % message
+
+			var message_container = HBoxContainer.new()
+			message_container.add_child(companion_label)
+			chat_history.add_child(message_container)
+
+			# Auto-scroll to bottom
+			await get_tree().process_frame
+			chat_scroll.scroll_vertical = chat_scroll.get_v_scroll_bar().max_value
+		else:
+			print("Mission: Companion staying silent (no message)")
+	else:
+		if result.has("error"):
+			print("Mission: Companion agent check error: %s" % result.error)

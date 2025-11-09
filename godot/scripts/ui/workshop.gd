@@ -108,8 +108,11 @@ const AGENT_NAMES = ["atlas", "storyteller", "tactical", "companion"]
 # Schematic system dots (created dynamically)
 var system_dots: Dictionary = {}
 
-# Autonomous AI agent timer
+# Autonomous AI agent timers
 var atlas_timer: Timer = null
+var storyteller_timer: Timer = null
+var tactical_timer: Timer = null
+var companion_timer: Timer = null
 
 # ============================================================================
 # LIFECYCLE
@@ -130,8 +133,8 @@ func _ready() -> void:
 	# Initialize AI chat
 	_initialize_ai_chat()
 
-	# Initialize autonomous ATLAS agent timer
-	_initialize_atlas_timer()
+	# Initialize autonomous AI agent timers
+	_initialize_agent_timers()
 
 	# Initial UI update
 	_update_all_displays()
@@ -1228,17 +1231,60 @@ func _add_settings_header(container: VBoxContainer, text: String) -> void:
 	container.add_child(spacer)
 
 # ============================================================================
-# AUTONOMOUS ATLAS AGENT SYSTEM
+# AUTONOMOUS AI AGENT SYSTEM
 # ============================================================================
 
-func _initialize_atlas_timer() -> void:
-	"""Initialize timer for autonomous ATLAS agent checks"""
+func _initialize_agent_timers() -> void:
+	"""Initialize timers for all autonomous AI agent checks with staggered delays"""
+
+	# ATLAS timer (45s interval, immediate start)
 	atlas_timer = Timer.new()
-	atlas_timer.wait_time = 45.0  # Check every 45 seconds
+	atlas_timer.wait_time = 45.0
 	atlas_timer.timeout.connect(_on_atlas_agent_check)
 	atlas_timer.autostart = true
 	add_child(atlas_timer)
-	print("Workshop: ATLAS autonomous agent timer initialized (45s interval)")
+	print("Workshop: ATLAS autonomous agent timer initialized (45s interval, immediate start)")
+
+	# Storyteller timer (90s interval, delay 20s)
+	storyteller_timer = Timer.new()
+	storyteller_timer.wait_time = 90.0
+	storyteller_timer.one_shot = false
+	storyteller_timer.timeout.connect(_on_storyteller_agent_check)
+	add_child(storyteller_timer)
+
+	# Start storyteller after 20s delay
+	get_tree().create_timer(20.0).timeout.connect(func():
+		storyteller_timer.start()
+		print("Workshop: Storyteller autonomous agent timer started (90s interval)")
+	)
+
+	# Tactical timer (30s interval, delay 10s)
+	tactical_timer = Timer.new()
+	tactical_timer.wait_time = 30.0
+	tactical_timer.one_shot = false
+	tactical_timer.timeout.connect(_on_tactical_agent_check)
+	add_child(tactical_timer)
+
+	# Start tactical after 10s delay
+	get_tree().create_timer(10.0).timeout.connect(func():
+		tactical_timer.start()
+		print("Workshop: Tactical autonomous agent timer started (30s interval)")
+	)
+
+	# Companion timer (120s interval, delay 30s)
+	companion_timer = Timer.new()
+	companion_timer.wait_time = 120.0
+	companion_timer.one_shot = false
+	companion_timer.timeout.connect(_on_companion_agent_check)
+	add_child(companion_timer)
+
+	# Start companion after 30s delay
+	get_tree().create_timer(30.0).timeout.connect(func():
+		companion_timer.start()
+		print("Workshop: Companion autonomous agent timer started (120s interval)")
+	)
+
+	print("Workshop: All autonomous agent timers initialized with staggered delays")
 
 func _on_atlas_agent_check() -> void:
 	"""Handle ATLAS autonomous agent check timer"""
@@ -1261,13 +1307,101 @@ func _on_atlas_agent_check() -> void:
 
 			print("Workshop: ATLAS autonomous message (%s): %s" % [urgency, message.substr(0, 50)])
 
-			# Add message to chat panel
-			_add_chat_message("ATLAS", message, COLOR_GREEN)
-
-			# Update status to show message received
+			# Add message to chat panel (light blue for ATLAS)
+			_add_chat_message("ATLAS", message, Color(0.678, 0.847, 0.902))  # Light blue
 			_set_chat_status("New message from ATLAS", COLOR_GREEN)
 		else:
 			print("Workshop: ATLAS staying silent (no message)")
 	else:
 		if result.has("error"):
 			print("Workshop: ATLAS agent check error: %s" % result.error)
+
+func _on_storyteller_agent_check() -> void:
+	"""Handle Storyteller autonomous agent check timer"""
+	print("Workshop: Storyteller agent check triggered")
+
+	# Skip if AI service unavailable
+	if not ServiceManager.is_service_available("ai"):
+		print("Workshop: AI service unavailable, skipping Storyteller check")
+		return
+
+	# Call agent loop endpoint
+	var result = await AIService.agent_loop_check("storyteller")
+
+	if result.success and result.data.has("should_act"):
+		var should_act = result.data.get("should_act", false)
+
+		if should_act and result.data.has("message"):
+			var message = result.data.message
+			var urgency = result.data.get("urgency", "INFO")
+
+			print("Workshop: Storyteller autonomous message (%s): %s" % [urgency, message.substr(0, 50)])
+
+			# Add message to chat panel (purple/violet for Storyteller)
+			_add_chat_message("Storyteller", message, Color(0.576, 0.439, 0.859))  # #9370DB
+			_set_chat_status("New message from Storyteller", COLOR_GREEN)
+		else:
+			print("Workshop: Storyteller staying silent (no message)")
+	else:
+		if result.has("error"):
+			print("Workshop: Storyteller agent check error: %s" % result.error)
+
+func _on_tactical_agent_check() -> void:
+	"""Handle Tactical autonomous agent check timer"""
+	print("Workshop: Tactical agent check triggered")
+
+	# Skip if AI service unavailable
+	if not ServiceManager.is_service_available("ai"):
+		print("Workshop: AI service unavailable, skipping Tactical check")
+		return
+
+	# Call agent loop endpoint
+	var result = await AIService.agent_loop_check("tactical")
+
+	if result.success and result.data.has("should_act"):
+		var should_act = result.data.get("should_act", false)
+
+		if should_act and result.data.has("message"):
+			var message = result.data.message
+			var urgency = result.data.get("urgency", "INFO")
+
+			print("Workshop: Tactical autonomous message (%s): %s" % [urgency, message.substr(0, 50)])
+
+			# Add message to chat panel (orange/red for Tactical)
+			_add_chat_message("Tactical", message, Color(1.0, 0.42, 0.208))  # #FF6B35
+			_set_chat_status("New message from Tactical", COLOR_GREEN)
+		else:
+			print("Workshop: Tactical staying silent (no message)")
+	else:
+		if result.has("error"):
+			print("Workshop: Tactical agent check error: %s" % result.error)
+
+func _on_companion_agent_check() -> void:
+	"""Handle Companion autonomous agent check timer"""
+	print("Workshop: Companion agent check triggered")
+
+	# Skip if AI service unavailable
+	if not ServiceManager.is_service_available("ai"):
+		print("Workshop: AI service unavailable, skipping Companion check")
+		return
+
+	# Call agent loop endpoint
+	var result = await AIService.agent_loop_check("companion")
+
+	if result.success and result.data.has("should_act"):
+		var should_act = result.data.get("should_act", false)
+
+		if should_act and result.data.has("message"):
+			var message = result.data.message
+			var urgency = result.data.get("urgency", "INFO")
+
+			print("Workshop: Companion autonomous message (%s): %s" % [urgency, message.substr(0, 50)])
+
+			# Add message to chat panel (cyan/teal for Companion)
+			_add_chat_message("Companion", message, Color(0.125, 0.698, 0.667))  # #20B2AA
+			_set_chat_status("New message from Companion", COLOR_GREEN)
+		else:
+			print("Workshop: Companion staying silent (no message)")
+	else:
+		if result.has("error"):
+			print("Workshop: Companion agent check error: %s" % result.error)
