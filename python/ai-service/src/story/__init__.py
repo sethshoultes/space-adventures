@@ -11,7 +11,13 @@ Components:
 """
 
 from .memory_manager import MemoryManager
+from .story_engine import StoryEngine
+from .world_state import WorldState
+from .mission_pool import MissionPool
 
 __all__ = [
     "MemoryManager",
+    "StoryEngine",
+    "WorldState",
+    "MissionPool",
 ]
