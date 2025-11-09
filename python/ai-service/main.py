@@ -25,7 +25,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
 # Import API routers
-from src.api import missions_router, chat_router, dialogue_router, orchestrator_router
+from src.api import missions_router, chat_router, dialogue_router, orchestrator_router, story_router
 from src.ai.client import get_ai_client
 
 # Load environment variables
@@ -101,6 +101,7 @@ app.include_router(missions_router)
 app.include_router(chat_router)
 app.include_router(dialogue_router)
 app.include_router(orchestrator_router)  # Multi-agent orchestration
+app.include_router(story_router)  # Dynamic story engine
 
 
 # Health check endpoint
