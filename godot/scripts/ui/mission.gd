@@ -1237,27 +1237,37 @@ func _handle_hybrid_choice(choice: Dictionary) -> void:
 
 	print("[Mission] Requirements met: %s → outcome type: %s" % [requirements_met, outcome_type])
 
-	# Step 2: Generate dynamic outcome
-	var result = await _generate_choice_outcome(choice, outcome_type)
+	# Step 2: Get consequence from mission JSON (same as static missions)
+	var all_consequences = choice.get("consequences", {})
+	var consequence = all_consequences.get(outcome_type, {})
 
-	if result.is_empty():
-		push_error("[Mission] Failed to generate outcome for hybrid choice")
-		# Re-enable buttons so player can try again
+	if consequence.is_empty():
+		push_error("[Mission] No consequence defined for outcome type: %s" % outcome_type)
 		for button in choice_buttons:
 			button.disabled = false
 		return
 
-	var consequence = result.get("consequence", {})
+	# Step 3: Generate dynamic narrative for this outcome
+	var result = await _generate_choice_outcome(choice, outcome_type)
 
-	# Step 3: Apply effects to GameState
+	var narrative = ""
+	if not result.is_empty() and result.has("narrative"):
+		narrative = result.narrative
+	else:
+		# Fallback: use basic description
+		narrative = "The choice has consequences..."
+		push_warning("[Mission] Failed to generate narrative, using fallback")
+
+	# Step 4: Apply effects to GameState (from mission JSON, not API)
 	_apply_choice_effects(consequence)
 
-	# Step 4: Update MissionManager state
-	if consequence.has("next_stage"):
-		# Advance to next stage
-		var next_stage = consequence.next_stage
+	# Step 5: Update MissionManager state (from mission JSON)
+	var next_stage = consequence.get("next_stage", null)
+	if next_stage != null and next_stage != "":
 		MissionManager.current_stage_id = next_stage
 		print("[Mission] Advanced to next stage: %s" % next_stage)
+	else:
+		print("[Mission] No next_stage in consequence, staying on current stage")
 
 	# Store effects in MissionManager for tracking
 	if consequence.has("effects"):
@@ -1265,8 +1275,16 @@ func _handle_hybrid_choice(choice: Dictionary) -> void:
 			if effect not in MissionManager.mission_effects:
 				MissionManager.mission_effects.append(effect)
 
-	# Step 5: Display result
-	await _display_result(result)
+	# Step 6: Display narrative
+	_append_result_to_log(narrative)
+	await get_tree().create_timer(0.5).timeout
+
+	# Load next stage if defined
+	if next_stage != null and next_stage != "":
+		await _load_next_stage(next_stage)
+	else:
+		# Mission complete
+		await _complete_mission()
 
 
 func _apply_choice_effects(consequence: Dictionary) -> void:
