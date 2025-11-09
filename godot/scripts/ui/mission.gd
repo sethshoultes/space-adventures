@@ -1275,16 +1275,32 @@ func _handle_hybrid_choice(choice: Dictionary) -> void:
 			if effect not in MissionManager.mission_effects:
 				MissionManager.mission_effects.append(effect)
 
-	# Step 6: Display narrative
-	_append_result_to_log(narrative)
-	await get_tree().create_timer(0.5).timeout
-
-	# Load next stage if defined
+	# Step 6: Display narrative and continue (same as static missions)
 	if next_stage != null and next_stage != "":
-		await _load_next_stage(next_stage)
+		# Append narrative to log
+		await _append_result_to_log(narrative)
+
+		# Dim previous stages
+		_dim_previous_stages()
+
+		# Hide choices during transition
+		choices_label.visible = false
+		for button in choice_buttons:
+			button.visible = false
+
+		# Update status ticker
+		_update_status_ticker()
+
+		# Short pause
+		await get_tree().create_timer(1.0).timeout
+
+		# Load new stage (MissionManager.current_stage_id already updated)
+		_load_current_stage()
 	else:
 		# Mission complete
-		await _complete_mission()
+		await _append_result_to_log(narrative)
+		await get_tree().create_timer(1.0).timeout
+		await _append_mission_complete()
 
 
 func _apply_choice_effects(consequence: Dictionary) -> void:
