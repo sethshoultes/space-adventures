@@ -154,14 +154,27 @@ func _append_stage_to_log(stage: Dictionary) -> void:
 	title_label.add_theme_font_size_override("font_size", 32)
 	stage_entry.add_child(title_label)
 
-	# Stage description
+	# Stage description - check if hybrid or static
 	var desc_label = RichTextLabel.new()
 	desc_label.bbcode_enabled = true
 	desc_label.fit_content = true
 	desc_label.scroll_active = false
 	desc_label.add_theme_font_size_override("normal_font_size", 20)
-	desc_label.text = stage.get("description", "")
-	stage_entry.add_child(desc_label)
+
+	# Check if hybrid stage (has narrative_structure)
+	if _is_hybrid_stage(stage):
+		# Show loading indicator
+		desc_label.text = "[i]Generating narrative...[/i]"
+		stage_entry.add_child(desc_label)
+		await get_tree().process_frame  # Allow UI to update
+
+		# Generate dynamic narrative
+		var narrative = await _generate_stage_narrative(stage)
+		desc_label.text = narrative
+	else:
+		# Static narrative
+		desc_label.text = stage.get("description", "")
+		stage_entry.add_child(desc_label)
 
 	# Add to narrative log
 	narrative_log.add_child(stage_entry)
@@ -316,18 +329,23 @@ func _on_choice_pressed(choice_index: int) -> void:
 	for button in choice_buttons:
 		button.disabled = true
 
-	# Process choice through MissionManager
-	var result = MissionManager.make_choice(choice.choice_id)
+	# Check if hybrid choice (has outcome_prompt)
+	if _is_hybrid_choice(choice):
+		# Generate dynamic outcome via StoryService
+		await _handle_hybrid_choice(choice)
+	else:
+		# Process static choice through MissionManager
+		var result = MissionManager.make_choice(choice.choice_id)
 
-	if result.is_empty():
-		push_error("Mission: Failed to process choice")
-		# Re-enable buttons so player can try again
-		for button in choice_buttons:
-			button.disabled = false
-		return
+		if result.is_empty():
+			push_error("Mission: Failed to process choice")
+			# Re-enable buttons so player can try again
+			for button in choice_buttons:
+				button.disabled = false
+			return
 
-	# Display result (await because it has async operations)
-	await _display_result(result)
+		# Display result (await because it has async operations)
+		await _display_result(result)
 
 func _display_result(result: Dictionary) -> void:
 	"""Display the result of a choice"""
@@ -1080,3 +1098,208 @@ func _on_companion_agent_check() -> void:
 	else:
 		if result.has("error"):
 			print("Mission: Companion agent check error: %s" % result.error)
+
+
+# ============================================================================
+# HYBRID MISSION SUPPORT - Dynamic Narrative Generation
+# ============================================================================
+
+func _is_hybrid_mission() -> bool:
+	"""Check if current mission uses hybrid narrative generation"""
+	var mission = MissionManager.get_active_mission()
+	if not mission or not mission.has("stages"):
+		return false
+
+	# Check if any stage has narrative_structure
+	for stage in mission.stages:
+		if stage.has("narrative_structure"):
+			return true
+
+	return false
+
+
+func _is_hybrid_stage(stage: Dictionary) -> bool:
+	"""Check if a specific stage uses hybrid narrative generation"""
+	return stage.has("narrative_structure")
+
+
+func _is_hybrid_choice(choice: Dictionary) -> bool:
+	"""Check if a choice uses hybrid outcome generation"""
+	return choice.has("outcome_prompt")
+
+
+func _generate_stage_narrative(stage: Dictionary) -> String:
+	"""Generate narrative text for a hybrid stage using StoryService"""
+
+	print("[Mission] Generating dynamic narrative for stage: %s" % stage.get("stage_id", "unknown"))
+
+	# Check if StoryService is available
+	if not StoryService.is_available():
+		push_warning("[Mission] StoryService not available, using static fallback")
+		return stage.get("description", "The story continues...")
+
+	# Build request data
+	var mission = MissionManager.get_active_mission()
+	var request_data = {
+		"player_id": StoryService.get_player_id(),
+		"mission_template": mission,
+		"stage_id": stage.get("stage_id", ""),
+		"player_state": StoryService.build_player_state(),
+		"world_context": null  # Story API will fetch if needed
+	}
+
+	# Call StoryService
+	var result = await StoryService.generate_narrative(request_data)
+
+	if result.success:
+		var cached_indicator = " [cached]" if result.get("cached", false) else ""
+		print("[Mission] Narrative generated%s (%dms)" % [cached_indicator, result.get("generation_time_ms", 0)])
+		return result.narrative
+	else:
+		push_error("[Mission] Narrative generation failed: %s" % result.get("error", "Unknown"))
+		# Fallback to static description if available
+		return stage.get("description", "The story continues...")
+
+
+func _generate_choice_outcome(choice: Dictionary, outcome_type: String) -> Dictionary:
+	"""Generate outcome narrative for a hybrid choice using StoryService"""
+
+	print("[Mission] Generating dynamic outcome for choice: %s (outcome: %s)" % [choice.get("choice_id", "unknown"), outcome_type])
+
+	# Check if StoryService is available
+	if not StoryService.is_available():
+		push_warning("[Mission] StoryService not available, using static fallback")
+		return _get_static_outcome(choice, outcome_type)
+
+	# Get outcome prompt for this outcome type
+	var outcome_prompt = choice.get("outcome_prompt", {}).get(outcome_type)
+	if not outcome_prompt:
+		# Fallback to static if outcome_prompt missing for this type
+		return _get_static_outcome(choice, outcome_type)
+
+	# Build choice data for API
+	var choice_data = {
+		"choice_id": choice.get("choice_id", ""),
+		"text": choice.get("text", ""),
+		"outcome_prompt": outcome_prompt,
+		"consequences": choice.get("consequences", {}).get(outcome_type, {})
+	}
+
+	# Build request data
+	var request_data = {
+		"player_id": StoryService.get_player_id(),
+		"choice": choice_data,
+		"player_state": StoryService.build_player_state(),
+		"world_context": null
+	}
+
+	# Call StoryService
+	var result = await StoryService.generate_outcome(request_data)
+
+	if result.success:
+		print("[Mission] Outcome generated (%dms)" % result.get("generation_time_ms", 0))
+
+		# Return outcome in the same format as MissionManager expects
+		return {
+			"consequence": {
+				"text": result.narrative,
+				"next_stage": result.get("next_stage"),
+				"effects": result.get("consequences", {}).get("effects", []),
+				"xp_bonus": result.get("consequences", {}).get("xp_bonus", 0),
+				"story_flags": result.get("consequences", {}).get("story_flags", {}),
+				"relationships": result.get("consequences", {}).get("relationships", {})
+			}
+		}
+	else:
+		push_error("[Mission] Outcome generation failed: %s" % result.get("error", "Unknown"))
+		# Fallback to static
+		return _get_static_outcome(choice, outcome_type)
+
+
+func _get_static_outcome(choice: Dictionary, outcome_type: String) -> Dictionary:
+	"""Get static outcome from choice data (fallback)"""
+	var consequences = choice.get("consequences", {})
+	var consequence = consequences.get(outcome_type, {})
+
+	return {
+		"consequence": consequence
+	}
+
+
+func _handle_hybrid_choice(choice: Dictionary) -> void:
+	"""Handle hybrid choice with dynamic outcome generation"""
+
+	print("[Mission] Handling hybrid choice: %s" % choice.get("choice_id", "unknown"))
+
+	# Step 1: Determine success/failure based on requirements
+	var requirements_met = _check_choice_requirements(choice)
+	var outcome_type = "success" if requirements_met else "failure"
+
+	print("[Mission] Requirements met: %s → outcome type: %s" % [requirements_met, outcome_type])
+
+	# Step 2: Generate dynamic outcome
+	var result = await _generate_choice_outcome(choice, outcome_type)
+
+	if result.is_empty():
+		push_error("[Mission] Failed to generate outcome for hybrid choice")
+		# Re-enable buttons so player can try again
+		for button in choice_buttons:
+			button.disabled = false
+		return
+
+	var consequence = result.get("consequence", {})
+
+	# Step 3: Apply effects to GameState
+	_apply_choice_effects(consequence)
+
+	# Step 4: Update MissionManager state
+	if consequence.has("next_stage"):
+		# Advance to next stage
+		var next_stage = consequence.next_stage
+		MissionManager.current_stage_id = next_stage
+		print("[Mission] Advanced to next stage: %s" % next_stage)
+
+	# Store effects in MissionManager for tracking
+	if consequence.has("effects"):
+		for effect in consequence.effects:
+			if effect not in MissionManager.mission_effects:
+				MissionManager.mission_effects.append(effect)
+
+	# Step 5: Display result
+	await _display_result(result)
+
+
+func _apply_choice_effects(consequence: Dictionary) -> void:
+	"""Apply consequences of a choice to GameState"""
+
+	# Apply XP bonus
+	if consequence.has("xp_bonus"):
+		var xp_bonus = consequence.xp_bonus
+		if xp_bonus > 0:
+			GameState.player.xp += xp_bonus
+			print("[Mission] Applied XP bonus: +%d" % xp_bonus)
+			EventBus.xp_gained.emit(xp_bonus)
+
+	# Apply story flags
+	if consequence.has("story_flags"):
+		var story_flags = consequence.story_flags
+		for flag in story_flags.keys():
+			var value = story_flags[flag]
+			# Store in GameState progress
+			if not GameState.progress.has("story_flags"):
+				GameState.progress.story_flags = {}
+			GameState.progress.story_flags[flag] = value
+			print("[Mission] Set story flag: %s = %s" % [flag, value])
+
+	# Apply relationships
+	if consequence.has("relationships"):
+		var relationships = consequence.relationships
+		for character in relationships.keys():
+			var delta = relationships[character]
+			# Store in GameState progress
+			if not GameState.progress.has("relationships"):
+				GameState.progress.relationships = {}
+
+			var current = GameState.progress.relationships.get(character, 0)
+			GameState.progress.relationships[character] = clamp(current + delta, -100, 100)
+			print("[Mission] Updated relationship: %s %+d → %d" % [character, delta, GameState.progress.relationships[character]])
