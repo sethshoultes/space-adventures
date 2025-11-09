@@ -1,0 +1,555 @@
+{
+  "mission_id": "tutorial_first_salvage_hybrid",
+  "title": "The Inheritance",
+  "type": "story",
+  "location": "Old Aerospace Museum, Nevada",
+  "difficulty": 1,
+  "estimated_time": "15-20 min",
+
+  "context": {
+    "location": "Old Aerospace Museum in Nevada desert",
+    "theme": "Inheritance and new beginnings",
+    "tone": "Serious but hopeful sci-fi, grounded and personal",
+    "era": "Post-Exodus Earth, 30 years after humanity left",
+    "key_npcs": [
+      {
+        "id": "sarah",
+        "name": "Sarah",
+        "role": "Lead scavenger",
+        "personality": "Pragmatic, tough but fair, respects competence",
+        "description": "Tall woman with plasma cutter, leader of a two-person salvage team"
+      },
+      {
+        "id": "dex",
+        "name": "Dex",
+        "role": "Junior scavenger",
+        "personality": "Nervous, conflict-averse, follows Sarah's lead",
+        "description": "Young scavenger, uncomfortable with confrontation"
+      },
+      {
+        "id": "grandfather_ai",
+        "name": "Grandfather (Hologram)",
+        "role": "Deceased mentor",
+        "personality": "Wise, humorous, encouraging, left detailed guidance",
+        "description": "Pre-recorded hologram messages from player's grandfather"
+      }
+    ],
+    "mission_background": "Player's grandfather left coordinates to secret workshop in museum. Contains ship frame and parts needed to start rebuilding. Grandfather was skilled engineer who found something unusual before he died - evidence about the Exodus. Other scavengers have also discovered the museum and are searching for valuables.",
+    "world_state": {
+      "environment": "Desert, early morning, old museum half-buried in sand",
+      "danger_level": "Low - potential conflict with scavengers but not lethal",
+      "time_pressure": "None - tutorial mission, player sets pace"
+    }
+  },
+
+  "requirements": {
+    "min_level": 1,
+    "required_systems": [],
+    "completed_missions": []
+  },
+
+  "objectives": [
+    "Locate your grandfather's workshop in the museum",
+    "Claim the ship frame and essential parts",
+    "[OPTIONAL] Avoid conflict with other scavengers"
+  ],
+
+  "stages": [
+    {
+      "stage_id": "arrival",
+      "title": "Desert Sunrise",
+      "narrative_structure": {
+        "setup": "Player arrives at abandoned museum in desert",
+        "conflict": "Fresh footprints indicate other scavengers present",
+        "prompt": "Describe the museum exterior at dawn. Show its decay but also hints of humanity's past greatness. Mention solar panels still working. Include ominous detail: fresh footprints in sand. Tone: Wonder mixed with caution. 3-4 sentences.",
+        "include": [
+          "Museum's grandeur despite abandonment",
+          "Evidence of scavengers (footprints)",
+          "Player's grandfather's coordinates pointing to main hall",
+          "Sense of history and loss"
+        ],
+        "exclude": [
+          "Combat or violence",
+          "Technical jargon",
+          "Overly poetic language"
+        ]
+      },
+      "image": "museum_exterior",
+      "choices": [
+        {
+          "choice_id": "front_entrance",
+          "text": "Enter through the front—the direct approach",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Doors open automatically via solar power",
+              "key_elements": [
+                "Vast exhibit hall with suspended spacecraft (Apollo lander, shuttles, prototype warp nacelle from 2040s)",
+                "Workshop entrance visible in far corner",
+                "Sarah and Dex arguing near workshop entrance",
+                "Sense of awe at humanity's achievements"
+              ],
+              "tone": "Mixture of wonder and tension",
+              "length": "3-4 sentences",
+              "next_stage": "workshop_contested"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "workshop_contested",
+              "effects": ["encountered_scavengers"],
+              "xp_bonus": 0,
+              "story_flags": {
+                "scavenger_aware": true,
+                "approach_method": "direct"
+              }
+            }
+          }
+        },
+        {
+          "choice_id": "side_entrance",
+          "text": "Circle around, look for another way in",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player finds maintenance tunnels",
+              "key_elements": [
+                "Dark, dusty maintenance corridors",
+                "Emerge behind scavengers who don't notice",
+                "Workshop door with biometric scanner right there",
+                "Tactical advantage gained"
+              ],
+              "tone": "Tense but successful stealth",
+              "length": "3-4 sentences",
+              "next_stage": "workshop_uncontested"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "workshop_uncontested",
+              "effects": ["avoided_scavengers"],
+              "xp_bonus": 15,
+              "story_flags": {
+                "scavenger_aware": false,
+                "approach_method": "stealth"
+              }
+            }
+          }
+        },
+        {
+          "choice_id": "observe_first",
+          "text": "Stay hidden, observe the situation before acting",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player scans museum from concealment with grandfather's binoculars",
+              "key_elements": [
+                "Two scavengers (Sarah and Dex) armed but not aggressive",
+                "They're searching for workshop but lack biometric access",
+                "Museum's power grid is fully active (lights, security, service robots)",
+                "Player realizes they can use museum systems to their advantage"
+              ],
+              "tone": "Analytical, player feels clever and prepared",
+              "length": "4-5 sentences",
+              "next_stage": "workshop_informed"
+            },
+            "failure": {
+              "setup": "Player accidentally makes noise while observing",
+              "key_elements": [
+                "Kicks loose panel, sound echoes",
+                "Scavengers turn toward noise, hands on weapons",
+                "Element of surprise lost",
+                "Situation becomes tense"
+              ],
+              "tone": "Oh no, plans unraveling",
+              "length": "2-3 sentences",
+              "next_stage": "workshop_contested"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "workshop_informed",
+              "effects": ["gathered_intel", "knows_power_active"],
+              "xp_bonus": 25,
+              "story_flags": {
+                "scavenger_aware": true,
+                "has_intel": true,
+                "approach_method": "tactical"
+              }
+            },
+            "failure": {
+              "next_stage": "workshop_contested",
+              "effects": ["encountered_scavengers", "suspicious_scavengers"],
+              "story_flags": {
+                "scavenger_aware": true,
+                "approach_method": "failed_stealth"
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "workshop_contested",
+      "title": "Unwelcome Committee",
+      "narrative_structure": {
+        "setup": "Scavengers notice player approaching workshop",
+        "conflict": "They claim museum, player needs access",
+        "prompt": "Describe confrontation with Sarah (lead scavenger, tough but fair) and Dex (nervous junior). Sarah claims museum, mentions biometric lock stopped them. Include physical details: Sarah's plasma cutter, Dex's nervous weapon hand. Tone: Tense but not immediately hostile. 3-4 sentences.",
+        "include": [
+          "Sarah stepping forward, assertive",
+          "Dex nervous, following Sarah's lead",
+          "Mention biometric lock they couldn't open",
+          "Sense this could go peacefully or badly"
+        ]
+      },
+      "image": "scavengers_confrontation",
+      "choices": [
+        {
+          "choice_id": "explain_inheritance",
+          "text": "Explain that your grandfather owned this workshop—it's legally yours",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "outcome_prompt": {
+            "success": {
+              "setup": "Sarah laughs but listens, sees honesty in player",
+              "key_elements": [
+                "Sarah questions concept of 'legal' in post-Exodus world",
+                "But recognizes player's sincerity and emotional connection",
+                "Agrees to step aside - 'you'll need friends more than enemies'",
+                "Dex looks relieved at peaceful resolution"
+              ],
+              "tone": "Tense becoming warm, humanity shown",
+              "emotion": "Relief and gratitude",
+              "next_stage": "workshop_open"
+            },
+            "failure": {
+              "setup": "Sarah doesn't believe or doesn't care",
+              "key_elements": [
+                "'Nice story, kid. But stories don't fill stomachs.'",
+                "She's unmoved by appeals to law or inheritance",
+                "Demands player share contents or leave",
+                "Situation remains tense"
+              ],
+              "tone": "Hardened pragmatism",
+              "next_stage": "workshop_negotiation"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "workshop_open",
+              "effects": ["peaceful_resolution", "potential_ally"],
+              "xp_bonus": 30,
+              "relationships": {
+                "sarah": 25,
+                "dex": 15
+              },
+              "story_flags": {
+                "sarah_impressed": true,
+                "resolution_method": "diplomacy"
+              }
+            },
+            "failure": {
+              "next_stage": "workshop_negotiation",
+              "effects": ["failed_diplomacy"],
+              "relationships": {
+                "sarah": -5
+              }
+            }
+          }
+        },
+        {
+          "choice_id": "offer_split",
+          "text": "Offer to split the salvage 50/50",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Sarah considers, then agrees to split",
+              "key_elements": [
+                "Sarah accepts pragmatic solution",
+                "Notes ship frame too large for them anyway, player keeps it",
+                "Work together to inventory workshop",
+                "Player keeps frame and core systems, they take tools and spares",
+                "Everyone benefits, respect earned"
+              ],
+              "tone": "Practical cooperation",
+              "length": "4-5 sentences",
+              "next_stage": "workshop_open"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "workshop_open",
+              "effects": ["split_salvage", "made_contacts"],
+              "rewards_modified": {"items": ["remove:spare_tools"]},
+              "xp_bonus": 20,
+              "relationships": {
+                "sarah": 15,
+                "dex": 10
+              },
+              "story_flags": {
+                "dealt_fairly": true,
+                "resolution_method": "compromise"
+              }
+            }
+          }
+        },
+        {
+          "choice_id": "use_biometric",
+          "text": "Ignore them and use your biometric access to open the workshop",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player walks to scanner, presses hand, door opens",
+              "key_elements": [
+                "Scanner pulses green: 'IDENTITY CONFIRMED. WELCOME, AUTHORIZED USER.'",
+                "Door unseals with hiss",
+                "Scavengers exchange glances, reassessing player",
+                "Sarah: 'So it really is yours. Didn't think anyone had legitimate claims anymore.'",
+                "They back off, player made impression"
+              ],
+              "tone": "Confident, assertive but not hostile",
+              "emotion": "Mix of respect and wariness from scavengers",
+              "next_stage": "workshop_open"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "workshop_open",
+              "effects": ["asserted_ownership"],
+              "xp_bonus": 10,
+              "relationships": {
+                "sarah": 5,
+                "dex": 0
+              },
+              "story_flags": {
+                "resolution_method": "assertion"
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "workshop_open",
+      "title": "Your Inheritance",
+      "narrative_structure": {
+        "setup": "Workshop is secured, player enters to discover inheritance",
+        "emotional_peak": "Connection to grandfather, ship revealed, hologram message",
+        "prompt": "Describe the workshop interior: dust in sunlight, ship frame on repair cradle, organized components on workbenches, grandfather's holographic terminal activating. His message: 'If you're seeing this, I'm gone. But this isn't goodbye—it's a beginning. Build something. Fly somewhere. The stars are waiting.' Tone: Bittersweet, hopeful, meaningful. 5-6 sentences.",
+        "include": [
+          "Atmospheric details (dust, sunlight)",
+          "Ship frame description (bare but structurally sound)",
+          "Components laid out: hull plates, fusion cell, thrusters",
+          "Grandfather's hologram and message",
+          "Emotional weight of the moment",
+          "Sense of possibility and purpose"
+        ]
+      },
+      "image": "ship_frame",
+      "choices": [
+        {
+          "choice_id": "begin_repairs",
+          "text": "Begin installing the basic systems",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player works for hours following grandfather's instructions",
+              "key_elements": [
+                "Hull plates seal with magnetic clanks",
+                "Power core hums to life (100 PU)",
+                "Thrusters align and test positive",
+                "By sunset, have functional Level 1 ship",
+                "All systems green, grandfather's hologram congratulates: 'Well done. Now—where will you go?'"
+              ],
+              "tone": "Triumphant, accomplished, deeply satisfying",
+              "emotion": "Pride and determination",
+              "length": "5-6 sentences",
+              "next_stage": "mission_complete"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 50,
+              "story_flags": {
+                "ship_built": true,
+                "grandfather_honored": true
+              }
+            }
+          }
+        },
+        {
+          "choice_id": "examine_datapad",
+          "text": "Check your grandfather's datapad for notes about the ship",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player decrypts datapad, finds decades of notes",
+              "key_elements": [
+                "Ship designs and salvage locations",
+                "Star map with coordinates beyond solar system",
+                "Note: 'The Exodus didn't go where they said. I found something. Evidence. Coordinates attached.'",
+                "Player realizes they've inherited a mission, not just a workshop",
+                "Mystery introduced for future story"
+              ],
+              "tone": "Mysterious, intriguing, scope expanding",
+              "emotion": "Curiosity and sense of greater purpose",
+              "length": "5-6 sentences",
+              "next_stage": "workshop_claimed"
+            },
+            "failure": {
+              "setup": "Datapad encryption too complex",
+              "key_elements": [
+                "Player lacks science skills to decrypt",
+                "Will need better computer or higher skills",
+                "For now, focus on ship itself"
+              ],
+              "tone": "Mild frustration but accepting",
+              "length": "2-3 sentences",
+              "next_stage": "workshop_claimed"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "workshop_claimed",
+              "effects": ["found_mystery", "grandpa_notes"],
+              "xp_bonus": 35,
+              "story_flags": {
+                "exodus_mystery_unlocked": true,
+                "has_star_map": true
+              }
+            },
+            "failure": {
+              "next_stage": "workshop_claimed",
+              "effects": []
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "workshop_claimed",
+      "title": "The First Step",
+      "narrative_structure": {
+        "setup": "Workshop secured, systems being installed",
+        "prompt": "Describe several days of work installing Level 1 systems. Diagnostics read: Hull 50 HP, Power 100 PU, Propulsion 1x speed. All systems green. Player now has a ship. Tone: Determined progress, growing confidence. 3-4 sentences.",
+        "include": [
+          "Time passing, player working",
+          "Systems coming online one by one",
+          "Final diagnostic readings",
+          "Realization: 'I have a ship'"
+        ]
+      },
+      "image": "systems_installed",
+      "choices": [
+        {
+          "choice_id": "test_flight",
+          "text": "Take the ship on a test flight around the museum grounds",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Ship lifts off repair cradle for first time",
+              "key_elements": [
+                "Hovering on chemical thrust, sluggish but functional",
+                "Slow circle around museum exterior",
+                "Hull holds, power steady, thrusters respond",
+                "Player lands back in workshop, grinning",
+                "Realization: 'It flies. It actually flies. I'm a ship captain now.'"
+              ],
+              "tone": "Exhilarating, joyful, transformative",
+              "emotion": "Pure triumph",
+              "length": "5-6 sentences",
+              "next_stage": "mission_complete"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 50,
+              "story_flags": {
+                "first_flight_complete": true,
+                "ship_operational": true
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "mission_complete",
+      "title": "Mission Complete",
+      "narrative_structure": {
+        "setup": "Tutorial complete, player has ship and future",
+        "prompt": "Briefly celebrate completion. The Inheritance is theirs: ship, workshop, infinite possibilities. 1-2 sentences.",
+        "tone": "Hopeful conclusion"
+      },
+      "image": "ship_complete",
+      "choices": []
+    }
+  ],
+
+  "rewards": {
+    "xp": 100,
+    "credits": 300,
+    "items": [
+      {"part_id": "hull_scrap_plates_l1_common", "quantity": 1},
+      {"part_id": "power_fusion_cell_l1_common", "quantity": 1},
+      {"part_id": "propulsion_chemical_thruster_l1_common", "quantity": 1}
+    ],
+    "discovered_parts": [
+      "hull_scrap_plates_l1_common",
+      "power_fusion_cell_l1_common",
+      "propulsion_chemical_thruster_l1_common"
+    ],
+    "unlocks": [
+      "mission_first_salvage",
+      "mission_power_up",
+      "workshop_hub"
+    ],
+    "story_unlocks": [
+      "character:sarah",
+      "character:dex",
+      "location:aerospace_museum"
+    ]
+  },
+
+  "failure_consequences": {
+    "xp": 25,
+    "effects": ["missed_inheritance"]
+  },
+
+  "generation_metadata": {
+    "schema_version": "hybrid_1.0",
+    "narrative_style": "grounded_scifi",
+    "player_agency": "high",
+    "branching_factor": "medium",
+    "approximate_playtime_minutes": 20,
+    "key_themes": ["inheritance", "new_beginnings", "choices_matter", "lone_survivor"],
+    "emotional_arc": "loss → determination → triumph",
+    "notes": "Tutorial mission demonstrating hybrid narrative generation. Static decision tree with dynamic narrative text. Test case for story engine integration."
+  }
+}
