@@ -1303,3 +1303,35 @@ func _apply_choice_effects(consequence: Dictionary) -> void:
 			var current = GameState.progress.relationships.get(character, 0)
 			GameState.progress.relationships[character] = clamp(current + delta, -100, 100)
 			print("[Mission] Updated relationship: %s %+d → %d" % [character, delta, GameState.progress.relationships[character]])
+
+
+# ============================================================================
+# CLEANUP - Resource Management
+# ============================================================================
+
+func _exit_tree() -> void:
+	"""Cleanup resources when mission scene is exited"""
+
+	print("[Mission] Cleaning up mission scene resources...")
+
+	# Stop and free all autonomous agent timers
+	if atlas_timer and is_instance_valid(atlas_timer):
+		atlas_timer.stop()
+		atlas_timer.queue_free()
+
+	if storyteller_timer and is_instance_valid(storyteller_timer):
+		storyteller_timer.stop()
+		storyteller_timer.queue_free()
+
+	if tactical_timer and is_instance_valid(tactical_timer):
+		tactical_timer.stop()
+		tactical_timer.queue_free()
+
+	if companion_timer and is_instance_valid(companion_timer):
+		companion_timer.stop()
+		companion_timer.queue_free()
+
+	# Clean up scroll indicator
+	_hide_scroll_indicator()
+
+	print("[Mission] Cleanup complete")

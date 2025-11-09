@@ -115,18 +115,38 @@ class InvalidateCacheResponse(BaseModel):
 # Initialize story engine components
 # These will be initialized on app startup
 
-def get_redis_client():
-    """Get Redis client instance."""
-    redis_host = os.getenv("REDIS_HOST", "localhost")
-    redis_port = int(os.getenv("REDIS_PORT", "6379"))
-    redis_db = int(os.getenv("REDIS_DB", "0"))
+# Global connection pool (created once on startup, reused across requests)
+_redis_pool = None
 
-    return redis.Redis(
-        host=redis_host,
-        port=redis_port,
-        db=redis_db,
-        decode_responses=True
-    )
+
+def get_redis_pool():
+    """Get or create Redis connection pool."""
+    global _redis_pool
+
+    if _redis_pool is None:
+        redis_host = os.getenv("REDIS_HOST", "localhost")
+        redis_port = int(os.getenv("REDIS_PORT", "6379"))
+        redis_db = int(os.getenv("REDIS_DB", "0"))
+
+        # Create connection pool with limits
+        _redis_pool = redis.ConnectionPool(
+            host=redis_host,
+            port=redis_port,
+            db=redis_db,
+            decode_responses=True,
+            max_connections=20,  # Max concurrent connections
+            socket_connect_timeout=5,  # 5 second timeout
+            socket_keepalive=True
+        )
+        logger.info(f"Created Redis connection pool: {redis_host}:{redis_port}/{redis_db}")
+
+    return _redis_pool
+
+
+def get_redis_client():
+    """Get Redis client from connection pool."""
+    pool = get_redis_pool()
+    return redis.Redis(connection_pool=pool)
 
 
 async def get_story_components():
@@ -352,5 +372,16 @@ async def invalidate_cache(request: InvalidateCacheRequest) -> InvalidateCacheRe
         )
 
 
-# Export router
-__all__ = ["router"]
+async def cleanup_redis_pool():
+    """Cleanup Redis connection pool on shutdown."""
+    global _redis_pool
+
+    if _redis_pool is not None:
+        logger.info("Closing Redis connection pool...")
+        await _redis_pool.disconnect()
+        _redis_pool = None
+        logger.info("Redis connection pool closed")
+
+
+# Export router and cleanup function
+__all__ = ["router", "cleanup_redis_pool"]

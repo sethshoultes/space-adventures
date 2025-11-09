@@ -243,9 +243,16 @@ Generate narrative now:"""
         except Exception as e:
             logger.error(f"LLM generation failed: {e}")
             # Fallback: Use template structure as backup
-            stage = next(s for s in mission_template["stages"] if s["stage_id"] == stage_id)
-            narrative_structure = stage.get("narrative_structure", {})
-            narrative = f"{narrative_structure.get('setup', 'An event occurs.')} {narrative_structure.get('conflict', 'You must decide.')}"
+            stage = next((s for s in mission_template["stages"] if s["stage_id"] == stage_id), None)
+            if stage:
+                narrative_structure = stage.get("narrative_structure", {})
+                setup = narrative_structure.get('setup', 'An event occurs.')
+                conflict = narrative_structure.get('conflict', 'You must decide.')
+                narrative = f"{setup} {conflict}"
+            else:
+                # Ultimate fallback if stage not found
+                logger.error(f"Stage {stage_id} not found in mission template")
+                narrative = "An unexpected event unfolds in your journey. You must decide how to proceed."
 
         # Cache result
         await self.redis.setex(cache_key, self.cache_ttl, narrative)

@@ -8,6 +8,9 @@ extends Node
 const BASE_URL = "http://localhost:17011/api/story"
 
 var _http_request: HTTPRequest
+var _is_available_cached: bool = false
+var _last_availability_check: float = 0.0
+const AVAILABILITY_CHECK_INTERVAL: float = 30.0  # Check every 30 seconds
 
 
 func _ready() -> void:
@@ -16,6 +19,9 @@ func _ready() -> void:
 	_http_request.request_completed.connect(_on_request_completed)
 
 	print("[StoryService] Initialized - connecting to %s" % BASE_URL)
+
+	# Check availability asynchronously on startup
+	_check_availability_async()
 
 
 ## Generate narrative for mission stage
@@ -84,22 +90,42 @@ func invalidate_cache(player_id: String, mission_id: String, player_state: Dicti
 
 ## Check if story service is available
 ##
-## Returns: bool
+## Returns: bool (non-blocking, uses cached value)
 func is_available() -> bool:
 	# Check if ServiceManager exists and AI service is available
 	if has_node("/root/ServiceManager"):
 		return ServiceManager.is_service_available("ai")
 
-	# Fallback: try to ping health endpoint
+	# Periodically refresh cached availability in background
+	var current_time = Time.get_ticks_msec() / 1000.0
+	if current_time - _last_availability_check > AVAILABILITY_CHECK_INTERVAL:
+		_check_availability_async()
+
+	# Return cached value (non-blocking)
+	return _is_available_cached
+
+
+func _check_availability_async() -> void:
+	"""Check service availability asynchronously (non-blocking)"""
+	_last_availability_check = Time.get_ticks_msec() / 1000.0
+
 	var url = "http://localhost:17011/health"
 	var test_request = HTTPRequest.new()
 	add_child(test_request)
+
+	# Make request with short timeout
 	test_request.request(url)
 	var response = await test_request.request_completed
-	test_request.queue_free()
 
 	var status_code = response[1]
-	return status_code == 200
+	_is_available_cached = (status_code == 200)
+
+	test_request.queue_free()
+
+	if _is_available_cached:
+		print("[StoryService] Service is available")
+	else:
+		push_warning("[StoryService] Service not available (status: %d)" % status_code)
 
 
 # HTTP request helpers

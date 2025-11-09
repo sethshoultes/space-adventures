@@ -245,6 +245,10 @@ class MemoryManager:
 
         # Get all consequences
         consequences_json = await self.redis.lrange(key, 0, -1)
+        if not consequences_json:
+            logger.warning(f"No consequences found for player {player_id}")
+            return False
+
         consequences = [json.loads(c) for c in consequences_json]
 
         # Find and mark as resolved
@@ -256,10 +260,12 @@ class MemoryManager:
                 break
 
         if found:
-            # Clear and re-add all consequences
-            await self.redis.delete(key)
+            # Use pipeline for atomic batch operation (more efficient than individual commands)
+            pipe = self.redis.pipeline()
+            pipe.delete(key)
             for consequence in consequences:
-                await self.redis.rpush(key, json.dumps(consequence))
+                pipe.rpush(key, json.dumps(consequence))
+            await pipe.execute()
 
             logger.debug(f"Resolved consequence {consequence_id} for player {player_id}")
         else:
