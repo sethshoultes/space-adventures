@@ -126,13 +126,17 @@ class StoryEngine:
         mission_context = mission_template.get("context", {})
 
         # Build prompt
+        # Extract NPC names (key_npcs is list of dicts with 'name' field)
+        npc_names = [npc.get('name', 'Unknown') for npc in mission_context.get('key_npcs', [])]
+        npc_list = ', '.join(npc_names) if npc_names else 'None'
+
         prompt = f"""You are the Storyteller for Space Adventures, a serious sci-fi game.
 
 MISSION CONTEXT:
 Location: {mission_context.get('location', 'Unknown')}
 Theme: {mission_context.get('theme', 'Unknown')}
 Tone: {mission_context.get('tone', 'Serious sci-fi')}
-Key NPCs: {', '.join(mission_context.get('key_npcs', []))}
+Key NPCs: {npc_list}
 
 NARRATIVE STRUCTURE:
 Setup: {narrative_structure.get('setup', 'Unknown')}
