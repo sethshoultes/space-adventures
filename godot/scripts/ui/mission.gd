@@ -23,6 +23,7 @@ extends Control
 @onready var scene_image: TextureRect = $MainVBox/TopPanels/RightPanels/SceneImagePanel/MarginContainer/VBoxContainer/SceneImage
 @onready var atlas_avatar: TextureRect = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/Header/Avatar
 @onready var atlas_label: Label = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/Header/ATLASLabel
+@onready var agent_selector: OptionButton = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/Header/AgentSelector
 @onready var chat_scroll: ScrollContainer = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/ChatScroll
 @onready var chat_history: VBoxContainer = $MainVBox/TopPanels/RightPanels/ATLASChatPanel/MarginContainer/VBoxContainer/ChatScroll/ChatHistory
 
@@ -40,6 +41,10 @@ var is_first_stage: bool = true  # First stage has no separator
 var scroll_indicator: Button = null  # Manual scroll button indicator
 var conversation_id: String = ""  # AI orchestrator conversation ID
 
+# AI Chat State
+var current_agent: String = "atlas"
+const AGENT_NAMES = ["atlas", "storyteller", "tactical", "companion"]
+
 # Autonomous AI agent timers
 var atlas_timer: Timer = null
 var storyteller_timer: Timer = null
@@ -51,9 +56,15 @@ func _ready() -> void:
 
 	# Initialize AI conversation
 	conversation_id = "mission_" + str(Time.get_ticks_msec())
-	print("Mission: ATLAS conversation ID: %s" % conversation_id)
+	print("Mission: AI conversation ID: %s" % conversation_id)
 
-	# Connect ATLAS input signals
+	# Initialize AI agent selector
+	current_agent = "atlas"
+	agent_selector.selected = 0
+	_update_chat_placeholder()
+
+	# Connect AI chat signals
+	agent_selector.item_selected.connect(_on_agent_selected)
 	atlas_input.text_submitted.connect(_on_atlas_input_submitted)
 	send_button.pressed.connect(_on_atlas_send_pressed)
 
@@ -650,14 +661,47 @@ func _input(event: InputEvent) -> void:
 
 ## ATLAS Chat System
 
-func _add_atlas_message(message: String, is_player: bool = false) -> void:
-	"""Add a message to ATLAS chat history"""
+func _update_chat_placeholder() -> void:
+	"""Update message input placeholder based on selected agent"""
+	match current_agent:
+		"atlas":
+			atlas_input.placeholder_text = "Ask ATLAS about ship systems..."
+		"storyteller":
+			atlas_input.placeholder_text = "Ask Storyteller about missions..."
+		"tactical":
+			atlas_input.placeholder_text = "Ask Tactical for combat advice..."
+		"companion":
+			atlas_input.placeholder_text = "Chat with your Companion..."
+
+func _on_agent_selected(index: int) -> void:
+	"""Handle agent selection changed"""
+	if index >= 0 and index < AGENT_NAMES.size():
+		current_agent = AGENT_NAMES[index]
+		_update_chat_placeholder()
+		print("Mission: Selected agent: %s" % current_agent)
+
+func _get_agent_color(agent_name: String) -> Color:
+	"""Get color for agent messages"""
+	match agent_name:
+		"atlas":
+			return Color(0.678, 0.847, 0.902)  # Light blue #ACD8E6
+		"storyteller":
+			return Color(0.576, 0.439, 0.859)  # Purple #9370DB
+		"tactical":
+			return Color(1.0, 0.42, 0.208)  # Orange/Red #FF6B35
+		"companion":
+			return Color(0.125, 0.698, 0.667)  # Cyan/Teal #20B2AA
+		_:
+			return Color(0.9, 0.9, 1.0, 1.0)  # Default white
+
+func _add_ai_message(message: String, is_player: bool = false, agent_name: String = "atlas") -> void:
+	"""Add a message to AI chat history"""
 
 	var message_container = HBoxContainer.new()
 	message_container.set("theme_override_constants/separation", 8)
 
 	if not is_player:
-		# ATLAS message - show avatar
+		# AI message - show avatar (optional)
 		var avatar_small = TextureRect.new()
 		avatar_small.custom_minimum_size = Vector2(32, 32)
 		avatar_small.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
@@ -676,8 +720,9 @@ func _add_atlas_message(message: String, is_player: bool = false) -> void:
 		message_label.add_theme_color_override("default_color", Color(0.8, 1.0, 0.8, 1.0))
 		message_label.text = "[i]You: %s[/i]" % message
 	else:
-		message_label.add_theme_color_override("default_color", Color(0.9, 0.9, 1.0, 1.0))
-		message_label.text = message
+		var agent_color = _get_agent_color(agent_name)
+		message_label.add_theme_color_override("default_color", agent_color)
+		message_label.text = "[b]%s:[/b] %s" % [agent_name.capitalize(), message]
 
 	message_container.add_child(message_label)
 	chat_history.add_child(message_container)
@@ -685,6 +730,11 @@ func _add_atlas_message(message: String, is_player: bool = false) -> void:
 	# Auto-scroll to bottom
 	await get_tree().process_frame
 	chat_scroll.scroll_vertical = chat_scroll.get_v_scroll_bar().max_value
+
+# Legacy wrapper for backward compatibility
+func _add_atlas_message(message: String, is_player: bool = false) -> void:
+	"""Legacy wrapper - redirects to _add_ai_message with atlas as agent"""
+	_add_ai_message(message, is_player, "atlas")
 
 func _on_atlas_input_submitted(text: String) -> void:
 	"""Handle Enter key in ATLAS input field"""
@@ -698,17 +748,17 @@ func _on_atlas_send_pressed() -> void:
 		_send_atlas_message(text)
 
 func _send_atlas_message(message: String) -> void:
-	"""Send player message to ATLAS and get response"""
+	"""Send player message to selected AI agent and get response"""
 
 	# Add player message to history
-	_add_atlas_message(message, true)
+	_add_ai_message(message, true, current_agent)
 
 	# Clear input
 	atlas_input.text = ""
 
-	# Call AI orchestrator to get ATLAS response
+	# Call AI orchestrator with selected agent
 	var result = await AIService.chat_with_agent(
-		"atlas",
+		current_agent,
 		message,
 		conversation_id,
 		true  # include_functions
@@ -717,21 +767,21 @@ func _send_atlas_message(message: String) -> void:
 	if result.success:
 		var response = result.data.response
 		if response and response != "":
-			_add_atlas_message(response)
+			_add_ai_message(response, false, current_agent)
 
 		# Handle function calls
 		if result.data.has("function_call") and result.data.function_call:
 			var func_name = result.data.function_call.name
 			var func_result = result.data.function_call.result
-			print("ATLAS executed function: %s" % func_name)
+			print("%s executed function: %s" % [current_agent.capitalize(), func_name])
 
 			# Optionally show function execution feedback
 			if func_result.has("message"):
-				_add_atlas_message("[%s]" % func_result.message)
+				_add_ai_message("[%s]" % func_result.message, false, current_agent)
 	else:
 		var error = result.get("error", "Unknown error")
-		_add_atlas_message("Error: %s" % error)
-		print("ATLAS chat error: %s" % error)
+		_add_ai_message("Error: %s" % error, false, current_agent)
+		print("%s chat error: %s" % [current_agent.capitalize(), error])
 
 func _update_status_ticker() -> void:
 	"""Update status ticker with current game state"""
