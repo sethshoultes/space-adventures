@@ -1,0 +1,1398 @@
+{
+  "mission_id": "first_contact_protocol_hybrid",
+  "title": "First Contact Protocol",
+  "type": "story",
+  "location": "Earth Orbit Training Facility",
+  "description": "ATLAS has prepared a training simulation to teach you first contact protocols. Before you leave Earth for the stars, you need to understand the delicate art of meeting new civilizations. This simulation will test your judgment, cultural sensitivity, and decision-making under uncertainty.",
+  "difficulty": 1,
+  "estimated_time": "15-18 min",
+
+  "context": {
+    "location": "Virtual training environment - Earth Orbit Training Facility",
+    "theme": "Cultural sensitivity and diplomatic awareness",
+    "tone": "Serious but educational, Star Trek TNG-inspired thoughtfulness",
+    "era": "Post-Exodus Earth, preparing to venture into space",
+    "key_npcs": [
+      {
+        "id": "atlas",
+        "name": "ATLAS",
+        "role": "Ship AI and training instructor",
+        "personality": "Patient, wise, challenging but supportive",
+        "description": "Holographic AI guiding player through first contact simulation"
+      },
+      {
+        "id": "simulated_aliens",
+        "name": "Unknown Alien Species",
+        "role": "First contact training subjects",
+        "personality": "Varies - patient, curious, cautious",
+        "description": "Simulated alien civilization for training purposes"
+      }
+    ],
+    "mission_background": "ATLAS believes first contact is humanity's greatest challenge. Before player ventures into space, they must learn protocols for meeting alien civilizations. This simulation tests judgment, empathy, and cultural awareness.",
+    "world_state": {
+      "environment": "Virtual simulation aboard training station",
+      "danger_level": "None - simulation, no real harm possible",
+      "time_pressure": "None - educational mission, player sets pace"
+    }
+  },
+
+  "requirements": {
+    "min_level": 1,
+    "required_systems": [],
+    "completed_missions": ["tutorial_first_salvage"]
+  },
+
+  "objectives": [
+    "Complete ATLAS first contact training simulation",
+    "Demonstrate cultural sensitivity and diplomatic awareness",
+    "[OPTIONAL] Achieve perfect score on all protocols"
+  ],
+
+  "stages": [
+    {
+      "stage_id": "training_intro",
+      "title": "Welcome to First Contact Training",
+      "narrative_structure": {
+        "setup": "ATLAS appears in workshop to introduce first contact training simulation",
+        "conflict": "Player must prepare for humanity's greatest challenge: meeting alien life",
+        "prompt": "Describe ATLAS materializing as hologram, explaining the importance of first contact training. Include: 'You may not be the first human to meet alien life, but you must be prepared nonetheless.' Mention simulation will test judgment with no perfect answers, only consequences. Ask if player is ready. Tone: Serious, supportive, slightly ominous. 4-5 sentences.",
+        "include": [
+          "ATLAS's holographic appearance",
+          "Gravity of first contact challenge",
+          "Exodus ships likely found alien worlds",
+          "Simulation tests judgment and character",
+          "No perfect answers, only consequences",
+          "Question: Are you ready?"
+        ],
+        "exclude": [
+          "Technical jargon about simulation technology",
+          "Overly dramatic language",
+          "Combat or danger"
+        ]
+      },
+      "image": "atlas_hologram",
+      "choices": [
+        {
+          "choice_id": "ready_begin",
+          "text": "I'm ready. Begin the simulation.",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "ATLAS approves player's readiness",
+              "key_elements": [
+                "ATLAS nods approvingly",
+                "Reminder: cultural sensitivity, open-mindedness, caution",
+                "Simulation will feel real but cause no actual harm",
+                "Workshop fades away",
+                "Replaced by starship bridge in orbit around unknown moon",
+                "Sensors detect artificial signal"
+              ],
+              "tone": "Transitioning from reality to simulation, sense of immersion",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "initial_contact",
+              "effects": ["simulation_started"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "ask_questions",
+          "text": "What should I expect? What are the protocols?",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "ATLAS provides briefing on first contact protocols",
+              "key_elements": [
+                "Holographic briefing display",
+                "Five principles: 1) Approach peacefully 2) Communicate clearly 3) Respect autonomy 4) Never impose 5) Accept consequences",
+                "Warning: real first contact is never simple",
+                "Cultural misunderstandings, fear, curiosity, aggression all possible",
+                "Job is to navigate uncertainty with wisdom and compassion",
+                "Trust instincts, question assumptions",
+                "Repeat question: Now, are you ready?"
+              ],
+              "tone": "Educational but sobering, preparing player for complexity",
+              "length": "5-6 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "initial_contact",
+              "effects": ["reviewed_protocols"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "initial_contact",
+      "title": "Unknown Signal Detected",
+      "narrative_structure": {
+        "setup": "Simulated ship detects artificial signal from alien moon",
+        "conflict": "First contact moment - how to respond to unknown greeting",
+        "prompt": "Describe sensors detecting structured signal from moon surface: mathematical sequences, repeating rhythms. Science officer reports it appears to be greeting or warning, universal translator attempting decode. Outside viewport, alien moon glows in gas giant's light. This is the moment. First contact. Tone: Wonder, tension, anticipation. 4-5 sentences.",
+        "include": [
+          "Sensor ping with artificial signal",
+          "Mathematical patterns in signal",
+          "Science officer's uncertain analysis",
+          "Universal translator working",
+          "Visual: alien moon and gas giant",
+          "Weight of the moment: first contact"
+        ],
+        "exclude": [
+          "Immediate threat or danger",
+          "Technical specifications of signal",
+          "Describing aliens directly"
+        ]
+      },
+      "image": "alien_moon_signal",
+      "choices": [
+        {
+          "choice_id": "analyze_first",
+          "text": "Analyze the signal thoroughly before responding",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player successfully analyzes signal structure",
+              "key_elements": [
+                "Minutes spent analyzing elegant mathematical patterns",
+                "Prime numbers, fibonacci sequences, periodic table representation",
+                "Universal translator assembles meaning: 'Greetings... peaceful... curious... welcome'",
+                "Signal is invitation",
+                "Embedded coordinates to moon surface location",
+                "They want face-to-face meeting"
+              ],
+              "tone": "Analytical triumph, wonder at elegant communication",
+              "length": "5-6 sentences"
+            },
+            "failure": {
+              "setup": "Signal mathematics beyond player's science skills",
+              "key_elements": [
+                "Attempt to analyze but mathematics too complex",
+                "Universal translator provides rough approximation",
+                "'Greetings... something... something... welcome or warning?'",
+                "Uncertainty remains",
+                "Question: respond blindly or take cautious approach?"
+              ],
+              "tone": "Frustration, uncertainty, need to decide with incomplete information",
+              "length": "3-4 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "signal_decoded",
+              "effects": ["thorough_analysis", "found_coordinates"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "next_stage": "signal_unclear",
+              "effects": ["incomplete_analysis"]
+            }
+          }
+        },
+        {
+          "choice_id": "respond_immediately",
+          "text": "Respond with a friendly greeting signal",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player broadcasts mathematical greeting in return",
+              "key_elements": [
+                "Simple prime number sequence sent",
+                "Representation of ship and peaceful intent",
+                "Alien response immediate and excited",
+                "Signal becomes more complex",
+                "Universal translator picking up fragments: '...understand... curious... meet... coordinates...'",
+                "They heard you, they're responding",
+                "Need to interpret rest of message to know where to meet"
+              ],
+              "tone": "Hopeful, exciting, communication established but incomplete",
+              "length": "5-6 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "signal_unclear",
+              "effects": ["responded_early", "aliens_excited"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "cautious_observation",
+          "text": "Continue observing without revealing our presence",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player chooses passive observation",
+              "key_elements": [
+                "Hours pass maintaining sensor lock",
+                "No response transmitted",
+                "Alien signal repeats, unchanging",
+                "Then suddenly stops",
+                "No change on moon surface, but greeting ceased",
+                "Did they give up? Detect presence and interpret silence as hostility? Or simply patient?",
+                "ATLAS warns: silence can be interpreted many ways, not all positive"
+              ],
+              "tone": "Growing concern, second-guessing decision, ominous",
+              "length": "5-6 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "signal_stopped",
+              "effects": ["remained_silent", "aliens_uncertain"],
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "signal_decoded",
+      "title": "Invitation Received",
+      "narrative_structure": {
+        "setup": "Signal decoded as clear invitation to meet on moon surface",
+        "conflict": "Meeting location could be neutral ground or tactical trap",
+        "prompt": "Describe clear invitation to specific coordinates: valley between mountain ranges, sheltered and defensible. Tactical officer notes: 'If trap, it's good one. Limited escape routes, high ground both sides.' Communications officer counters: 'Or neutral ground—protected from environment, easy to find, symbolic of meeting in middle.' How to proceed? Tone: Careful analysis, strategic thinking. 4-5 sentences.",
+        "include": [
+          "Specific coordinates to valley location",
+          "Science officer displays terrain",
+          "Tactical officer's concerns about defensibility",
+          "Communications officer's alternate interpretation",
+          "Question left open: proceed how?"
+        ],
+        "exclude": [
+          "Immediate decision for player",
+          "Describing aliens",
+          "Combat preparation"
+        ]
+      },
+      "image": "valley_coordinates",
+      "choices": [
+        {
+          "choice_id": "accept_invitation",
+          "text": "Accept the invitation. Land at the coordinates with an open mind.",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 1
+          },
+          "success_chance": "skill_based",
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player lands at coordinates, aliens emerge peacefully",
+              "key_elements": [
+                "Broadcast acceptance, begin descent",
+                "Valley beautiful: purple and silver vegetation, artistic rock formations",
+                "As shuttle lands, aliens emerge from structure blended with rock",
+                "Bipedal, approximately player's height",
+                "No visible weapons",
+                "Approach slowly, deliberately, showing empty hands",
+                "Gesture of peace transcending species"
+              ],
+              "tone": "Wonder, relief, hopeful connection",
+              "emotion": "Cautious optimism",
+              "length": "6-7 sentences"
+            },
+            "failure": {
+              "setup": "Player accepts but nervousness shows",
+              "key_elements": [
+                "Landing awkward, kicking up dust",
+                "Aliens emerge but keep distance",
+                "Diplomatic inexperience evident",
+                "Uncertainty: exit first? Bring gifts? Speak or wait?",
+                "Moment awkward, tense",
+                "Aliens watching carefully"
+              ],
+              "tone": "Uncomfortable, uncertain, lacking confidence",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "face_to_face",
+              "effects": ["peaceful_approach", "trust_established"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "next_stage": "awkward_meeting",
+              "effects": ["diplomatic_uncertainty"]
+            }
+          }
+        },
+        {
+          "choice_id": "suggest_orbit",
+          "text": "Suggest meeting in orbit instead, on neutral ground",
+          "requirements": {},
+          "success_chance": 75,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Aliens agree to orbital meeting compromise",
+              "key_elements": [
+                "Counter-propose orbit meeting aboard ship or neutral space location",
+                "Alien response slow: 'Understand... caution... acceptable'",
+                "They agree",
+                "Hours later, small alien craft docks",
+                "Meet in cargo bay, both sides visible, both in element",
+                "Compromise showing wisdom",
+                "Aliens appreciate thoughtfulness"
+              ],
+              "tone": "Diplomatic success, mutual respect",
+              "length": "5-6 sentences"
+            },
+            "failure": {
+              "setup": "Aliens decline orbital meeting",
+              "key_elements": [
+                "Suggest orbital meeting",
+                "Aliens decline: 'Surface... traditional... important'",
+                "Inadvertently rejected cultural practice",
+                "Invitation stands but unnecessary tension created",
+                "Sometimes caution mistaken for disrespect"
+              ],
+              "tone": "Cultural misstep, mild offense",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "orbital_meeting",
+              "effects": ["suggested_compromise", "mutual_respect"],
+              "xp_bonus": 20
+            },
+            "failure": {
+              "next_stage": "awkward_meeting",
+              "effects": ["cultural_misstep"]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "signal_unclear",
+      "title": "Partial Understanding",
+      "narrative_structure": {
+        "setup": "Alien signal continues but translation incomplete",
+        "conflict": "Must decide how to proceed with imperfect information",
+        "prompt": "Describe ongoing alien signal with only fragments translating. Know they're aware, communicating, but full meaning unclear. Want to meet? Warning away? Scientific exchange or territorial challenge? Communications officer looks for guidance. Every delay could be interpreted as uncertainty—or wisdom. Tone: Uncertainty, pressure to decide. 3-4 sentences.",
+        "include": [
+          "Signal continuing",
+          "Fragmentary translation",
+          "Multiple possible interpretations",
+          "Communications officer awaiting orders",
+          "Time pressure but no clear answer"
+        ],
+        "exclude": [
+          "Clear indication of alien intent",
+          "Immediate danger"
+        ]
+      },
+      "image": "signal_analysis",
+      "choices": [
+        {
+          "choice_id": "request_clarification",
+          "text": "Broadcast a request for clarification in simple terms",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player successfully requests clearer communication",
+              "key_elements": [
+                "Craft careful response: simple images, basic concepts, humble request",
+                "Alien response shifts immediately",
+                "They slow down, simplify, repeat key concepts",
+                "Universal translator locks on: 'Meet... surface... coordinates... peace'",
+                "They're adapting to player's comprehension level",
+                "Sign of intelligence and patience",
+                "Coordinates come through clearly now",
+                "Face-to-face meeting requested"
+              ],
+              "tone": "Relief, successful communication, mutual adaptation",
+              "length": "6-7 sentences"
+            },
+            "failure": {
+              "setup": "Request for clarification confuses aliens",
+              "key_elements": [
+                "Attempt seems to confuse them",
+                "They repeat original message louder and faster",
+                "Not getting through",
+                "ATLAS: 'Sometimes admitting we don't understand is wisest path. But requires humility and skill you haven't mastered.'"
+              ],
+              "tone": "Frustration, communication failure",
+              "length": "3-4 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "signal_decoded",
+              "effects": ["established_communication", "mutual_adaptation"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "next_stage": "communication_breakdown",
+              "effects": ["communication_failure"]
+            }
+          }
+        },
+        {
+          "choice_id": "land_cautiously",
+          "text": "Land on the moon at a safe distance and observe",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player lands at safe distance for observation",
+              "key_elements": [
+                "Land away from signal source",
+                "Scan and observe from safe distance",
+                "Hours pass",
+                "See alien figures in distance watching ship",
+                "No aggressive moves",
+                "They simply wait",
+                "One slowly raises appendage in possible wave",
+                "Giving player space and time to decide",
+                "Ball in player's court"
+              ],
+              "tone": "Patient, peaceful, waiting game",
+              "length": "6-7 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "cautious_contact",
+              "effects": ["landed_safely", "aliens_patient"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "signal_stopped",
+      "title": "Silence",
+      "narrative_structure": {
+        "setup": "Alien signal has ceased after player remained silent",
+        "conflict": "Opportunity may be lost, must decide if recoverable",
+        "prompt": "Describe alien signal stopping. Source still active but broadcasting ceased. Communications officer: 'They detected us. I'm certain. They know we're here, we chose not to respond. From their perspective... might seem hostile. Or uninterested.' ATLAS appears: 'First contact is dialogue. Silence is also message—but rarely positive. You may have lost this opportunity.' Tone: Regret, consequence, lesson learned. 4-5 sentences.",
+        "include": [
+          "Signal ceased",
+          "Source still active but silent",
+          "Communications officer's analysis",
+          "Possible alien interpretations of silence",
+          "ATLAS's warning about lost opportunity"
+        ],
+        "exclude": [
+          "Immediate hostility",
+          "Complete mission failure yet"
+        ]
+      },
+      "image": "silent_moon",
+      "choices": [
+        {
+          "choice_id": "apologize_late",
+          "text": "Broadcast an apology and greeting now, explaining the delay",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "outcome_prompt": {
+            "success": {
+              "setup": "Humble apology recovers first contact",
+              "key_elements": [
+                "Craft message of apology and explanation",
+                "Were cautious, uncertain, learning",
+                "Mean no harm",
+                "Response slow but arrives: 'Understand... caution... acceptable. Meet?'",
+                "Second chance given",
+                "Humility and honesty saved the moment",
+                "First contact back on track",
+                "Relationship begins with stumble rather than smooth start"
+              ],
+              "tone": "Relief, gratitude, humility rewarded",
+              "length": "6-7 sentences"
+            },
+            "failure": {
+              "setup": "Apology comes across as insincere",
+              "key_elements": [
+                "Apology seems insincere or confusing",
+                "Aliens do not respond",
+                "Opportunity lost",
+                "ATLAS: 'Valuable lesson. In first contact, timing and tone matter as much as intent. Cannot reclaim first impression.'"
+              ],
+              "tone": "Failure, lesson learned harshly",
+              "length": "3-4 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "signal_decoded",
+              "effects": ["recovered_from_silence", "humble_approach"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "next_stage": "simulation_failure",
+              "effects": ["first_contact_failed"],
+              "mission_result": "failure"
+            }
+          }
+        },
+        {
+          "choice_id": "accept_failure",
+          "text": "Accept that this opportunity is lost. Learn from the mistake.",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player accepts consequence of caution",
+              "key_elements": [
+                "Accept consequence",
+                "Some opportunities once missed cannot be reclaimed",
+                "ATLAS: 'Mature choice. Not every first contact succeeds. Sometimes we fail, must carry that forward as wisdom.'",
+                "Simulation fades, returning to workshop",
+                "Lesson learned, if painful"
+              ],
+              "tone": "Acceptance, maturity, learning from failure",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "simulation_debrief",
+              "effects": ["accepted_failure", "learned_humility"],
+              "xp_bonus": 20
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "face_to_face",
+      "title": "First Contact",
+      "narrative_structure": {
+        "setup": "Player stands face-to-face with alien civilization",
+        "conflict": "What to share in cultural exchange",
+        "prompt": "Describe aliens: humanoid but distinctly other—skin shimmering like oil on water, large eyes seeing beyond visible spectrum, delicate fingers moving in communication patterns. One steps forward. Through translator, fragments: 'Welcome... peace... learn... together?' Intention clear even if language not. They want cultural exchange. Now real test: what do you share? Tone: Wonder, weight of responsibility. 5-6 sentences.",
+        "include": [
+          "Detailed alien appearance (humanoid but alien)",
+          "Physical characteristics: shimmering skin, large eyes, communicative fingers",
+          "Fragmentary translation showing peaceful intent",
+          "Request for cultural exchange",
+          "Weight of decision: what to share?"
+        ],
+        "exclude": [
+          "Immediate threat",
+          "Perfect translation",
+          "Obvious right answer"
+        ]
+      },
+      "image": "alien_first_contact",
+      "choices": [
+        {
+          "choice_id": "share_culture",
+          "text": "Share information about Earth, humanity, and your mission",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player shares humanity's story openly",
+              "key_elements": [
+                "Tell of Earth, Exodus, humanity's journey through stars",
+                "Speak of hope and loss, rebuilding and rediscovery",
+                "Aliens listen with deep attention",
+                "They share their story in return",
+                "Civilization survived planetary disaster, learned to live underground, emerged to find stars waiting",
+                "Two species separated by light-years, united by desire to understand and be understood",
+                "Exchange is beautiful"
+              ],
+              "tone": "Moving, profound, successful connection",
+              "emotion": "Shared humanity (and alienity)",
+              "length": "6-7 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "successful_contact",
+              "effects": ["cultural_exchange", "mutual_understanding"],
+              "xp_bonus": 35
+            }
+          }
+        },
+        {
+          "choice_id": "ask_questions",
+          "text": "Ask about their civilization before sharing yours",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 1
+          },
+          "success_chance": "skill_based",
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player demonstrates curiosity and respect by listening first",
+              "key_elements": [
+                "Ask about their world, technology, culture",
+                "Aliens pleased by curiosity",
+                "Through translator, describe civilization built on collective memory, artistic expression, careful stewardship",
+                "Live in harmony with environment because nearly destroyed it once",
+                "They learned",
+                "When player shares own story in return, exchange feels balanced",
+                "Listened before speaking",
+                "Aliens appreciate this"
+              ],
+              "tone": "Respectful, balanced, successful exchange",
+              "length": "6-7 sentences"
+            },
+            "failure": {
+              "setup": "Questions too technical, overwhelm aliens",
+              "key_elements": [
+                "Questions too technical, too rapid",
+                "Overwhelm them with scientific curiosity before establishing rapport",
+                "They retreat slightly, uncertain",
+                "Translator conveys confusion: 'Analyze? Study? Not... conversation?'",
+                "Made them feel like specimens rather than people",
+                "First contact requires empathy as much as curiosity"
+              ],
+              "tone": "Awkward, overly analytical, missed connection",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "successful_contact",
+              "effects": ["respectful_exchange", "earned_trust"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "next_stage": "awkward_meeting",
+              "effects": ["overly_analytical"]
+            }
+          }
+        },
+        {
+          "choice_id": "cautious_exchange",
+          "text": "Share carefully, avoiding sensitive information about Earth's location or technology",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Both sides share culture while protecting strategic information",
+              "key_elements": [
+                "Share cultural information: music, art, philosophy",
+                "Carefully avoid strategic details like Earth coordinates or technology level",
+                "Aliens notice caution and mirror it",
+                "Share their culture but not their science",
+                "Careful dance, both sides protecting themselves while reaching out",
+                "Trust will take time",
+                "Foundation laid without making either side vulnerable",
+                "Sometimes wisdom is knowing what not to share"
+              ],
+              "tone": "Strategic, careful, measured success",
+              "length": "6-7 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "cautious_success",
+              "effects": ["mutual_caution", "protected_information"],
+              "xp_bonus": 30
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "awkward_meeting",
+      "title": "Cultural Missteps",
+      "narrative_structure": {
+        "setup": "Meeting not going smoothly due to misunderstandings",
+        "conflict": "Must salvage tense situation or accept failure",
+        "prompt": "Describe meeting tension. Misunderstandings created uncertainty. Aliens seem concerned. Universal translator struggling with nuance. One alien makes gesture—frustration? Goodbye? Request for patience? Not sure. This is reality of first contact: imperfect communication, cultural confusion, risk of offense without intent. How to salvage this? Tone: Uncomfortable, tense, challenging. 4-5 sentences.",
+        "include": [
+          "Tension in the air",
+          "Misunderstandings evident",
+          "Aliens uncertain or concerned",
+          "Translator failing on nuance",
+          "Ambiguous gesture from alien",
+          "Reality of imperfect communication"
+        ],
+        "exclude": [
+          "Hostility",
+          "Immediate danger",
+          "Clear solutions"
+        ]
+      },
+      "image": "tense_meeting",
+      "choices": [
+        {
+          "choice_id": "acknowledge_mistakes",
+          "text": "Openly acknowledge the awkwardness and request patience",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "outcome_prompt": {
+            "success": {
+              "setup": "Honesty and humility save the moment",
+              "key_elements": [
+                "Stop, take breath",
+                "Through translator convey: 'This is difficult. I am making mistakes. I ask for patience and forgiveness. I want to understand.'",
+                "Effect immediate, tension eases",
+                "One alien makes sound translator interprets as laughter",
+                "They respond: 'Yes. Difficult. We... also... mistakes. Together... learn?'",
+                "Honesty and humility saved moment",
+                "First contact doesn't have to be perfect—just sincere"
+              ],
+              "tone": "Relief, warmth, human connection",
+              "emotion": "Vulnerability rewarded",
+              "length": "6-7 sentences"
+            },
+            "failure": {
+              "setup": "Acknowledgment comes across as insincere",
+              "key_elements": [
+                "Attempt to acknowledge awkwardness seems insincere or confusing",
+                "Aliens retreat further",
+                "Meeting ends without hostility but without connection",
+                "ATLAS: 'Sometimes good intentions are not enough. Skill, practice, genuine empathy required.'"
+              ],
+              "tone": "Failure, lesson about sincerity",
+              "length": "3-4 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "recovered_contact",
+              "effects": ["acknowledged_mistakes", "built_rapport"],
+              "xp_bonus": 35
+            },
+            "failure": {
+              "next_stage": "simulation_debrief",
+              "effects": ["contact_failed_peacefully"]
+            }
+          }
+        },
+        {
+          "choice_id": "end_meeting",
+          "text": "Politely end the meeting before things get worse",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player chooses strategic withdrawal",
+              "key_elements": [
+                "Make gesture of polite withdrawal",
+                "Begin returning to shuttle",
+                "Aliens do not stop you",
+                "Meeting ends without incident but without connection",
+                "As you lift off, see them watching departure",
+                "No hostility, but no friendship either",
+                "ATLAS: 'Not every first contact succeeds. But you departed peacefully, that is something. Next time, you'll know better.'"
+              ],
+              "tone": "Neutral outcome, lesson learned",
+              "length": "5-6 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "simulation_debrief",
+              "effects": ["peaceful_withdrawal", "lesson_learned"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "orbital_meeting",
+      "title": "Meeting in the Stars",
+      "narrative_structure": {
+        "setup": "Aliens dock with player's ship for orbital meeting",
+        "conflict": "How to approach this meeting - formal or casual?",
+        "prompt": "Describe alien craft: unlike human design—organic curves, pulsing lights, technology blurring line between machine and art. Aliens enter cargo bay wearing environmental suits or formal attire (not certain which). Body language clear: cautious respect. Same emotion player feels. Two species meeting in void between worlds, both taking risk. Tone: Mutual respect, careful optimism. 4-5 sentences.",
+        "include": [
+          "Alien craft's unique design (organic, artistic)",
+          "Aliens in suits (environmental or formal)",
+          "Body language of cautious respect",
+          "Mutual feeling of taking a risk",
+          "Meeting in space between worlds"
+        ],
+        "exclude": [
+          "Immediate familiarity",
+          "Technical specifications",
+          "Threat"
+        ]
+      },
+      "image": "alien_ship_docking",
+      "choices": [
+        {
+          "choice_id": "formal_greeting",
+          "text": "Offer a formal diplomatic greeting following protocol",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 1
+          },
+          "success_chance": "skill_based",
+          "outcome_prompt": {
+            "success": {
+              "setup": "Formal protocol appreciated by aliens",
+              "key_elements": [
+                "Follow first contact protocols: formal greeting, statement of peaceful intent, offer of cultural exchange",
+                "Aliens seem to appreciate structure",
+                "Respond in kind with formal greeting",
+                "Series of harmonious tones",
+                "Translator interprets as names, titles, expressions of goodwill",
+                "Meeting proceeds with dignity and mutual respect",
+                "Formality can be universal language"
+              ],
+              "tone": "Dignified, successful, structured",
+              "length": "6-7 sentences"
+            },
+            "failure": {
+              "setup": "Formality creates barrier",
+              "key_elements": [
+                "Formal greeting too stiff, too rehearsed",
+                "Aliens seem confused by formality",
+                "Perhaps their culture less hierarchical, more casual",
+                "Created unnecessary barrier",
+                "They respond politely but warmth absent"
+              ],
+              "tone": "Stiff, awkward, overly formal",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "successful_contact",
+              "effects": ["formal_protocol_successful", "diplomatic_success"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "next_stage": "awkward_meeting",
+              "effects": ["overly_formal"]
+            }
+          }
+        },
+        {
+          "choice_id": "casual_approach",
+          "text": "Approach casually, emphasizing common ground as explorers",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Casual approach creates natural connection",
+              "key_elements": [
+                "Approach as one explorer to another",
+                "No grand speeches, just genuine curiosity and respect",
+                "Show them your ship, star charts, mission",
+                "They seem to relax",
+                "Share their own journey in return",
+                "Two species both reaching for stars, both curious about what lies beyond",
+                "Connection immediate and real",
+                "Sometimes best diplomacy is simply being human"
+              ],
+              "tone": "Warm, genuine, successful connection",
+              "length": "6-7 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "successful_contact",
+              "effects": ["casual_connection", "natural_rapport"],
+              "xp_bonus": 35
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "cautious_contact",
+      "title": "The Waiting Game",
+      "narrative_structure": {
+        "setup": "Both sides maintaining cautious distance",
+        "conflict": "Alien approaches halfway—meet them or maintain position?",
+        "prompt": "Describe standoff. Player landed at safe distance, aliens maintained theirs. Hours pass, both sides cautious and curious. Then one alien slowly walks toward ship, hands visible and empty. Stops halfway between positions and waits. Clear invitation: meet in the middle. Ball in player's court. Do you trust this gesture? Tone: Tension, trust test, pivotal moment. 4-5 sentences.",
+        "include": [
+          "Hours of cautious distance",
+          "Alien walking slowly forward",
+          "Hands visible and empty",
+          "Stops halfway",
+          "Clear invitation to meet in middle",
+          "Question of trust"
+        ],
+        "exclude": [
+          "Immediate threat",
+          "Rushed decision"
+        ]
+      },
+      "image": "alien_approaching",
+      "choices": [
+        {
+          "choice_id": "meet_halfway",
+          "text": "Walk out to meet them halfway",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player chooses mutual trust",
+              "key_elements": [
+                "Exit ship, walk toward alien figure",
+                "Match their slow, deliberate pace",
+                "Meet in middle on alien ground beneath alien stars",
+                "Moment profound",
+                "Neither speaks first—translator still learning",
+                "Both understand gesture",
+                "Two beings from different worlds, choosing trust over fear",
+                "Alien extends hand-like appendage",
+                "You take it",
+                "First contact"
+              ],
+              "tone": "Profound, moving, iconic moment",
+              "emotion": "Trust, wonder, connection",
+              "length": "7-8 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "successful_contact",
+              "effects": ["mutual_trust", "iconic_moment"],
+              "xp_bonus": 40
+            }
+          }
+        },
+        {
+          "choice_id": "signal_invitation",
+          "text": "Signal them to come closer to your ship instead",
+          "requirements": {},
+          "success_chance": 60,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Alien accepts but notes imbalance",
+              "key_elements": [
+                "Signal for them to approach ship",
+                "They pause, consider",
+                "Slowly continue forward",
+                "Willing to come to you",
+                "You sense they noticed you didn't meet halfway",
+                "Meeting proceeds",
+                "Power dynamic shifted slightly",
+                "Maintained control but perhaps at cost of equal partnership"
+              ],
+              "tone": "Successful but slightly imbalanced",
+              "length": "6-7 sentences"
+            },
+            "failure": {
+              "setup": "Alien refuses, standoff continues",
+              "key_elements": [
+                "Signal for them to approach",
+                "They don't move",
+                "They wait",
+                "Message clear: they offered to meet as equals",
+                "If you want contact, must show same courage they did",
+                "Standoff continues"
+              ],
+              "tone": "Standoff, trust issue",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "face_to_face",
+              "effects": ["maintained_control", "slight_imbalance"],
+              "xp_bonus": 20
+            },
+            "failure": {
+              "next_stage": "communication_breakdown",
+              "effects": ["trust_issue"]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "successful_contact",
+      "title": "Understanding Achieved",
+      "narrative_structure": {
+        "setup": "First contact succeeded, foundation for future relations established",
+        "conflict": "None - success achieved",
+        "prompt": "Describe successful first contact. Communicated, shared culture, established foundation for future relations. Aliens express gratitude through translator: 'Hope... future... together... stars.' Before departure, offer gift—small device, purpose unclear but meaning crystal clear: token of friendship. You offer in return: data chip with Earth's music, art, message of peace. When they leave, you feel changed. You've represented humanity well. Tone: Triumphant, meaningful, hopeful. 5-6 sentences.",
+        "include": [
+          "Success achieved",
+          "Alien gratitude",
+          "Gift exchange (alien device for data chip)",
+          "Earth's music, art, peace message",
+          "Player feels changed",
+          "Represented humanity well"
+        ],
+        "exclude": [
+          "Conflict",
+          "Uncertainty"
+        ]
+      },
+      "image": "gift_exchange",
+      "choices": [
+        {
+          "choice_id": "continue_simulation",
+          "text": "Ask ATLAS about the next stage of the simulation",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "ATLAS reveals simulation complete",
+              "key_elements": [
+                "ATLAS appears, proud expression",
+                "'There is no next stage. This simulation was never about perfect execution—about testing character, judgment, capacity for empathy.'",
+                "'You succeeded. Not perfectly, but genuinely. That is what matters in first contact.'",
+                "Simulation fades, returning to workshop",
+                "Feel ready for what lies ahead"
+              ],
+              "tone": "Closure, accomplishment, readiness",
+              "length": "5-6 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "simulation_complete",
+              "mission_result": "success",
+              "xp_bonus": 50
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "recovered_contact",
+      "title": "Learning Together",
+      "narrative_structure": {
+        "setup": "Awkwardness passed, both sides working through difficulties together",
+        "conflict": "None - recovery achieved",
+        "prompt": "Describe awkwardness passing. Both sides acknowledged difficulty of cross-species communication, chose to work through together. Aliens share fragments of culture: bioluminescent art, harmonic communication patterns, deep respect for ecological balance. You share humanity's journey, triumphs and failures, hopes for future. By end, neither side fully understands other—but both sides respect each other. That's enough for first meeting. Tone: Warm, respectful, hopeful. 5-6 sentences.",
+        "include": [
+          "Awkwardness overcome",
+          "Mutual commitment to work through difficulties",
+          "Alien culture shared (bioluminescent art, harmonic communication, ecology)",
+          "Humanity's journey shared",
+          "Imperfect understanding but mutual respect",
+          "Enough for first meeting"
+        ],
+        "exclude": [
+          "Perfect understanding",
+          "Tension"
+        ]
+      },
+      "image": "cultural_exchange",
+      "choices": [
+        {
+          "choice_id": "conclude_positively",
+          "text": "Conclude the meeting with mutual goodwill",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Meeting concludes with hope",
+              "key_elements": [
+                "Exchange gestures of respect and goodwill",
+                "Meeting ends not with perfect understanding but with hope",
+                "ATLAS: 'Well done. First contact rarely smooth, but can still be successful. You demonstrated adaptability, humility, genuine respect. Those qualities will serve you well among stars.'",
+                "Simulation fades"
+              ],
+              "tone": "Satisfied, hopeful, accomplished",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "simulation_complete",
+              "mission_result": "success",
+              "xp_bonus": 45
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "cautious_success",
+      "title": "Careful Foundations",
+      "narrative_structure": {
+        "setup": "Meeting ended with culture shared but strategic caution maintained",
+        "conflict": "None - careful success achieved",
+        "prompt": "Describe meeting ending with both sides having shared culture without vulnerability. Trust will take time, but avoided potentially dangerous disclosures while establishing contact. Aliens seem to appreciate caution—perhaps they too learned to be careful among stars. Before departing, transmit coordinates to neutral meeting point for future contact. Door is open if you choose to walk through later. Tone: Strategic satisfaction, patient hope. 4-5 sentences.",
+        "include": [
+          "Culture shared, strategic info protected",
+          "Mutual appreciation of caution",
+          "Coordinates for future meeting shared",
+          "Door open for future",
+          "Trust will build over time"
+        ],
+        "exclude": [
+          "Immediate deep friendship",
+          "Regret about caution"
+        ]
+      },
+      "image": "departing_aliens",
+      "choices": [
+        {
+          "choice_id": "accept_coordinates",
+          "text": "Accept the coordinates and express hope for future meetings",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "ATLAS approves strategic approach",
+              "key_elements": [
+                "Accept coordinates, convey optimism for future contact",
+                "Aliens depart peacefully",
+                "ATLAS: 'Careful, measured success. Not all first contacts require immediate deep friendship. Sometimes, establishing communication and building trust over time is wisest path. You showed strategic thinking alongside diplomatic skill.'",
+                "Simulation ends"
+              ],
+              "tone": "Strategic satisfaction, wisdom",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "simulation_complete",
+              "mission_result": "success",
+              "xp_bonus": 40
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "communication_breakdown",
+      "title": "Lost Opportunity",
+      "narrative_structure": {
+        "setup": "Communication breakdown, first contact failed to establish connection",
+        "conflict": "None - failure state reached",
+        "prompt": "Describe communication breakdown. Whether through misunderstanding, mistrust, or incompatible approaches, first contact failed to establish meaningful connection. Aliens withdraw to settlement. Ship remains in orbit. No hostility, but no friendship either. ATLAS: 'First contact does not always succeed. This simulation taught valuable lesson: good intentions are not enough. Skill, patience, cultural sensitivity essential. Learn from this.' Tone: Sobering, educational failure. 4-5 sentences.",
+        "include": [
+          "Communication broken down",
+          "Reasons: misunderstanding, mistrust, or incompatibility",
+          "Aliens withdraw",
+          "No hostility but no friendship",
+          "ATLAS's lesson about skills needed"
+        ],
+        "exclude": [
+          "Combat",
+          "Complete disaster",
+          "Player blame"
+        ]
+      },
+      "image": "failed_contact",
+      "choices": [
+        {
+          "choice_id": "reflect_on_failure",
+          "text": "Reflect on what went wrong and commit to improving",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player learns from failure",
+              "key_elements": [
+                "Analyze every decision, every moment where communication faltered",
+                "ATLAS helps understand cultural and diplomatic principles missed",
+                "'Failure is teacher if you're willing to learn'",
+                "Leave simulation wiser if humbled",
+                "Next time, will be better prepared"
+              ],
+              "tone": "Reflective, learning from failure, growth",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "simulation_debrief",
+              "effects": ["learned_from_failure"],
+              "xp_bonus": 25
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "simulation_debrief",
+      "title": "Lessons Learned",
+      "narrative_structure": {
+        "setup": "Simulation ends, ATLAS provides analysis",
+        "conflict": "None - educational debrief",
+        "prompt": "Describe simulation ending. ATLAS appears in workshop, holographic interface showing detailed analysis of choices. 'First contact is humanity's greatest challenge and opportunity. Today, you learned it requires more than technology—requires wisdom, empathy, humility. You did not achieve perfect success, but demonstrated growth. That is what matters.' ATLAS provides data module on communications protocols as reward for completing training. Tone: Educational, supportive, forward-looking. 4-5 sentences.",
+        "include": [
+          "Simulation ends",
+          "ATLAS appears with analysis",
+          "Lesson: requires wisdom, empathy, humility beyond technology",
+          "Growth demonstrated even without perfect success",
+          "Communications protocols data module reward"
+        ],
+        "exclude": [
+          "Harsh criticism",
+          "Complete failure characterization"
+        ]
+      },
+      "image": "atlas_debrief",
+      "choices": [
+        {
+          "choice_id": "accept_lesson",
+          "text": "Thank ATLAS and accept the communications training data",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player accepts wisdom and reward",
+              "key_elements": [
+                "Accept data module and ATLAS's wisdom",
+                "ATLAS: 'When you venture into space, remember: every species has own history, fears, hopes. Approach them with same respect you'd want for humanity. That is essence of first contact protocol.'",
+                "Install basic communications array data into ship's database",
+                "One step closer to stars"
+              ],
+              "tone": "Grateful, wise, prepared",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 30
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "simulation_failure",
+      "title": "Training Incomplete",
+      "narrative_structure": {
+        "setup": "Simulation ended in failure, skills insufficient",
+        "conflict": "None - failure state",
+        "prompt": "Describe simulation ending in failure. ATLAS appears, expression neutral. 'First contact requires preparation. Today's simulation revealed gaps in diplomatic skills and cultural awareness. This is why we train. I recommend gaining more experience in diplomacy and science before attempting again. Stakes in real first contact too high for unprepared captains.' Lesson harsh but necessary. Tone: Serious, educational, recommending improvement. 3-4 sentences.",
+        "include": [
+          "Simulation failure",
+          "ATLAS neutral expression",
+          "Gaps in skills revealed",
+          "Recommendation to gain experience before retry",
+          "Stakes too high for unprepared captains"
+        ],
+        "exclude": [
+          "Anger or disappointment",
+          "Permanent failure"
+        ]
+      },
+      "image": "simulation_failed",
+      "choices": [
+        {
+          "choice_id": "try_again_later",
+          "text": "Accept the failure and plan to retry with better skills",
+          "requirements": {},
+          "success_chance": 100,
+          "outcome_prompt": {
+            "success": {
+              "setup": "Player accepts need for preparation",
+              "key_elements": [
+                "Accept ATLAS's assessment",
+                "Some challenges require preparation",
+                "Will return to training when ready—when diplomacy and science skills improved",
+                "For now, have other missions to complete, other ways to grow",
+                "Stars can wait"
+              ],
+              "tone": "Accepting, patient, determined to improve",
+              "length": "4-5 sentences"
+            }
+          },
+          "consequences": {
+            "success": {
+              "next_stage": "mission_fail",
+              "mission_result": "failure"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "stage_id": "mission_complete",
+      "title": "Protocol Certified",
+      "narrative_structure": {
+        "setup": "Training complete, player certified",
+        "prompt": "ATLAS certifies completion of first contact protocol training. 'You are ready. When you meet alien civilizations—and you will—remember these lessons. Approach with humility, communicate with care, always respect autonomy. Future of human-alien relations may depend on captains like you.' Training module complete. One step closer to leaving Earth, exploring infinite possibilities among stars. Tone: Accomplished, certified, ready. 3-4 sentences.",
+        "include": [
+          "ATLAS certification",
+          "Reminder of lessons",
+          "Future may depend on captains like player",
+          "Ready for stars"
+        ]
+      },
+      "image": "certification_complete",
+      "choices": []
+    },
+
+    {
+      "stage_id": "mission_fail",
+      "title": "Training Failed",
+      "narrative_structure": {
+        "setup": "Training failed, not yet ready",
+        "prompt": "Have not passed first contact protocol training. ATLAS recommends additional preparation before attempting again. Galaxy vast and dangerous. Unprepared captains put themselves—and humanity's reputation—at risk. Tone: Educational failure. 2-3 sentences."
+      },
+      "image": "training_failed",
+      "choices": []
+    }
+  ],
+
+  "rewards": {
+    "xp": 100,
+    "credits": 200,
+    "items": [
+      {"part_id": "communications_basic_array_l1_common", "quantity": 1}
+    ],
+    "discovered_parts": [
+      "communications_basic_array_l1_common"
+    ],
+    "unlocks": [
+      "mission_second_story"
+    ]
+  },
+
+  "failure_consequences": {
+    "xp": 50,
+    "effects": ["first_contact_training_failed", "recommend_skill_improvement"]
+  },
+
+  "generation_metadata": {
+    "schema_version": "hybrid_1.0",
+    "narrative_style": "star_trek_tng_inspired",
+    "player_agency": "high",
+    "branching_factor": "high",
+    "approximate_playtime_minutes": 18,
+    "key_themes": ["cultural_sensitivity", "first_contact", "diplomacy", "consequences_matter", "ethical_dilemmas"],
+    "emotional_arc": "preparation → challenge → learning (success or failure)",
+    "notes": "Training simulation demonstrating first contact protocols. Highly branching with skill-based outcomes. Multiple paths to success and failure. Emphasizes that not all first contacts succeed but all teach lessons."
+  }
+}
