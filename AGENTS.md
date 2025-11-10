@@ -1,5 +1,10 @@
 # Repository Guidelines
 
+## Agent-Specific Instructions
+- Start with `CLAUDE.md` (repo root) for detailed agent workflows, prompt discipline, safety rules, and decision-making conventions. Treat it as the source of truth.
+- Service-specific guides: see `python/CLAUDE.md` for backend agent patterns and `godot/CLAUDE.md` for client/UI agent guidance.
+- Follow the Definition of Done and review practices described in `CLAUDE.md` when proposing changes or generating content.
+
 ## Project Structure & Module Organization
 - `python/ai-service/`: FastAPI service for missions, dialogue, story; code in `src/`, tests in `tests/`.
 - `python/gateway/`: FastAPI API gateway; code in `src/`, tests in `tests/`.
@@ -39,8 +44,3 @@
 - Copy `.env.example` → `.env` per service; never commit secrets.
 - Prefer local models via Ollama during dev; set `AI_PROVIDER_*` vars accordingly.
 - Validate health at `http://localhost:17010/health` (gateway) and `:17011/health` (AI).
-
-## Agent-Specific Instructions
-- Start with `CLAUDE.md` (repo root) for detailed agent workflows, prompt discipline, safety rules, and decision-making conventions. Treat it as the source of truth.
-- Service-specific guides: see `python/CLAUDE.md` for backend agent patterns and `godot/CLAUDE.md` for client/UI agent guidance.
-- Follow the Definition of Done and review practices described in `CLAUDE.md` when proposing changes or generating content.
