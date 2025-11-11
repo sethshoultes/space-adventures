@@ -23,17 +23,18 @@
 
 ## Project Status
 
-**Current Milestone:** Milestone 1 - Proof of Concept (20% complete)
-**Current Task:** Implement Hull system (Level 0→1)
-**Next Phase:** Continue Milestone 1 implementation
+**Current Milestone:** Milestone 1 - Proof of Concept (92% complete)
+**Current Task:** Testing phase - Full game playthrough validation
+**Next Phase:** Milestone 1 completion → Milestone 2 planning
 
 **Foundation Complete:**
-- ✅ Microservices architecture (Gateway, AI Service, Redis)
-- ✅ Godot foundation (5 autoload singletons)
-- ✅ Comprehensive documentation (32+ files)
-- ✅ AI-agent workflow established
+- ✅ Microservices architecture (Gateway, AI Service, Whisper, Redis)
+- ✅ Godot foundation (10 autoload singletons, 3,600+ lines)
+- ✅ Comprehensive documentation (70+ files organized)
+- ✅ AI-agent workflow established (STATUS, ROADMAP, AI-AGENT-GUIDE)
+- ✅ Advanced features (Magentic UI, Story Engine, Hybrid Economy)
 
-**Ready for:** Game implementation (systems, missions, UI)
+**Ready for:** Final testing and Milestone 1 validation
 
 ## 🚀 IMPORTANT: Start Here for Development
 
@@ -113,15 +114,21 @@ GODOT (Game Logic)          PYTHON (AI Service)
                     REST API
 ```
 
-**Communication:** Godot makes HTTP requests to Python service at `http://localhost:8000/api/*`
+**Communication:** Godot → Gateway (17010) with automatic fallback to direct services (17011-17014)
 
 ### Key Singletons (Autoload in Godot)
 
-When implementing, these are the core autoload scripts:
-- `GameState`: Global game state (player, ship, inventory, progress)
-- `SaveManager`: Save/load to JSON files in `godot/saves/`
-- `AIService`: HTTP client for AI content generation
-- `EventBus`: Decoupled event system
+When implementing, these are the 10 core autoload scripts:
+- `ServiceManager`: HTTP client, health checks, gateway fallback routing
+- `GameState`: Global game state (player, ship, inventory, progress, economy)
+- `SaveManager`: Save/load to JSON files (5 slots + autosave)
+- `EventBus`: Decoupled event system (55+ signals)
+- `AIService`: AI content generation client (legacy)
+- `StoryService`: Dynamic story engine client (Memory Manager, World State)
+- `MissionManager`: Mission flow, rewards, progression
+- `AIPersonalityManager`: Multi-AI personality system (4 personalities)
+- `AdaptiveLayoutManager`: Context-aware UI layout calculations
+- `PartRegistry`: Data-driven parts/systems/economy (720+ lines)
 
 ### Data Flow
 
@@ -395,58 +402,116 @@ All systems have levels 0-5. MVP implements levels 0-3.
 
 ## Development Workflow
 
-### Week 1: Foundation
-- Create Godot project structure
-- Implement GameState and SaveManager
-- Set up Python FastAPI skeleton
-- Test Godot ↔ Python communication
+**This project uses a milestone-based approach, not timeline-based development.**
 
-### Week 2: Ship Systems
-- Implement all 10 ship system classes
-- Create workshop UI
-- Implement inventory system
+### Current Development Process
 
-### Week 3: Mission System
-- Build mission framework
-- Create mission UI (select, play, complete)
-- Write first 5 scripted missions
+1. **Check Project Status**
+   - Read `/STATUS.md` for current task and progress (updated every session)
+   - Check `/ROADMAP.md` for milestone checklist items
+   - Review `/AI-AGENT-GUIDE.md` for development authority levels
+   - Read relevant directory `CLAUDE.md` for context
 
-### Week 4: AI Integration
-- Implement Python AI service
-- Create prompt templates
-- Test mission generation
-- Add caching
+2. **Implement Features**
+   - Work through ROADMAP.md checklist items in order
+   - Follow patterns established in existing code
+   - Make autonomous decisions within authority level
+   - Document major decisions in `/DECISIONS.md`
+   - Update STATUS.md as you progress
 
-### Week 5: Content & Polish
-- Write remaining scripted missions
-- Implement remaining systems
-- Visual polish
-- Tutorial mission
+3. **Test & Document**
+   - Test implementation manually in Godot
+   - Update relevant documentation files
+   - Commit with detailed messages explaining what/why
+   - Mark checklist items complete in ROADMAP.md
+   - Document learnings in `/JOURNAL.md`
 
-### Week 6: Testing & Finalization
-- Full playthrough testing
-- Bug fixes
-- Balance tuning
-- Documentation
+### Milestone-Based Development
+
+**Milestone 1: Proof of Concept** (Current - 92% complete)
+- ✅ Foundation: Microservices architecture (Gateway, AI Service, Whisper, Redis)
+- ✅ Godot Singletons: 10 autoloads (3,600+ lines of GDScript)
+- ✅ Core Systems: Hull, Power Core, Propulsion (Level 0-5)
+- ✅ Content: Tutorial mission "The Inheritance" with ATLAS AI
+- ✅ UI: Workshop, Mission system with scrolling log, Main menu
+- ✅ Economy: Hybrid credits + parts system with PartRegistry
+- ✅ Advanced: Magentic UI, Dynamic Story Engine, Mission Pool
+- ⏳ Testing: Full game playthrough validation
+
+**Milestone 2: Expand Content** (Future - after M1 validation)
+- Add more systems (Warp, Life Support)
+- Add more missions (salvage, exploration, story)
+- Expand AI personalities
+- UI improvements
+
+**Milestone 3: Share It** (Future - public release)
+- All 10 systems complete
+- 10+ missions
+- Polish and deployment preparation
+
+See `/ROADMAP.md` for complete milestone checklists and `/STATUS.md` for current status.
+
+### Key Development Files
+
+- **/STATUS.md** - Current task, progress, blockers (read every session)
+- **/ROADMAP.md** - Milestone checklists (your task list)
+- **/AI-AGENT-GUIDE.md** - Decision authority levels, workflow patterns
+- **/DECISIONS.md** - Record of major decisions (don't re-decide things)
+- **/JOURNAL.md** - Learning documentation (document discoveries)
+- **/docs/CLAUDE.md** - Master documentation context
+- **Directory CLAUDE.md files** - Context for each directory
+
+### For AI Agents
+
+**Start each session:**
+1. Read STATUS.md
+2. Check ROADMAP.md for current checklist item
+3. Read relevant directory CLAUDE.md for context
+4. Implement → Test → Update STATUS → Commit
+5. Check off ROADMAP.md items as complete
+
+**Development Philosophy:**
+- **Milestones not timelines** - Build when motivated, no deadlines
+- **Progress over perfection** - Working code beats perfect plans
+- **Learning over shipping** - This is a hobby/learning project
+- **Test as you go** - Manual testing after each feature
+- **Document decisions** - Future you will thank present you
+
+**This is a hobby project:** Take breaks, pivot if not fun, celebrate progress.
 
 ## Testing Strategy
 
-**Python:**
-- Unit tests for all API endpoints
-- Test AI prompt generation
-- Test cache system
-- Mock LLM responses for tests
+**For hobby project: Manual testing is primary approach**
 
-**Godot:**
-- Manual playtesting
-- Test all mission paths
-- Test save/load at various states
-- Try to break progression
+**Python Services:**
+- Test API endpoints via curl/Postman
+- Verify AI prompt generation
+- Test Redis cache system
+- Check service health endpoints
+- Test gateway fallback routing
 
-**Integration:**
-- Test Godot → Python → Godot flow
-- Test with both OpenAI and Ollama
-- Test error handling (AI service down, etc.)
+**Godot Manual Testing:**
+- Launch game and navigate all screens
+- Test complete mission playthrough
+- Test all mission paths and choices
+- Test save/load at various game states
+- Test upgrade system with economy
+- Test inventory management (weight limits, capacity)
+- Test skill point allocation
+- Verify Magentic UI layout (AI panel side-by-side)
+- Test manual scroll pacing (click/wheel/keyboard)
+- Test ATLAS AI interjections
+- Try to break progression (edge cases)
+
+**Integration Testing:**
+- Test Godot → Gateway → AI Service flow
+- Test automatic service fallback
+- Test error handling (services down, network errors)
+- Test save file migration (old saves load correctly)
+- Test complete game loop: Workshop → Mission → Rewards → Workshop
+
+**Current Testing Focus (Milestone 1):**
+See ROADMAP.md Integration Testing section for complete checklist
 
 ## Software Design Principles
 
@@ -842,53 +907,91 @@ EventBus.emit_signal("mission_completed", mission_id)
 - Consequences matter
 - Character-driven moments
 
-## File Structure That Must Exist
+## File Structure (Current Implementation)
 
-When implementation begins, create this structure:
+**Actual structure as implemented:**
 
 ```
 godot/
 ├── project.godot              # Godot project config
 ├── scenes/
-│   ├── main_menu.tscn
-│   ├── workshop.tscn          # Phase 1 hub
-│   ├── mission_select.tscn
-│   ├── mission_play.tscn
-│   └── ship_schematic.tscn
+│   ├── main_menu.tscn         # DALL-E background with framed panel
+│   ├── workshop.tscn          # Phase 1 hub with economy UI
+│   ├── mission_selection.tscn # Mission list with Random Mission button
+│   ├── mission.tscn           # Scrolling narrative log + Magentic UI
+│   └── components/
+│       └── ai_panel.tscn      # Reusable AI interjection widget
 ├── scripts/
-│   ├── autoload/              # Singleton scripts
-│   │   ├── game_state.gd
-│   │   ├── save_manager.gd
-│   │   ├── ai_service.gd
-│   │   └── event_bus.gd
+│   ├── autoload/              # 10 Singleton scripts (3,600+ lines)
+│   │   ├── service_manager.gd       # HTTP client, health checks
+│   │   ├── game_state.gd            # Player, ship, inventory, economy
+│   │   ├── save_manager.gd          # 5 slots + autosave
+│   │   ├── event_bus.gd             # 55+ signals
+│   │   ├── ai_service.gd            # Legacy AI client
+│   │   ├── story_service.gd         # Story Engine client
+│   │   ├── mission_manager.gd       # Mission flow, rewards
+│   │   ├── ai_personality_manager.gd # 4 AI personalities
+│   │   ├── adaptive_layout_manager.gd # UI layout logic
+│   │   └── part_registry.gd         # 720+ lines, 30+ methods
 │   ├── systems/               # Ship system classes
-│   │   └── ship_system.gd     # Base class
+│   │   ├── ship_system.gd     # Base class
+│   │   ├── hull_system.gd     # Level 0-5
+│   │   ├── power_system.gd    # Level 0-5
+│   │   └── propulsion_system.gd # Level 0-5
 │   └── ui/                    # UI controllers
+│       ├── main_menu.gd
+│       ├── workshop.gd
+│       ├── mission_selection.gd
+│       └── mission.gd
 ├── assets/
 │   ├── data/
-│   │   ├── ship_parts.json
-│   │   └── missions/          # Mission JSON files
-│   └── sprites/
-└── saves/                     # Save game files
+│   │   ├── parts/             # 5 JSON files (39 parts defined)
+│   │   ├── systems/           # ship_systems.json
+│   │   ├── economy/           # economy_config.json
+│   │   └── missions/          # Tutorial + hybrid missions
+│   └── graphics/
+│       └── main_menu_bg.png   # DALL-E space background
+└── saves/                     # Save slots (JSON format)
 
 python/
-├── src/
-│   ├── main.py                # FastAPI entry point
+├── gateway/                   # Port 17010
+│   ├── main.py
+│   └── routes/
+├── ai-service/                # Port 17011
+│   ├── main.py
 │   ├── api/
+│   │   ├── chat.py            # /api/chat/*
 │   │   ├── missions.py        # /api/missions/*
-│   │   ├── encounters.py      # /api/encounters/*
-│   │   └── dialogue.py        # /api/dialogue/*
-│   ├── ai/
-│   │   ├── client.py          # LangChain setup
-│   │   └── prompts.py         # Prompt templates
-│   ├── models/
-│   │   ├── game_state.py
-│   │   ├── mission.py
-│   │   └── ship.py
-│   └── cache/
-│       └── sqlite_cache.py
-├── tests/
+│   │   ├── dialogue.py        # /api/dialogue/*
+│   │   └── story.py           # /api/story/* (Story Engine)
+│   ├── services/
+│   │   ├── memory_manager.py  # Player choice tracking
+│   │   └── world_state.py     # Economy, factions, events
+│   └── models/
+├── whisper-service/           # Port 17012 (optional)
+│   └── main.py
+├── shared/                    # Shared models
+│   └── models/
 └── requirements.txt
+
+reports/                       # Implementation history
+├── achievements/
+├── ai-orchestrator/
+├── autonomous-agents/
+├── economy/
+├── phase-completions/
+├── story-engine/
+└── systems/
+
+docs/                          # Design documentation (70+ files)
+├── 00-getting-started/
+├── 01-user-guides/
+├── 02-developer-guides/
+├── 03-game-design/
+├── 04-ui-graphics/
+├── 05-ai-content/
+├── 06-technical-reference/
+└── 07-ai-agent-templates/
 ```
 
 ## Environment Configuration
@@ -916,30 +1019,165 @@ CACHE_ENABLED=true
 
 ## Next Steps for Implementation
 
-**📖 READ FIRST:** [docs/development-organization.md](docs/development-organization.md)
+**Project Status: Milestone 1 at 92% - Testing Phase**
 
-This document provides the complete development system including:
-- ✅ Microservices architecture (Gateway, AI, Whisper, Image services)
-- ✅ Phase-based development (Phases 1-5 with week-by-week breakdowns)
-- ✅ Embedded CLAUDE.md system (directory-level guidance)
-- ✅ AI-assisted development workflow
-- ✅ Quality assurance and testing strategy
-- ✅ Launch and maintenance plans
+### For AI Agents Starting a Session
 
-**If starting Phase 1, Week 1, Day 1:**
+**CRITICAL - Read These First:**
+1. **/STATUS.md** - Current task and progress (updated every session)
+2. **/ROADMAP.md** - Milestone 1 checklist (see Integration Testing section)
+3. **/AI-AGENT-GUIDE.md** - Development workflow and authority levels
 
-1. Read [docs/development-organization.md](docs/development-organization.md) - Sections 1-3
-2. Read [docs/claude-md-templates.md](docs/claude-md-templates.md) - Understand CLAUDE.md system
-3. Follow Phase 1, Week 1 checklist from development-organization.md
-4. Create directory structure with CLAUDE.md files
-5. Begin Gateway Service implementation
+**Current Focus:**
+- Testing complete game loop (Workshop → Mission → Rewards → Workshop)
+- Validating Magentic UI, Story Engine, and Economy systems
+- Bug fixes as discovered
+- Milestone 1 completion validation
 
-**If continuing development:**
-- Check current phase/week in development-organization.md
-- Read relevant CLAUDE.md files for context
-- Follow established patterns
-- Update CLAUDE.md files as you work
-- Commit with descriptive messages
+**Reference Documentation:**
+- [docs/development-organization.md](docs/02-developer-guides/project-management/development-organization.md) - Master development plan
+- [docs/CLAUDE.md](docs/CLAUDE.md) - Master documentation context
+- Directory CLAUDE.md files - Context for each area
+
+### If Starting Fresh (New AI Agent)
+
+1. **Understand Current State:**
+   - Read STATUS.md completely
+   - Review ROADMAP.md Milestone 1 section
+   - Check recent git commits for context
+
+2. **Understand Architecture:**
+   - [docs/02-developer-guides/architecture/technical-architecture.md](docs/02-developer-guides/architecture/technical-architecture.md)
+   - [docs/02-developer-guides/architecture/INTEGRATION-GUIDE.md](docs/02-developer-guides/architecture/INTEGRATION-GUIDE.md)
+   - [docs/02-developer-guides/architecture/magentic-ui-architecture.md](docs/02-developer-guides/architecture/magentic-ui-architecture.md)
+
+3. **Follow Development Process:**
+   - Milestone-based (not timeline-based)
+   - Test as you go (manual testing)
+   - Update STATUS.md every session
+   - Document decisions in DECISIONS.md
+   - Commit with detailed messages
+
+### Current Development Priorities
+
+**Priority 1: Testing (Current)**
+- Complete game playthrough testing
+- Validate all systems work together
+- Fix bugs discovered during testing
+
+**Priority 2: Milestone 1 Validation**
+- Determine if game loop is fun
+- Make "Is it fun?" decision
+- Either continue to Milestone 2 or pivot
+
+**Priority 3: Future (After M1)**
+- Only proceed if Milestone 1 is validated as fun
+- See ROADMAP.md for Milestone 2 checklist
+
+## Advanced Systems Implemented
+
+### Magentic UI System (Microsoft-Inspired)
+
+**Multi-AI adaptive interface with context-aware layouts**
+
+**Components:**
+- **AIPersonalityManager** (350+ lines): Manages 4 AI personalities
+  - ATLAS: Ship AI (blue theme) - strategic guidance
+  - Companion: Emotional support (orange theme)
+  - MENTOR: Career advisor (purple theme)
+  - CHIEF: Engineering expert (yellow theme)
+- **AdaptiveLayoutManager** (200+ lines): Calculates optimal UI layouts
+  - 5 UI states: NARRATIVE_FOCUS, AI_INTERJECTION, MULTI_AI_DISCUSSION, PLAYER_AI_CHAT, COMBAT_COMPRESSED
+- **AIPanel Component** (150+ lines): Reusable AI interjection widget
+
+**Features:**
+- Context-aware AI interjections during missions
+- Adaptive two-panel layout (narrative compresses, AI panel slides in)
+- Smooth 0.4s transitions
+- Signal-based decoupled architecture
+- Ready for multi-AI discussions
+
+**Docs:** [docs/02-developer-guides/architecture/magentic-ui-architecture.md](docs/02-developer-guides/architecture/magentic-ui-architecture.md)
+
+### Dynamic Story Engine
+
+**AI-powered contextual narrative generation with memory**
+
+**Components:**
+- **Memory Manager**: Tracks last 100 player choices, NPC relationships, consequences
+- **World State**: Economy state, faction reputation, major events timeline
+- **Mission Pool**: Generates random hybrid missions on demand
+- **Hybrid Mission Format**: Static structure + AI-generated narrative text
+
+**API Endpoints:**
+- POST /api/story/generate_narrative - Generate contextual stage descriptions
+- POST /api/story/generate_outcome - Generate consequence text
+- GET /api/story/mission_pool - Get random mission
+- GET /api/story/memory/{player_id} - Retrieve player memory
+- GET /api/story/world_context - Get world state
+
+**Features:**
+- Context-aware narrative generation
+- Player choice tracking
+- Relationship system (NPCs, factions)
+- Graceful fallback to static content
+- 1-hour cache TTL (Redis)
+
+**Docs:**
+- [docs/05-ai-content/dynamic-story-engine.md](docs/05-ai-content/dynamic-story-engine.md)
+- [docs/06-technical-reference/MEMORY-MANAGER-REFERENCE.md](docs/06-technical-reference/MEMORY-MANAGER-REFERENCE.md)
+
+### Hybrid Economy System
+
+**Two-currency model: Credits (earned) + Parts (discovered)**
+
+**Components:**
+- **PartRegistry Singleton** (720+ lines, 30+ methods): Data-driven parts/systems/economy
+- **39 Parts Defined**: 5 systems × 3 rarity tiers (common/uncommon/rare)
+- **JSON Data Files**: parts/*.json, systems/ship_systems.json, economy/economy_config.json
+- **Story-Driven Unlocks**: Parts discovered through mission rewards
+
+**Features:**
+- Credits system (add, spend, can_afford validation)
+- Skill points allocation (4 skills: engineering, diplomacy, combat, science)
+- Enhanced inventory (stacking, weight limits, capacity)
+- XP/leveling with PartRegistry integration
+- Ship upgrades consume credits + parts (no more free upgrades)
+- Transaction rollback on failure
+- O(1) lookup performance
+
+**UI Integration:**
+- Player status panel (credits, level, XP bar, skill points button)
+- Upgrade cost display with resource validation
+- Inventory popup (800x600) - shows parts, rarity, weight, quantity
+- Skill allocation popup (600x500)
+- Real-time updates via EventBus (55+ signals)
+
+**Docs:**
+- [docs/02-developer-guides/systems/PART-REGISTRY-ARCHITECTURE.md](docs/02-developer-guides/systems/PART-REGISTRY-ARCHITECTURE.md)
+- [docs/06-technical-reference/PART-REGISTRY-API-REFERENCE.md](docs/06-technical-reference/PART-REGISTRY-API-REFERENCE.md)
+
+### Advanced Networking
+
+**Gateway fallback with concurrency control and retry logic**
+
+**Features:**
+- Primary: Gateway (17010) → Routes to services
+- Fallback: Direct connection to services (17011-17014)
+- Automatic failover on gateway errors
+- Concurrency control (max 2 concurrent requests)
+- Request queue with priority handling
+- Exponential backoff retry (3 attempts: 1s, 2s, 4s)
+- Service health checking
+- Error handling and graceful degradation
+
+**Ports (NCC-1701 System):**
+- 17010: Gateway
+- 17011: AI Service
+- 17012: Whisper (optional)
+- 17014: Redis
+
+**Implementation:** `godot/scripts/autoload/service_manager.gd` and `godot/scripts/autoload/story_service.gd`
 
 ## Reference Links
 
@@ -950,4 +1188,4 @@ This document provides the complete development system including:
 
 ---
 
-**Remember:** This is a hobby project focused on narrative and meaningful choices. Prioritize gameplay over graphics. Ship a playable MVP before adding polish. The design is complete - now execute!
+**Remember:** This is a hobby/learning project. Milestones not timelines. Progress over perfection. Test thoroughly at each milestone. The "Is it fun?" decision matters more than feature count.
