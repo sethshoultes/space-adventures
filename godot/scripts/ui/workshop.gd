@@ -657,8 +657,15 @@ func _get_status_color(status: String) -> Color:
 			return COLOR_GRAY
 
 func _get_system_power_cost(system_name: String, level: int) -> int:
-	"""Get power cost for a system at a given level"""
-	const POWER_COSTS = {
+	"""Get power cost for a system at a given level.
+	Prefer authoritative value from PartRegistry; fallback to local table.
+	"""
+	if has_node("/root/PartRegistry"):
+		var cost = PartRegistry.get_power_cost(system_name, level)
+		if cost != 0:
+			return cost
+
+	const POWER_COSTS_FALLBACK = {
 		"hull": [0, 0, 0, 0, 10],
 		"power": [0, 0, 0, 0, 0],
 		"propulsion": [10, 15, 25, 40, 60],
@@ -671,10 +678,10 @@ func _get_system_power_cost(system_name: String, level: int) -> int:
 		"communications": [5, 8, 12, 18, 25]
 	}
 
-	if not POWER_COSTS.has(system_name):
+	if not POWER_COSTS_FALLBACK.has(system_name):
 		return 0
 
-	var costs = POWER_COSTS[system_name]
+	var costs = POWER_COSTS_FALLBACK[system_name]
 	var index = level - 1
 	if index >= 0 and index < costs.size():
 		return costs[index]

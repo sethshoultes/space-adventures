@@ -4,8 +4,8 @@ extends Node
 ## Manages connections to backend microservices
 ## Provides health checks and service discovery
 
-# Service URLs (NCC-1701 Port Registry)
-const SERVICES: Dictionary = {
+# Service URL defaults (NCC-1701 Port Registry)
+const _DEFAULT_URLS: Dictionary = {
 	"gateway": "http://localhost:17010",
 	"ai": "http://localhost:17011",
 	"whisper": "http://localhost:17012",
@@ -24,8 +24,8 @@ signal all_services_checked(results: Dictionary)
 
 func _ready() -> void:
 	print("ServiceManager initialized")
-	print("Gateway: ", SERVICES["gateway"])
-	print("AI Service: ", SERVICES["ai"])
+	print("Gateway: ", get_service_url("gateway"))
+	print("AI Service: ", get_service_url("ai"))
 
 	# Create HTTPRequest node for health checks
 	_http_request = HTTPRequest.new()
@@ -33,7 +33,7 @@ func _ready() -> void:
 	_http_request.timeout = 5.0
 
 	# Initialize service status (all unknown until first check)
-	for service_name in SERVICES.keys():
+	for service_name in _DEFAULT_URLS.keys():
 		_service_status[service_name] = {
 			"available": false,
 			"last_check": 0.0,
@@ -61,17 +61,23 @@ func is_service_available(service_name: String) -> bool:
 
 ## Get service base URL
 func get_service_url(service_name: String) -> String:
-	if not SERVICES.has(service_name):
+	if not _DEFAULT_URLS.has(service_name):
 		push_error("Unknown service: " + service_name)
 		return ""
-	return SERVICES[service_name]
+	# Allow override via ProjectSettings: application/config/<service>_url
+	var key = "application/config/%s_url" % service_name
+	var default = _DEFAULT_URLS[service_name]
+	var value = default
+	if ProjectSettings.has_setting(key):
+		value = str(ProjectSettings.get_setting(key))
+	return value
 
 ## Check health of all services
 func check_all_services() -> Dictionary:
 	print("ServiceManager: Checking all services...")
 	var results: Dictionary = {}
 
-	for service_name in SERVICES.keys():
+	for service_name in _DEFAULT_URLS.keys():
 		var status = await check_service(service_name)
 		results[service_name] = status
 
@@ -80,10 +86,10 @@ func check_all_services() -> Dictionary:
 
 ## Check health of a specific service
 func check_service(service_name: String) -> Dictionary:
-	if not SERVICES.has(service_name):
+	if not _DEFAULT_URLS.has(service_name):
 		return {"available": false, "error": "Unknown service"}
 
-	var url = SERVICES[service_name] + "/health"
+	var url = get_service_url(service_name) + "/health"
 	var result = await _make_health_request(url)
 
 	var status = {
