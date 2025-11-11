@@ -95,11 +95,16 @@ External APIs (Claude, OpenAI, Ollama)
 ### Godot Integration Patterns
 
 **Singletons (Autoload):**
-1. **ServiceManager** - HTTP client, service health checking
-2. **GameState** - Central game data, no logic
+1. **ServiceManager** - HTTP client, service health checking, gateway fallback
+2. **GameState** - Central game data (player, ship, inventory, economy)
 3. **SaveManager** - JSON persistence (5 slots + autosave)
-4. **EventBus** - 50+ signals for decoupled communication
-5. **AIService** - AI content generation client
+4. **EventBus** - 55+ signals for decoupled communication
+5. **AIService** - AI content generation client (legacy)
+6. **StoryService** - Dynamic Story Engine client (Memory Manager, World State)
+7. **MissionManager** - Mission flow, rewards, progression tracking
+8. **AIPersonalityManager** - Multi-AI personality system (4 personalities)
+9. **AdaptiveLayoutManager** - Context-aware UI layout calculations
+10. **PartRegistry** - Data-driven parts/systems/economy (720+ lines)
 
 **Communication Flow:**
 ```
@@ -120,37 +125,36 @@ EventBus.emit_signal()
 UI Update
 ```
 
-### Development Phases
+### Development Milestones
 
-**Phase 1: Foundation** (Weeks 1-4) ✅
-- Microservices architecture
-- NCC-1701 port system
-- Godot foundation (5 singletons)
-- Testing infrastructure
+**This project uses milestone-based development, not timeline-based phases.**
 
-**Phase 2: Game Systems** (Weeks 5-8)
-- 10 ship systems implementation
-- Workshop UI
-- Mission system
-- Inventory management
+**Milestone 1: Proof of Concept** (Current - 92% complete) ✅
+- ✅ Microservices architecture (Gateway, AI Service, Whisper, Redis)
+- ✅ NCC-1701 port system (17010-17014)
+- ✅ Godot foundation (10 autoload singletons, 3,600+ lines)
+- ✅ Core ship systems (Hull, Power, Propulsion Level 0-5)
+- ✅ Workshop UI with economy integration
+- ✅ Mission system with scrolling narrative log
+- ✅ Magentic UI with 4 AI personalities
+- ✅ Dynamic Story Engine (Memory Manager, World State)
+- ✅ Hybrid Economy (PartRegistry, credits + parts)
+- ✅ Main menu with DALL-E background
+- ⏳ Testing: Full game playthrough validation
 
-**Phase 3: Content** (Weeks 9-12)
-- Story missions
-- AI-generated content
-- Character development
-- Quest chains
+**Milestone 2: Expand Content** (Future - after M1 validation)
+- Add more systems (Warp, Life Support)
+- Add more missions (salvage, exploration, story)
+- Expand AI personalities and interjections
+- UI improvements and polish
 
-**Phase 4: Polish** (Weeks 13-16)
-- Visual improvements
-- Audio implementation
-- Performance optimization
-- Bug fixing
+**Milestone 3: Share It** (Future - public release)
+- All 10 systems complete
+- 10+ missions total
+- Polish and deployment preparation
+- Public release on GitHub/itch.io
 
-**Phase 5: Launch** (Weeks 17-20)
-- Final testing
-- Documentation completion
-- Deployment setup
-- Release preparation
+**See:** `/ROADMAP.md` for complete milestone checklists and `/STATUS.md` for current progress
 
 ### Design Principles
 
@@ -202,9 +206,9 @@ UI Update
 **Status:** Implemented
 
 ### ADR-003: Godot Singletons
-**Decision:** 5 autoload singletons for global functionality
-**Rationale:** Global access, persistent across scenes, clear separation of concerns
-**Status:** Implemented
+**Decision:** 10 autoload singletons for global functionality
+**Rationale:** Global access, persistent across scenes, clear separation of concerns. Expanded from initial 5 to include advanced systems (Magentic UI, Story Engine, Economy)
+**Status:** Implemented (3,600+ lines total)
 
 ### ADR-004: JSON Save Format
 **Decision:** Use JSON for save files (not binary)
@@ -218,22 +222,30 @@ UI Update
 
 ## Quick Reference
 
-**Current Phase:** Phase 1 Complete (v0.1.0-foundation)
+**Current Status:** Milestone 1 (92% complete) - Testing Phase
 
 **Next Steps:**
-1. Begin Phase 2, Week 5: Ship Systems Implementation
-2. See project-management/development-organization.md
+1. Complete full game playthrough testing
+2. Validate Milestone 1 ("Is it fun?" decision)
+3. See `/STATUS.md` and `/ROADMAP.md` for current tasks
 
 **Critical Files:**
 - architecture/technical-architecture.md - System design
 - architecture/INTEGRATION-GUIDE.md - Integration patterns
+- architecture/magentic-ui-architecture.md - Multi-AI system
 - project-management/development-organization.md - Development plan
+- systems/PART-REGISTRY-ARCHITECTURE.md - Economy system
 
-**Port Registry:**
-- 17010: Gateway
-- 17011: AI Service
-- 17012: Whisper (optional)
-- 17014: Redis
+**Port Registry (NCC-1701):**
+- 17010: Gateway (primary entry point)
+- 17011: AI Service (with automatic fallback)
+- 17012: Whisper (optional voice transcription)
+- 17014: Redis (caching)
+
+**Advanced Systems:**
+- Magentic UI: 4 AI personalities, adaptive layouts
+- Story Engine: Memory Manager, World State, Mission Pool
+- Hybrid Economy: PartRegistry (720+ lines), credits + parts
 
 ---
 

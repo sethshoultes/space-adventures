@@ -112,29 +112,23 @@
 
 ## Implementation Priorities
 
-**Phase 1 Extension (Week 7):**
-```
-Week 7: Captain's Log System
-  Day 1-2: AI prompt templates
-  Day 3-4: Log generation and storage
-  Day 5: UI and testing
-```
+**Note:** This project uses milestone-based development, not timeline-based phases.
 
-**Phase 1 Extension (Week 8):**
-```
-Week 8: Ship Personality (Basic)
-  Day 1-2: Personality framework
-  Day 3-4: Level 0-2 implementation
-  Day 5: Testing and polish
-```
+**Milestone 2: Expand Content** (After M1 validation)
+- Additional ship systems (Warp, Life Support)
+- More missions (salvage, exploration, story)
+- Enhanced AI personality content
+- These future features may be considered after core expansion
 
-**Phase 2 Core (Weeks 9-16):**
-```
-Weeks 9-10: First Contact Protocol
-Weeks 11-12: Crew Recruitment
-Weeks 13-14: Away Team Missions
-Weeks 15-16: Exodus Timeline Mystery
-```
+**Future Milestones:**
+- Captain's Log system
+- Ship Personality evolution
+- First Contact protocol
+- Crew recruitment and management
+- Away team missions
+- Exodus timeline mystery
+
+**See:** `/ROADMAP.md` for current milestone priorities and `/STATUS.md` for active tasks
 
 ## AI Integration Levels
 
@@ -210,9 +204,9 @@ All feature docs follow this format:
 
 ## Quick Reference
 
-**Current Phase:** Phase 1 MVP (Week 1-4) ✅ Complete
-**Next Up:** Phase 1 Extension (Week 7-8) - Captain's Log + Ship Personality
-**After That:** Phase 2 (Week 9-16) - Space exploration features
+**Current Milestone:** Milestone 1 - Proof of Concept (92% complete)
+**Current Focus:** Testing and validation
+**These Features:** Future consideration after M1 validation and M2 core expansion
 
 **Feature Count:**
 - MVP Enhancement: 2 features

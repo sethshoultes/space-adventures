@@ -91,18 +91,23 @@
 ### Singleton Pattern (Godot)
 **Purpose:** Global access to core functionality
 **Implementation:**
-- ServiceManager: HTTP communication
-- GameState: Central data store
-- SaveManager: Persistence layer
-- EventBus: Event distribution
-- AIService: AI client
+1. **ServiceManager** - HTTP client, service health checking, gateway fallback
+2. **GameState** - Central game data (player, ship, inventory, economy)
+3. **SaveManager** - JSON persistence (5 slots + autosave)
+4. **EventBus** - 55+ signals for decoupled communication
+5. **AIService** - AI content generation client (legacy)
+6. **StoryService** - Dynamic Story Engine client (Memory Manager, World State)
+7. **MissionManager** - Mission flow, rewards, progression tracking
+8. **AIPersonalityManager** - Multi-AI personality system (4 personalities)
+9. **AdaptiveLayoutManager** - Context-aware UI layout calculations
+10. **PartRegistry** - Data-driven parts/systems/economy (720+ lines)
 
-**Anti-pattern Warning:** Don't create additional singletons unless absolutely necessary. 5 is enough.
+**Anti-pattern Warning:** Don't create additional singletons unless absolutely necessary. 10 is enough.
 
 ### Observer Pattern (EventBus)
 **Purpose:** Decoupled communication
 **Implementation:**
-- 50+ signal definitions
+- 55+ signal definitions
 - Publishers emit signals
 - Subscribers connect to signals
 - No direct dependencies

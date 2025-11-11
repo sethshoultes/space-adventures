@@ -143,9 +143,10 @@ See: `06-technical-reference/PORT-MAPPING.md`
 See: `02-developer-guides/architecture/technical-architecture.md`
 
 ### Godot Integration
-- 5 autoload singletons (ServiceManager, GameState, etc.)
-- Event-driven architecture via EventBus
-- JSON save/load system
+- 10 autoload singletons (ServiceManager, GameState, StoryService, AIPersonalityManager, etc.)
+- Event-driven architecture via EventBus (55+ signals)
+- JSON save/load system (5 slots + autosave)
+- Advanced systems: Magentic UI, Story Engine, Hybrid Economy
 
 See: `02-developer-guides/architecture/INTEGRATION-GUIDE.md`
 
@@ -287,11 +288,11 @@ When modifying documentation:
 
 ## Version Context
 
-**Current Phase:** Phase 1 Complete (v0.1.0-foundation)
-**Status:** Production-ready foundation
-**Next Phase:** Phase 2 - Game Systems & Ship Building
+**Current Milestone:** Milestone 1 - Proof of Concept (92% complete)
+**Status:** Testing phase - full playthrough validation
+**Next Milestone:** Milestone 2 - Expand Content (after "Is it fun?" decision)
 
-See: `02-developer-guides/project-management/development-organization.md`
+See: `/STATUS.md` and `/ROADMAP.md` for current progress and task list
 
 ---
 
