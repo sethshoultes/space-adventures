@@ -19,6 +19,7 @@ const COLOR_WHITE: Color = Color("ffffff")
 @onready var details_panel: VBoxContainer = $HBoxContainer/RightPanel/DetailsContainer
 @onready var launch_button: Button = $HBoxContainer/RightPanel/DetailsContainer/LaunchButton
 @onready var back_button: Button = $Header/BackButton
+@onready var random_mission_button: Button = $Header/RandomMissionButton
 
 # Mission title and info labels
 @onready var detail_title: Label = $HBoxContainer/RightPanel/DetailsContainer/MarginContainer/VBoxContainer/TitleLabel
@@ -40,6 +41,10 @@ func _ready() -> void:
 	# Connect signals
 	back_button.pressed.connect(_on_back_pressed)
 	launch_button.pressed.connect(_on_launch_pressed)
+
+	# Connect Random Mission button if it exists
+	if random_mission_button:
+		random_mission_button.pressed.connect(_on_random_mission_pressed)
 
 	# Load and display missions
 	_load_missions()
@@ -469,6 +474,52 @@ func _on_launch_pressed() -> void:
 	else:
 		print("Failed to start mission")
 		# TODO: Show error dialog
+
+func _on_random_mission_pressed() -> void:
+	"""Generate and load a random mission from Mission Pool"""
+	print("Generating random mission...")
+
+	# Disable button during generation
+	if random_mission_button:
+		random_mission_button.disabled = true
+		random_mission_button.text = "GENERATING..."
+
+	# Fetch random mission from Mission Pool
+	var difficulty = "medium"  # TODO: Could make this selectable
+	var result = await StoryService.get_pool_mission(difficulty)
+
+	# Re-enable button
+	if random_mission_button:
+		random_mission_button.disabled = false
+		random_mission_button.text = "🎲 RANDOM MISSION"
+
+	if not result.get("success", false):
+		print("Failed to generate random mission: %s" % result.get("error", "Unknown error"))
+		# TODO: Show error dialog
+		return
+
+	var mission = result.get("mission", {})
+	if mission.is_empty():
+		print("Received empty mission from Mission Pool")
+		return
+
+	print("Generated random mission: %s (%s)" % [mission.get("title", "Unknown"), mission.get("mission_id", "unknown")])
+
+	# Add mission to MissionManager temporarily (for this session only)
+	MissionManager.add_temporary_mission(mission)
+
+	# Reload mission list to include new mission
+	_load_missions()
+	_populate_mission_list()
+
+	# Auto-select the new random mission
+	await get_tree().process_frame
+	var cards = mission_list_container.get_children()
+	for card in cards:
+		var card_mission = card.get_meta("mission_data")
+		if card_mission.get("mission_id") == mission.get("mission_id"):
+			_on_mission_card_clicked(card)
+			break
 
 func _on_back_pressed() -> void:
 	"""Return to workshop"""

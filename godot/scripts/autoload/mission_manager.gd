@@ -17,6 +17,8 @@ var loaded_missions: Dictionary = {}
 
 func _ready() -> void:
 	print("MissionManager initialized")
+	# Seed RNG for non-deterministic outcomes
+	randomize()
 	_load_all_missions()
 
 ## Load all mission files from the missions directory
@@ -83,6 +85,22 @@ func _validate_mission(mission: Dictionary) -> bool:
 
 	return true
 
+## Add a temporary mission (from Mission Pool or other runtime sources)
+func add_temporary_mission(mission: Dictionary) -> bool:
+	"""Add a mission to the loaded missions cache without saving to disk"""
+	if not _validate_mission(mission):
+		push_error("MissionManager: Cannot add invalid mission")
+		return false
+
+	var mission_id = mission.get("mission_id", "")
+	if mission_id == "":
+		push_error("MissionManager: Cannot add mission with empty mission_id")
+		return false
+
+	loaded_missions[mission_id] = mission
+	print("MissionManager: Added temporary mission '%s' (%s)" % [mission.get("title", "Unknown"), mission_id])
+	return true
+
 ## Start a mission
 func start_mission(mission_id: String) -> bool:
 	if not loaded_missions.has(mission_id):
@@ -122,7 +140,8 @@ func _check_requirements(mission: Dictionary) -> bool:
 	# Check required systems
 	if reqs.has("required_systems") and reqs.required_systems is Array:
 		for system_name in reqs.required_systems:
-			if GameState.ship.systems[system_name].level == 0:
+			var sys = GameState.ship.systems.get(system_name, null)
+			if sys == null or int(sys.get("level", 0)) == 0:
 				EventBus.show_error.emit("Mission Locked", "Requires %s system installed" % system_name)
 				return false
 

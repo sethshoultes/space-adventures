@@ -479,6 +479,26 @@ func _append_mission_complete() -> void:
 	# Update status ticker
 	_update_status_ticker()
 
+	# Add mission progression buttons
+	var button_container = HBoxContainer.new()
+	button_container.set("theme_override_constants/separation", 10)
+	button_container.alignment = BoxContainer.ALIGNMENT_CENTER
+	completion_entry.add_child(button_container)
+
+	# Mission Select button
+	var select_button = Button.new()
+	select_button.text = "📋 MISSION SELECT"
+	select_button.custom_minimum_size = Vector2(200, 50)
+	select_button.pressed.connect(_on_mission_select_pressed)
+	button_container.add_child(select_button)
+
+	# Random Mission button
+	var random_button = Button.new()
+	random_button.text = "🎲 RANDOM MISSION"
+	random_button.custom_minimum_size = Vector2(200, 50)
+	random_button.pressed.connect(_on_random_mission_from_complete_pressed)
+	button_container.add_child(random_button)
+
 	print("Mission: Mission completed successfully")
 
 func _append_mission_failed(reason: String) -> void:
@@ -584,6 +604,57 @@ func _return_to_menu() -> void:
 
 	# Return to workshop (where missions are launched from)
 	get_tree().change_scene_to_file("res://scenes/workshop.tscn")
+
+func _on_mission_select_pressed() -> void:
+	"""Navigate to mission selection screen"""
+	print("Mission: Navigating to mission selection")
+
+	# Save game before navigating
+	SaveManager.auto_save()
+
+	# Go to mission selection
+	get_tree().change_scene_to_file("res://scenes/mission_selection.tscn")
+
+func _on_random_mission_from_complete_pressed() -> void:
+	"""Generate and launch a random mission immediately"""
+	print("Mission: Generating and launching random mission...")
+
+	# Save game before generating
+	SaveManager.auto_save()
+
+	# Fetch random mission from Mission Pool
+	var difficulty = "medium"  # TODO: Could make this selectable
+	var result = await StoryService.get_pool_mission(difficulty)
+
+	if not result.get("success", false):
+		print("Failed to generate random mission: %s" % result.get("error", "Unknown error"))
+		# Fall back to mission selection
+		get_tree().change_scene_to_file("res://scenes/mission_selection.tscn")
+		return
+
+	var mission = result.get("mission", {})
+	if mission.is_empty():
+		print("Received empty mission from Mission Pool")
+		# Fall back to mission selection
+		get_tree().change_scene_to_file("res://scenes/mission_selection.tscn")
+		return
+
+	print("Generated random mission: %s (%s)" % [mission.get("title", "Unknown"), mission.get("mission_id", "unknown")])
+
+	# Add mission to MissionManager temporarily
+	MissionManager.add_temporary_mission(mission)
+
+	# Start the mission
+	var mission_id = mission.get("mission_id", "")
+	var mission_started = MissionManager.start_mission(mission_id)
+
+	if mission_started:
+		# Reload current scene to start new mission
+		get_tree().reload_current_scene()
+	else:
+		print("Failed to start random mission")
+		# Fall back to mission selection
+		get_tree().change_scene_to_file("res://scenes/mission_selection.tscn")
 
 ## Manual Scroll Pacing System
 
