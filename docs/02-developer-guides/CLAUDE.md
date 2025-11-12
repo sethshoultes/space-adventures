@@ -198,27 +198,27 @@ UI Update
 ### ADR-001: Microservices Architecture
 **Decision:** Use microservices instead of monolith
 **Rationale:** Separation of concerns, independent scaling, AI service isolation
-**Status:** Implemented
+**Status:** Testing Phase
 
 ### ADR-002: NCC-1701 Port System
 **Decision:** Use Star Trek-themed ports (17010-17099)
 **Rationale:** Avoid conflicts with common ports, memorable, thematic
-**Status:** Implemented
+**Status:** Testing Phase
 
 ### ADR-003: Godot Singletons
 **Decision:** 10 autoload singletons for global functionality
 **Rationale:** Global access, persistent across scenes, clear separation of concerns. Expanded from initial 5 to include advanced systems (Magentic UI, Story Engine, Economy)
-**Status:** Implemented (3,600+ lines total)
+**Status:** Testing Phase
 
 ### ADR-004: JSON Save Format
 **Decision:** Use JSON for save files (not binary)
 **Rationale:** Human-readable, debuggable, version-migratable
-**Status:** Implemented
+**Status:** Testing Phase
 
 ### ADR-005: Event-Driven Architecture
 **Decision:** EventBus with signals for decoupled communication
 **Rationale:** Loose coupling, extensibility, testability
-**Status:** Implemented
+**Status:** Testing Phase
 
 ## Quick Reference
 

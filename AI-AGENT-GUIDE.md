@@ -23,6 +23,30 @@ This project uses AI agents as the **primary developers**. You (AI agent) will p
 3. **Document** decisions in `/DECISIONS.md` (if any)
 4. **Update** `/JOURNAL.md` if you learned something new
 5. **Mark** checklist items in `/ROADMAP.md`
+6. **Check** if documentation sync needed (see below)
+
+**When to sync CLAUDE.md files:**
+
+Sync documentation when any of these occur:
+- ✅ **Milestone progress changed by 10%+** (e.g., 80% → 90%)
+- ✅ **Milestone transition** (M1 complete → M2 starts)
+- ✅ **Major system added** (new singleton, new advanced feature)
+- ✅ **Architecture change** (new service, port changes)
+
+**Quick sync process:**
+1. Edit `/PROJECT-STATE.json` (update milestone progress or features)
+2. Run `python scripts/sync-claude-md.py`
+3. Review changes: `git diff CLAUDE.md docs/*/CLAUDE.md`
+4. Commit: `git commit -m "docs: Sync CLAUDE.md (M1 at 95%)"`
+
+**Files automatically updated by sync script:**
+- `/CLAUDE.md` (root project context)
+- `/docs/CLAUDE.md` (main docs directory)
+- `/docs/02-developer-guides/CLAUDE.md`
+- `/docs/02-developer-guides/architecture/CLAUDE.md`
+- `/docs/02-developer-guides/project-management/CLAUDE.md`
+- `/docs/03-game-design/CLAUDE.md`
+- `/docs/03-game-design/future-features/CLAUDE.md`
 
 ---
 

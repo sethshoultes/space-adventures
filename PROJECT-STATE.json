@@ -1,0 +1,143 @@
+{
+  "_comment": "Single source of truth for project state. Update this file when milestone progress changes, then run: python scripts/sync-claude-md.py",
+
+  "milestone": {
+    "current": 1,
+    "name": "Proof of Concept",
+    "progress": 92,
+    "status": "Testing Phase",
+    "next": "Milestone 2 - Expand Content"
+  },
+
+  "singletons": {
+    "count": 10,
+    "total_lines": 3600,
+    "list": [
+      {
+        "name": "ServiceManager",
+        "description": "HTTP client, service health checking, gateway fallback routing"
+      },
+      {
+        "name": "GameState",
+        "description": "Global game state (player, ship, inventory, progress, economy)"
+      },
+      {
+        "name": "SaveManager",
+        "description": "Save/load to JSON files (5 slots + autosave)"
+      },
+      {
+        "name": "EventBus",
+        "description": "Decoupled event system (55+ signals)"
+      },
+      {
+        "name": "AIService",
+        "description": "AI content generation client (legacy)"
+      },
+      {
+        "name": "StoryService",
+        "description": "Dynamic Story Engine client (Memory Manager, World State)"
+      },
+      {
+        "name": "MissionManager",
+        "description": "Mission flow, rewards, progression tracking"
+      },
+      {
+        "name": "AIPersonalityManager",
+        "description": "Multi-AI personality system (4 personalities)"
+      },
+      {
+        "name": "AdaptiveLayoutManager",
+        "description": "Context-aware UI layout calculations"
+      },
+      {
+        "name": "PartRegistry",
+        "description": "Data-driven parts/systems/economy (720+ lines)"
+      }
+    ]
+  },
+
+  "advanced_systems": [
+    {
+      "name": "Magentic UI System",
+      "description": "Microsoft-inspired multi-AI adaptive interface",
+      "features": "4 AI personalities (ATLAS, Companion, MENTOR, CHIEF), adaptive layouts, context-aware interjections",
+      "status": "implemented"
+    },
+    {
+      "name": "Dynamic Story Engine",
+      "description": "AI-powered contextual narrative generation with memory",
+      "features": "Memory Manager (last 100 choices), World State (economy, factions), Mission Pool (random missions)",
+      "status": "implemented"
+    },
+    {
+      "name": "Hybrid Economy System",
+      "description": "Two-currency model: Credits (earned) + Parts (discovered)",
+      "features": "PartRegistry (720+ lines, 30+ methods), 39 parts defined, story-driven unlocks",
+      "status": "implemented"
+    },
+    {
+      "name": "Advanced Networking",
+      "description": "Gateway fallback with concurrency control and retry logic",
+      "features": "Gateway (17010) with automatic fallback, max 2 concurrent requests, exponential backoff retry",
+      "status": "implemented"
+    }
+  ],
+
+  "ports": {
+    "gateway": 17010,
+    "ai_service": 17011,
+    "whisper": 17012,
+    "redis": 17014,
+    "description": "NCC-1701 Star Trek-themed port system"
+  },
+
+  "core_systems": {
+    "implemented": 3,
+    "total": 10,
+    "list": [
+      {"name": "Hull", "level_range": "0-5", "status": "complete"},
+      {"name": "Power Core", "level_range": "0-5", "status": "complete"},
+      {"name": "Propulsion", "level_range": "0-5", "status": "complete"},
+      {"name": "Warp Drive", "level_range": "0-5", "status": "planned"},
+      {"name": "Life Support", "level_range": "0-5", "status": "planned"},
+      {"name": "Computer Core", "level_range": "0-5", "status": "planned"},
+      {"name": "Sensors", "level_range": "0-5", "status": "planned"},
+      {"name": "Shields", "level_range": "0-5", "status": "planned"},
+      {"name": "Weapons", "level_range": "0-5", "status": "planned"},
+      {"name": "Communications", "level_range": "0-5", "status": "planned"}
+    ]
+  },
+
+  "content": {
+    "missions": {
+      "tutorial": 1,
+      "scripted": 0,
+      "total": 1,
+      "description": "Tutorial mission 'The Inheritance' with ATLAS AI commentary"
+    },
+    "ai_personalities": {
+      "implemented": 1,
+      "total": 4,
+      "active": ["ATLAS"],
+      "ready": ["Companion", "MENTOR", "CHIEF"]
+    }
+  },
+
+  "documentation": {
+    "total_files": 70,
+    "directories": [
+      "00-getting-started",
+      "01-user-guides",
+      "02-developer-guides",
+      "03-game-design",
+      "04-ui-graphics",
+      "05-ai-content",
+      "06-technical-reference",
+      "07-ai-agent-templates"
+    ],
+    "reports_directory": "Implementation history separated from design docs"
+  },
+
+  "last_updated": "2025-01-12",
+  "version": "0.1.0-milestone-1"
+}

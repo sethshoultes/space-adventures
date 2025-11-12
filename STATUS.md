@@ -607,4 +607,11 @@ All systems are implemented and integrated. Next step is comprehensive testing o
 3. Next session starting point
 4. Recent completions
 
+**Documentation Sync Reminder:**
+- If milestone progress changed by **10%+** (e.g., 85% → 95%):
+  1. Update `/PROJECT-STATE.json` with new progress
+  2. Run `python scripts/sync-claude-md.py`
+  3. Commit: "docs: Sync CLAUDE.md (M1 at 95%)"
+- Full instructions in `/AI-AGENT-GUIDE.md` "When to sync CLAUDE.md files" section
+
 Keep this as the single source of truth for project status.

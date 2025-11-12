@@ -270,6 +270,10 @@
 - [ ] **Complete game loop tested end-to-end** ⏳ IN PROGRESS
 - [ ] **Can play for 15 minutes and it's interesting** ⏳ NEEDS TESTING
 - [ ] **Bug-free or only minor issues** ⏳ NEEDS VALIDATION
+- [ ] **📝 Update documentation** ⏳ BEFORE M2
+  - [ ] Update `PROJECT-STATE.json` (milestone: 1, progress: 100)
+  - [ ] Run `python scripts/sync-claude-md.py` to sync all CLAUDE.md files
+  - [ ] Commit: "docs: Milestone 1 complete (100%)"
 
 **Decision Point: Is it fun?**
 - ✅ YES → Continue to Milestone 2

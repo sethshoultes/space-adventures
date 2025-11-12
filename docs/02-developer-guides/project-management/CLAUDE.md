@@ -210,7 +210,7 @@
 
 ## Quick Reference
 
-**Current Milestone:** 1 - Proof of Concept (92% complete)
+**Current Milestone:** Milestone 1 - Proof of Concept (92% complete)
 **Current Task:** Full game playthrough testing
 **Next Milestone:** 2 - Expand Content (after M1 validation)
 **Decision Point:** "Is it fun?" determines next steps
