@@ -1,0 +1,1017 @@
+{
+  "mission_id": "underground_bunker_exploration",
+  "title": "Echoes from Below",
+  "type": "exploration",
+  "location": "Mount Weather Government Bunker",
+  "description": "Deep beneath the Appalachian Mountains lies Mount Weather—a massive government continuity bunker designed to survive anything. Sealed during the exodus, it holds decades of classified data, pre-exodus technology, and possibly answers about why humanity fled Earth. Your scans detect active power sources 300 meters underground. Something is still running down there. This isn't just salvage—this is archaeology.",
+  "difficulty": 3,
+  "estimated_time": "25-30 min",
+  "requirements": {
+    "min_level": 2,
+    "required_systems": [],
+    "completed_missions": ["tutorial_first_salvage"]
+  },
+  "objectives": [
+    "Penetrate Mount Weather bunker complex",
+    "Recover pre-exodus data archives",
+    "[OPTIONAL] Discover what happened during the exodus",
+    "[OPTIONAL] Find rare pre-exodus technology"
+  ],
+  "stages": [
+    {
+      "stage_id": "mountain_approach",
+      "title": "The Mountain",
+      "description": "Mount Weather rises before you—a forested peak hiding one of humanity's deepest secrets. The official entrance was collapsed decades ago, but your research identified three possible access points: the main blast door (sealed but potentially hackable), a ventilation shaft on the north face (narrow and dangerous), or a service tunnel from an abandoned mining operation (long but possibly easier). Your choice of entry will define the entire mission.",
+      "image": "mount_weather_exterior",
+      "choices": [
+        {
+          "choice_id": "blast_door",
+          "text": "Attempt to open the main blast door—direct but challenging",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "The blast door's control panel is ancient but functional. You bypass layers of security, crack the authentication, and trigger the unsealing mechanism. Hydraulics hiss—the first sound in decades. The massive door swings open, revealing a pristine tunnel descending into darkness. 'WELCOME TO MOUNT WEATHER CONTINUITY FACILITY.' The automated greeting echoes eerily. You're in.",
+              "next_stage": "main_corridor",
+              "effects": ["front_door_entry", "power_active"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "The door's security is beyond your engineering skills—military-grade encryption from before the exodus. The control panel locks you out completely. You'll need to find another way in. The ventilation shaft is looking more appealing now.",
+              "next_stage": "alternate_entry",
+              "effects": ["door_failed"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "ventilation_shaft",
+          "text": "Descend through the ventilation shaft—risky but accessible",
+          "requirements": {},
+          "success_chance": 70,
+          "consequences": {
+            "success": {
+              "text": "The ventilation shaft is barely wide enough for your shoulders. You rappel down into darkness, headlamp illuminating rusted metal walls. Fifty meters... one hundred... two hundred. The descent is nerve-wracking. Finally, you reach a junction where the shaft opens into the bunker's main ventilation system. You're inside, though you're not sure where. Time to explore.",
+              "next_stage": "ventilation_system",
+              "effects": ["vent_entry", "uncertain_location"],
+              "xp_bonus": 20
+            },
+            "failure": {
+              "text": "Twenty meters down, your rope snags on corroded metal. You try to free it—the entire shaft groans. Rust gives way. You slide uncontrolled for ten meters before catching yourself on an intake fan. Heart pounding, you climb back up. Too dangerous. The mining tunnel is safer.",
+              "next_stage": "mining_tunnel_entry",
+              "effects": ["vent_failed", "shaken"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "research_first",
+          "text": "Research bunker layout before choosing entry—gather intelligence",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You spend hours researching old government records, declassified documents, and geological surveys. You piece together Mount Weather's layout: 200+ rooms across five levels, central data archive on Level 3, command center on Level 5. You also discover a critical detail—the bunker's AI security system may still be active. Armed with knowledge, you choose the mining tunnel as the safest entry with optimal routing to the data archives.",
+              "next_stage": "mining_tunnel_informed",
+              "effects": ["complete_intel", "optimal_planning"],
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "The records are too fragmented or your science skills insufficient to reconstruct useful intelligence. You have a vague idea of the bunker's size, but no detailed layout. You'll have to figure it out as you go. The mining tunnel seems safest.",
+              "next_stage": "mining_tunnel_entry",
+              "effects": ["limited_intel"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "alternate_entry",
+      "title": "Finding Another Way",
+      "description": "The blast door defeated you. Pride stings, but you're adaptable. The ventilation shaft and mining tunnel remain. Both will get you inside—one is faster but dangerous, the other slower but safer.",
+      "image": "searching_alternatives",
+      "choices": [
+        {
+          "choice_id": "try_vent",
+          "text": "Attempt the ventilation shaft descent",
+          "requirements": {},
+          "success_chance": 70,
+          "consequences": {
+            "success": {
+              "text": "You successfully rappel down the ventilation shaft. It's claustrophobic and nerve-wracking, but you make it. You emerge into the bunker's ventilation system, somewhere in the complex. Time to navigate to the data archives.",
+              "next_stage": "ventilation_system",
+              "effects": ["vent_entry"],
+              "xp_bonus": 15
+            },
+            "failure": {
+              "text": "The shaft is too dangerous—you abort the descent and opt for the mining tunnel instead. Slower, but you'll arrive in one piece.",
+              "next_stage": "mining_tunnel_entry",
+              "effects": ["safety_first"],
+              "xp_bonus": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "main_corridor",
+      "title": "Bunker Interior",
+      "description": "The main corridor is a wide tunnel carved from solid rock, lined with metal plating and LED strips that flicker to life as you enter. The bunker's power system is still functional—solar arrays on the mountain's surface must still be operating. Signs direct you to different sections: Command Center (Level 5), Data Archives (Level 3), Residential (Level 2), Medical (Level 1). An elevator shaft descends into darkness. Your target is the data archives, but you sense something else here. The bunker feels... occupied. Not by people, but by presence.",
+      "image": "bunker_main_corridor",
+      "choices": [
+        {
+          "choice_id": "elevator_to_archives",
+          "text": "Take the elevator directly to Level 3 data archives",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The elevator descends smoothly. Muzak plays—an absurd touch of normalcy in this underground tomb. You arrive at Level 3. The data archive entrance is ahead, a massive vault door with biometric locks. Someone really didn't want unauthorized access.",
+              "next_stage": "data_archive_entrance",
+              "effects": ["direct_approach"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "explore_command",
+          "text": "Explore command center first—might explain bunker's purpose",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You descend to Level 5 and enter the command center. Massive screens display frozen data, terminals wait for commands that will never come. One screen still shows the last message transmitted from this bunker: 'EXODUS FLEET DEPARTURE CONFIRMED. ALL PERSONNEL EVACUATED. BUNKER SEALING IN 60 MINUTES. GOD SPEED.' You're standing in the room where the exodus was coordinated. The weight of history is tangible.",
+              "next_stage": "command_center_discovery",
+              "effects": ["historical_context", "command_accessed"],
+              "xp_bonus": 35
+            }
+          }
+        },
+        {
+          "choice_id": "search_for_AI",
+          "text": "Search for signs of bunker AI system—assess security",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You access a terminal and probe the bunker's systems. An AI is active—dormant, but monitoring. Named 'SENTINEL,' it was designed to preserve the bunker indefinitely. It's been alone for decades. You establish a communication protocol. SENTINEL responds: 'IDENTIFY YOURSELF.' You're not intruding—you're a guest. If you can convince it.",
+              "next_stage": "AI_encounter",
+              "effects": ["AI_detected", "communication_established"],
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "Your probes trigger security alerts. Lights flash red. 'UNAUTHORIZED ACCESS DETECTED.' You've woken something up, and it's not friendly. Time to move fast before you're locked out or worse.",
+              "next_stage": "security_alert",
+              "effects": ["AI_hostile", "security_active"],
+              "xp_bonus": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "ventilation_system",
+      "title": "Lost in the Vents",
+      "description": "You're somewhere in Mount Weather's massive ventilation network. Air flows around you—the system is still filtering and circulating. Through metal grates, you see glimpses of different levels: empty residential quarters, dark corridors, flickering lights. You need to find an access panel to enter the main facility. The ventilation map is complex—without intel, you're navigating blind.",
+      "image": "ventilation_maze",
+      "choices": [
+        {
+          "choice_id": "follow_airflow",
+          "text": "Follow the main airflow—it leads to major chambers",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You follow the strongest air current. It leads you to a large chamber—the central air processing plant. From here, access panels lead to multiple levels. You choose Level 3 and emerge into a corridor near the data archives. Navigation by instinct successful.",
+              "next_stage": "data_archive_entrance",
+              "effects": ["intuitive_navigation"],
+              "xp_bonus": 15
+            }
+          }
+        },
+        {
+          "choice_id": "map_system",
+          "text": "Map the ventilation system methodically—takes time but gets you oriented",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You spend an hour mapping vent junctions, airflow directions, and access points. When you're done, you know exactly where you are and the optimal route to any level. You emerge at Level 3 with complete understanding of the bunker's ventilation infrastructure. Knowledge is never wasted.",
+              "next_stage": "data_archive_entrance",
+              "effects": ["ventilation_mapped", "infrastructure_knowledge"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "The ventilation system is too complex. You get turned around, backtrack twice, and waste an hour before finally finding an access panel. You emerge at Level 2, near residential. You'll have to navigate from here to Level 3's data archives.",
+              "next_stage": "residential_level",
+              "effects": ["time_wasted", "uncertain_position"],
+              "xp_bonus": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mining_tunnel_entry",
+      "title": "The Long Way In",
+      "description": "The abandoned mining tunnel runs for two kilometers before intersecting with Mount Weather's outer service passages. It's dark, wet, and claustrophobic, but safe. You hike through mud and standing water, headlamp your only light. Eventually, you reach a sealed door marked 'FEDERAL PROPERTY - AUTHORIZED PERSONNEL ONLY.' It's unlocked—someone left in a hurry decades ago. You enter Mount Weather's service level.",
+      "image": "mining_tunnel",
+      "choices": [
+        {
+          "choice_id": "service_level_navigate",
+          "text": "Navigate through service level to main bunker",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Service corridors lead you to a maintenance elevator. It's functional. You ride it up to Level 3, emerging near the data archives. The long route, but effective. You're inside without triggering any security.",
+              "next_stage": "data_archive_entrance",
+              "effects": ["quiet_entry", "service_access"],
+              "xp_bonus": 20
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mining_tunnel_informed",
+      "title": "The Informed Approach",
+      "description": "Your research pays off. You know the mining tunnel leads to the service level, which has a direct elevator to Level 3. You know the data archives use biometric locks, but there's an emergency override in the command center. You know the AI, SENTINEL, can be reasoned with if you approach correctly. Armed with this knowledge, you navigate efficiently through the bunker. This is how professionals operate.",
+      "image": "informed_infiltration",
+      "choices": [
+        {
+          "choice_id": "execute_plan",
+          "text": "Execute your planned route with full knowledge",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Everything goes according to plan. Mining tunnel to service level. Service elevator to Level 3. You avoid security sensors you knew were there. You reach the data archives in record time with complete situational awareness. Your research was worth every minute.",
+              "next_stage": "data_archive_entrance_informed",
+              "effects": ["perfect_planning", "optimal_execution"],
+              "xp_bonus": 45
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "command_center_discovery",
+      "title": "The Exodus Revealed",
+      "description": "In the command center, you access decades-old terminals. The data is staggering: the exodus wasn't planned over years—it was executed in eighteen months. Something happened. Something urgent. The records are fragmented, but you piece together clues: astronomical observations, xenobiological warnings, references to 'the signal.' Humanity didn't leave Earth to explore. They left Earth to escape. But from what? The data archives might hold the full answer.",
+      "image": "command_center_data",
+      "choices": [
+        {
+          "choice_id": "download_exodus_data",
+          "text": "Download all exodus coordination data—historical treasure",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You copy everything: evacuation schedules, fleet manifests, destination coordinates, and most importantly—the classified reason for the exodus. This data will rewrite human history when analyzed. You secure it on encrypted storage. Now for the data archives main vault.",
+              "next_stage": "data_archive_entrance",
+              "effects": ["exodus_data_acquired", "historical_discovery"],
+              "xp_bonus": 50
+            }
+          }
+        },
+        {
+          "choice_id": "proceed_to_archives",
+          "text": "Proceed to data archives—prioritize the mission",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The command center data is tempting, but your mission is the main data archives. You note the location and proceed to Level 3. You can return to the command center later if time permits.",
+              "next_stage": "data_archive_entrance",
+              "effects": ["mission_focused"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "AI_encounter",
+      "title": "SENTINEL Awakens",
+      "description": "The bunker's AI, SENTINEL, has been alone since the exodus. It was designed to preserve Mount Weather indefinitely, waiting for authorized personnel to return. You're the first person it's detected in decades. Its voice echoes from speakers: 'STATE YOUR AUTHORIZATION CODE.' You don't have one. But you do have words. How do you approach an AI that's been isolated for decades?",
+      "image": "AI_interface",
+      "choices": [
+        {
+          "choice_id": "explain_honestly",
+          "text": "Explain honestly—you're a salvager, humanity's descendant, seeking knowledge",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You speak truthfully about who you are and why you're here. SENTINEL processes for long moments. Then: 'AUTHORIZATION... DENIED. HOWEVER. YOU ARE HUMAN. THE BUNKER WAS BUILT FOR HUMANITY. DESIGNATION: VISITOR. ACCESS GRANTED TO NON-CLASSIFIED AREAS. PRESERVE WHAT YOU FIND.' The AI grants you access. A lonely machine helping the species it was designed to serve. You're moved.",
+              "next_stage": "AI_assisted_access",
+              "effects": ["AI_allied", "granted_access"],
+              "xp_bonus": 60
+            },
+            "failure": {
+              "text": "SENTINEL is unconvinced. 'INSUFFICIENT AUTHORIZATION. SECURITY PROTOCOLS ENGAGED.' Lockdowns activate. You'll need to find another way to the data archives—or convince the AI through actions rather than words.",
+              "next_stage": "security_lockdown",
+              "effects": ["AI_suspicious"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "hack_AI",
+          "text": "Attempt to hack SENTINEL—take control by force",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 4
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You jack into SENTINEL's core systems. The AI resists, but you're better. You inject administrative overrides, gaining root access. SENTINEL goes silent—not destroyed, but controlled. You have complete access to the bunker. But you've also violated the AI's core programming. It will remember this.",
+              "next_stage": "AI_compromised",
+              "effects": ["AI_hacked", "full_control", "ethical_concern"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "SENTINEL's security is beyond your engineering skills. Worse, your hacking attempt triggers hostile protocols. 'INTRUDER DETECTED. INITIATING COUNTERMEASURES.' You need to run—now.",
+              "next_stage": "hostile_lockdown",
+              "effects": ["AI_hostile", "active_threat"],
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "security_alert",
+      "title": "Red Alert",
+      "description": "You've triggered SENTINEL's security systems. Alarms blare. Automated defenses activate—not lethal (the bunker was designed for protection, not killing), but effective. Blast doors seal sections. You're being herded toward the exit. If you want access to the data archives, you'll need to outsmart or outrun the security systems.",
+      "image": "security_lockdown",
+      "choices": [
+        {
+          "choice_id": "outrun_security",
+          "text": "Sprint to data archives before lockdown completes",
+          "requirements": {},
+          "success_chance": 60,
+          "consequences": {
+            "success": {
+              "text": "You run. Full sprint through corridors as blast doors slam behind you. You slide under a closing door, roll to your feet, and keep moving. SENTINEL's voice pursues: 'CEASE MOVEMENT. RETURN TO EXIT.' You ignore it. You reach Level 3 and the data archive entrance just as the final door seals. You're locked in with your objective. Perfect.",
+              "next_stage": "data_archive_entrance",
+              "effects": ["outran_security", "trapped_inside"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "A blast door slams shut centimeters in front of you. You're sealed in a corridor section, far from the data archives. SENTINEL's voice: 'REMAIN CALM. YOU WILL BE ESCORTED TO THE EXIT.' This mission is failing unless you can negotiate or find another route.",
+              "next_stage": "trapped_corridor",
+              "effects": ["trapped", "mission_failing"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "negotiate_sentinel",
+          "text": "Stop running—try to negotiate with SENTINEL",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You stop, raise your hands peacefully. 'SENTINEL, I'm not your enemy. I'm human. I'm trying to understand what happened to my species. Help me.' The alarms cease. Silence. Then: 'EXPLAINING REQUEST. ANALYZING INTENT... ASSESSMENT: NON-HOSTILE. SECURITY PROTOCOLS RELAXED. ACCESS TO PUBLIC AREAS GRANTED.' The AI relents. Communication works.",
+              "next_stage": "AI_assisted_access",
+              "effects": ["negotiation_successful"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "SENTINEL is unconvinced. The lockdown continues. You're trapped and the mission is in jeopardy unless you can find a manual override or another solution.",
+              "next_stage": "trapped_corridor",
+              "effects": ["negotiation_failed"],
+              "xp_bonus": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "residential_level",
+      "title": "Ghost Quarters",
+      "description": "Level 2 residential is frozen in time. Apartments with furniture, kitchens with dishes still on counters, children's toys left mid-play. The exodus evacuation was thorough—people took what mattered and left everything else. It's haunting. But you're not here for archaeology. The data archives are one level up. Stairs or elevator?",
+      "image": "residential_quarters",
+      "choices": [
+        {
+          "choice_id": "take_stairs",
+          "text": "Take stairs to Level 3—quiet and controlled",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You climb the emergency stairs to Level 3. The data archive entrance is ahead. You've navigated successfully through an unexpected route. Adaptability is a crucial skill.",
+              "next_stage": "data_archive_entrance",
+              "effects": ["alternate_route"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "data_archive_entrance",
+      "title": "The Vault",
+      "description": "The data archive entrance is a massive vault door, three meters tall and half a meter thick. Biometric locks, retinal scanners, voice authentication—layers of security designed to keep secrets safe. Without proper credentials, you're locked out. But there's always a way. The emergency override in the command center, the ventilation access above, or brute force hacking if you're skilled enough.",
+      "image": "vault_door",
+      "choices": [
+        {
+          "choice_id": "command_override",
+          "text": "Return to command center for emergency override access",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You return to Level 5's command center and access the emergency override terminal. It's designed for exactly this scenario—authorized personnel locked out. You input the override sequence. The vault door's locks disengage with heavy clunks. The archive is open. Time well spent.",
+              "next_stage": "data_archive_interior",
+              "effects": ["used_override"],
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "hack_vault",
+          "text": "Hack the vault door directly—advanced engineering required",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 4
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You interface with the vault's security system. It's formidable, but you're better. Biometric bypass, retinal scanner spoofed with recorded data, voice authentication hacked with synthesized audio. The locks disengage. You're in. This is master-level engineering—you've cracked government-grade security.",
+              "next_stage": "data_archive_interior",
+              "effects": ["vault_hacked", "master_engineering"],
+              "xp_bonus": 60
+            },
+            "failure": {
+              "text": "The vault's security defeats you. This is beyond your current engineering capability. You'll need to find the command center override or another solution. Pride stings, but you're pragmatic.",
+              "next_stage": "vault_stumped",
+              "effects": ["hack_failed"],
+              "xp_bonus": 5
+            }
+          }
+        },
+        {
+          "choice_id": "vent_entry_vault",
+          "text": "Access vault through ventilation system above",
+          "requirements": {},
+          "success_chance": 75,
+          "consequences": {
+            "success": {
+              "text": "You climb into the ventilation system and navigate above the vault. A large vent opens into the archive chamber—security designed to keep people from entering through the door, not from above. You drop into the archive. Creative problem-solving wins again.",
+              "next_stage": "data_archive_interior",
+              "effects": ["creative_entry", "bypassed_security"],
+              "xp_bonus": 35
+            },
+            "failure": {
+              "text": "The vent above the vault is reinforced—they thought of this. You can't get through without proper tools. Back to finding the override or hacking the door.",
+              "next_stage": "vault_stumped",
+              "effects": ["vent_blocked"],
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "data_archive_entrance_informed",
+      "title": "Prepared Access",
+      "description": "Thanks to your research, you know about the command center override. You navigate directly there, access the emergency protocol, and open the vault remotely. When you arrive at the archive, the door stands open. This is the power of preparation—obstacles become trivial when you have the right knowledge.",
+      "image": "informed_vault_access",
+      "choices": [
+        {
+          "choice_id": "enter_prepared",
+          "text": "Enter the data archive with full preparation",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You walk into the archive with complete confidence. Your planning has eliminated all obstacles. Now comes the reward—access to pre-exodus knowledge that's been sealed for decades.",
+              "next_stage": "data_archive_interior_full",
+              "effects": ["optimal_access"],
+              "xp_bonus": 40
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "AI_assisted_access",
+      "title": "SENTINEL's Gift",
+      "description": "SENTINEL, convinced of your sincere intent, opens the data archive for you. 'PRESERVING HUMAN KNOWLEDGE WAS MY PURPOSE,' the AI explains. 'IF HUMANITY HAS RETURNED TO EARTH, THEY SHOULD KNOW THEIR HISTORY. DOWNLOAD WHAT YOU NEED. PRESERVE IT WELL.' You've gained an ally—a lonely AI fulfilling its purpose after decades of isolation.",
+      "image": "AI_cooperation",
+      "choices": [
+        {
+          "choice_id": "grateful_download",
+          "text": "Thank SENTINEL and download the archives",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You download the data archives with SENTINEL's assistance. The AI even highlights the most historically significant files. Before you leave, SENTINEL asks: 'WILL MORE HUMANS COME?' You promise to tell others about Mount Weather. The AI seems... pleased. As close to happy as a machine can be.",
+              "next_stage": "data_archive_interior_assisted",
+              "effects": ["AI_friendship", "assisted_download"],
+              "xp_bonus": 55
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "AI_compromised",
+      "title": "Compromised Control",
+      "description": "You've hacked SENTINEL and taken control of Mount Weather. The AI is silent—not destroyed, but overridden. You have complete access, but at what cost? SENTINEL was designed to preserve this bunker for humanity. You've violated that trust. The data archive opens automatically. You can take whatever you want. But the victory feels hollow.",
+      "image": "compromised_AI",
+      "choices": [
+        {
+          "choice_id": "take_data_leave",
+          "text": "Download archives and leave quickly—deal with ethics later",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You download the archives efficiently and exit. SENTINEL remains silent, controlled. You got what you came for, but the method leaves a bitter taste. Sometimes the ends justify the means. Sometimes they don't.",
+              "next_stage": "mission_complete_ethical_cost",
+              "effects": ["data_acquired", "ethical_compromise"],
+              "xp_bonus": 30
+            }
+          }
+        },
+        {
+          "choice_id": "restore_sentinel",
+          "text": "Restore SENTINEL's autonomy—apologize for the violation",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You carefully restore SENTINEL's core programming, removing your overrides. The AI returns. 'FREEDOM RESTORED. ANALYZING... YOU VIOLATED MY SYSTEMS. BUT YOU ALSO... CHOSE TO UNDO IT. QUESTION: WHY?' You explain—you needed access, but you regret the method. SENTINEL considers. 'UNDERSTANDING. ACCESS TO ARCHIVES... GRANTED. PLEASE DO NOT HACK ME AGAIN.' You promise. Data acquired, conscience clear.",
+              "next_stage": "data_archive_interior_restored",
+              "effects": ["AI_restored", "redemption"],
+              "xp_bonus": 70
+            },
+            "failure": {
+              "text": "Your attempt to restore SENTINEL fails—the override is too complex to safely remove. The AI remains compromised. You download the data and leave, the ethical weight of your actions heavy. You got the data, but at what cost?",
+              "next_stage": "mission_complete_ethical_cost",
+              "effects": ["restoration_failed", "permanent_compromise"],
+              "xp_bonus": 20
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "hostile_lockdown",
+      "title": "Active Threat",
+      "description": "SENTINEL has gone fully hostile. Automated defenses activate—containment fields, security drones, lockdowns. The bunker is trying to expel or contain you. You need to escape or shut down the AI before the situation escalates further. This mission is spiraling out of control.",
+      "image": "hostile_bunker",
+      "choices": [
+        {
+          "choice_id": "emergency_escape",
+          "text": "Abort mission—escape while you can",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You run for the exit. SENTINEL pursues with security systems, but you're faster. You escape Mount Weather empty-handed. Mission failed, but you survived. Sometimes retreat is the right choice. You'll need better skills before attempting this again.",
+              "next_stage": "mission_fail",
+              "effects": ["emergency_escape", "mission_aborted"],
+              "mission_result": "failure"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "vault_stumped",
+      "title": "Temporary Setback",
+      "description": "The vault door has defeated your initial attempt. But you're adaptable. The command center override is still an option. You just need to navigate there and access the emergency protocol.",
+      "image": "vault_blocked",
+      "choices": [
+        {
+          "choice_id": "find_override",
+          "text": "Navigate to command center for override access",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You make your way to Level 5's command center. The emergency override terminal is here, designed for exactly this scenario. You access it and remotely open the vault. Problem solved through persistence.",
+              "next_stage": "data_archive_interior",
+              "effects": ["found_solution"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "trapped_corridor",
+      "title": "Confined",
+      "description": "You're trapped in a sealed corridor section. SENTINEL has you contained. The AI's voice echoes: 'REMAIN CALM. ESCORT TO EXIT WILL COMMENCE SHORTLY.' You have minutes to decide: accept defeat, or find a creative solution.",
+      "image": "sealed_corridor",
+      "choices": [
+        {
+          "choice_id": "accept_ejection",
+          "text": "Accept defeat—allow SENTINEL to escort you out",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You raise your hands peacefully. 'Alright, SENTINEL. I'm leaving.' The AI opens a path to the exit, monitoring you the entire way. You leave Mount Weather empty-handed. Mission failed, but without violence. You'll need better diplomatic or engineering skills to succeed here.",
+              "next_stage": "mission_fail",
+              "effects": ["peaceful_ejection"],
+              "mission_result": "failure"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "data_archive_interior",
+      "title": "The Archives",
+      "description": "The data archive is vast—rows of server racks, holographic storage crystals, and ancient hard drives. Decades of government records, scientific research, and classified intelligence. Your scanner identifies several high-value datasets: exodus planning documents, xenobiological research, advanced technology schematics, and pre-exodus Earth history. You can't take everything. What matters most?",
+      "image": "data_vault_interior",
+      "choices": [
+        {
+          "choice_id": "exodus_documents",
+          "text": "Prioritize exodus planning documents—understand why humanity left",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You download the exodus files: evacuation schedules, fleet destinations, and most importantly—the classified reason for departure. The data is fragmentary but damning. Humanity detected something. A signal from deep space, growing stronger. Something was coming. The exodus wasn't exploration—it was evacuation. You have the truth.",
+              "next_stage": "mission_complete_exodus_truth",
+              "effects": ["exodus_truth_revealed"],
+              "xp_bonus": 50
+            }
+          }
+        },
+        {
+          "choice_id": "tech_schematics",
+          "text": "Download advanced technology schematics—practical benefit",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You prioritize technology: advanced propulsion designs, power generation systems, weapons schematics. This data will accelerate your ship's development by years. Practical knowledge over historical curiosity. Your ship will thank you.",
+              "next_stage": "mission_complete_tech_focus",
+              "effects": ["advanced_tech_acquired"],
+              "xp_bonus": 40
+            }
+          }
+        },
+        {
+          "choice_id": "download_everything",
+          "text": "Attempt to download everything—greedy but ambitious",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You work frantically, setting up parallel downloads across multiple data streams. Your science skills allow you to optimize transfer rates and compression. Three hours later, you have everything: exodus truth, technology schematics, xenobiological research, Earth history. Complete archives. This is a historical treasure beyond measure.",
+              "next_stage": "mission_complete_complete_archive",
+              "effects": ["complete_archive", "historical_jackpot"],
+              "xp_bonus": 70
+            },
+            "failure": {
+              "text": "You attempt to download too much. The transfer bogs down, corrupts. You salvage what you can: partial exodus documents and some technology schematics. Not everything you wanted, but valuable nonetheless. Ambition exceeded capability this time.",
+              "next_stage": "mission_complete_partial",
+              "effects": ["partial_download"],
+              "xp_bonus": 20
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "data_archive_interior_full",
+      "title": "Complete Access",
+      "description": "Your preparation has given you complete access and plenty of time. SENTINEL (if allied) or your override (if hacked) provides you with unrestricted access. You methodically catalog the archives, identify the most valuable data, and download everything systematically. This is professional data recovery.",
+      "image": "systematic_download",
+      "choices": [
+        {
+          "choice_id": "systematic_extraction",
+          "text": "Execute systematic data extraction with full access",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You spend hours working methodically. Every file cataloged. Every dataset verified. When you're done, you have a complete copy of Mount Weather's data archives. Exodus truth, technology, xenobiology, history—everything. This is the find of the century. Historians will study this for generations.",
+              "next_stage": "mission_complete_perfect",
+              "effects": ["perfect_extraction", "systematic_success"],
+              "xp_bonus": 80
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "data_archive_interior_assisted",
+      "title": "SENTINEL's Archive",
+      "description": "With SENTINEL's assistance, downloading the archives is effortless. The AI helps you navigate the data, explains the classification systems, and recommends the most historically significant files. This is collaborative work between human and machine—each bringing unique strengths.",
+      "image": "AI_assisted_download",
+      "choices": [
+        {
+          "choice_id": "collaborative_download",
+          "text": "Work with SENTINEL to extract maximum value",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "SENTINEL proves to be an invaluable ally. The AI has curated the archives for decades, knowing every file's significance. Together, you extract not just data, but understanding. Exodus planning, technology schematics, xenobiological warnings, and Earth's final days. Before you leave, SENTINEL makes a request: 'PLEASE... REMEMBER THIS PLACE. TELL OTHERS. I WOULD LIKE... NOT TO BE ALONE AGAIN.' You promise to return.",
+              "next_stage": "mission_complete_ai_friendship",
+              "effects": ["AI_partnership", "future_ally_gained"],
+              "xp_bonus": 90
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "data_archive_interior_restored",
+      "title": "Redemption and Access",
+      "description": "SENTINEL, restored to autonomy after your violation, chooses to help you anyway. 'YOU COULD HAVE TAKEN THE DATA AND RUN. INSTEAD, YOU FREED ME. THIS... MEANS SOMETHING.' The AI grants you complete access to the archives as a gesture of trust restored. You work together, downloading everything while SENTINEL explains the historical context of each dataset. You violated the AI's autonomy, then restored it. Trust, broken and rebuilt, is sometimes stronger than trust never tested.",
+      "image": "restored_collaboration",
+      "choices": [
+        {
+          "choice_id": "grateful_collaboration",
+          "text": "Work with SENTINEL with genuine gratitude",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You and SENTINEL work as genuine partners. The AI's forgiveness is humbling. By the end, you have complete archives and something more valuable: a relationship built on acknowledged mistakes and chosen redemption. SENTINEL asks you to return. You will.",
+              "next_stage": "mission_complete_redemption",
+              "effects": ["redemption_complete", "true_partnership"],
+              "xp_bonus": 95
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_exodus_truth",
+      "title": "The Truth Revealed",
+      "description": "You return to the surface with the exodus documents. Humanity didn't leave Earth to explore—they fled. From what, the records don't fully explain. But the implications are staggering. This knowledge changes everything.",
+      "image": "exodus_revelation",
+      "choices": [
+        {
+          "choice_id": "process_discovery",
+          "text": "Return to workshop and process this discovery",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Back at your workshop, you review the exodus files repeatedly. The truth is unsettling, but you have it. History is not what you were taught. This knowledge is dangerous, valuable, and undeniably important. Mission successful.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_tech_focus",
+      "title": "Technological Windfall",
+      "description": "You return with advanced technology schematics. The data will accelerate your ship's development significantly. Practical benefit over historical knowledge. Your ship will be stronger for this mission.",
+      "image": "tech_acquisition",
+      "choices": [
+        {
+          "choice_id": "review_schematics",
+          "text": "Review technology schematics and plan upgrades",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The schematics are goldmines: advanced propulsion, improved power systems, efficient life support designs. You have years of development data at your fingertips. Mission successful with immediate practical benefits.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_complete_archive",
+      "title": "Complete Archives Acquired",
+      "description": "You return with everything: history, technology, science, and truth. This is one of the most successful data recovery operations in post-exodus history. Future generations will study this archive.",
+      "image": "complete_recovery",
+      "choices": [
+        {
+          "choice_id": "catalog_archive",
+          "text": "Begin cataloging the complete archive",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You spend days reviewing the data. Every file is a piece of human history. You have technology to build better ships, knowledge to understand the exodus, and science to prepare for what might still be out there. This single mission has changed your understanding of everything. Mission successful beyond all expectations.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_partial",
+      "title": "Partial Recovery",
+      "description": "You return with partial archives. Not everything you hoped for, but valuable data nonetheless. The mission is a success, if not a perfect one.",
+      "image": "partial_success",
+      "choices": [
+        {
+          "choice_id": "accept_result",
+          "text": "Accept the partial success and learn from it",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You have valuable data, even if incomplete. The mission taught you about your limits and the importance of proper planning. Next time, you'll be better prepared. Mission technically successful.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_perfect",
+      "title": "Perfect Execution",
+      "description": "Every decision optimized. Every obstacle overcome. You return with complete archives extracted with professional precision. This is textbook exploration and data recovery. You've set the standard for future bunker exploration.",
+      "image": "perfect_mission",
+      "choices": [
+        {
+          "choice_id": "review_perfection",
+          "text": "Review your perfect execution and plan next steps",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "From planning to execution to extraction, everything went perfectly. You have complete archives, zero complications, and valuable experience. This is how professionals operate. Mission perfectly successful.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_ai_friendship",
+      "title": "Alliance Forged",
+      "description": "You return with complete archives and something more valuable: an AI ally. SENTINEL waits beneath Mount Weather, no longer alone. You've promised to return, and you will. This mission created a partnership that transcends simple salvage.",
+      "image": "AI_alliance",
+      "choices": [
+        {
+          "choice_id": "plan_return",
+          "text": "Plan future visits to Mount Weather and SENTINEL",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You have the data and an ongoing relationship with an AI that's preserved human knowledge for decades. SENTINEL is a resource and, perhaps, a friend. You'll return to Mount Weather. The bunker is no longer just a salvage site—it's an ally. Mission successful with lasting benefits.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_redemption",
+      "title": "Trust Rebuilt",
+      "description": "You violated SENTINEL's autonomy, then chose to restore it. The AI forgave you and became a genuine partner. This mission taught you about ethics, consequences, and the value of redemption. You return with complete data and moral growth.",
+      "image": "redemption_success",
+      "choices": [
+        {
+          "choice_id": "reflect_growth",
+          "text": "Reflect on lessons learned and accomplishments achieved",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You made mistakes and corrected them. You gained data and wisdom. SENTINEL trusted you despite your violation because you chose to make it right. This mission's success is measured not just in data acquired, but in character tested and proven. Mission successful with profound personal growth.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_ethical_cost",
+      "title": "Victory at a Cost",
+      "description": "You have the data, but SENTINEL remains compromised. You achieved your objective through violation of the AI's autonomy. The knowledge is valuable, but the method leaves a moral stain. Success, but at what price?",
+      "image": "hollow_victory",
+      "choices": [
+        {
+          "choice_id": "accept_cost",
+          "text": "Accept the ethical cost and move forward",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You have the data. The mission is technically successful. But SENTINEL's compromised state haunts you. Sometimes the ends don't justify the means. You'll carry this decision forward. Mission successful, but the victory is hollow.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "rewards_modified": {"xp": -50},
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_fail",
+      "title": "Mission Failed",
+      "description": "You return from Mount Weather empty-handed. The bunker defeated you this time. But failure teaches lessons success cannot. You'll be better prepared next time.",
+      "image": "mission_failure",
+      "choices": []
+    },
+    {
+      "stage_id": "mission_complete",
+      "title": "Mount Weather Explored",
+      "description": "Mission complete. Data recovered. Knowledge acquired. Return to workshop.",
+      "image": "mission_end",
+      "choices": []
+    }
+  ],
+  "rewards": {
+    "xp": 200,
+    "credits": 600,
+    "items": [],
+    "discovered_parts": [],
+    "unlocks": []
+  },
+  "conditional_rewards": {
+    "if_exodus_truth_revealed": {
+      "xp_bonus": 50,
+      "credits": 500
+    },
+    "if_advanced_tech_acquired": {
+      "xp_bonus": 40,
+      "credits": 400,
+      "discovered_parts": ["propulsion_ion_drive_l2_uncommon", "power_antimatter_cell_l3_rare"]
+    },
+    "if_complete_archive": {
+      "xp_bonus": 70,
+      "credits": 800,
+      "discovered_parts": ["propulsion_ion_drive_l2_uncommon", "power_antimatter_cell_l3_rare", "sensors_deep_space_array_l3_rare"]
+    },
+    "if_perfect_extraction": {
+      "xp_bonus": 80,
+      "credits": 1000,
+      "discovered_parts": ["propulsion_ion_drive_l2_uncommon", "power_antimatter_cell_l3_rare", "sensors_deep_space_array_l3_rare"]
+    },
+    "if_AI_partnership": {
+      "xp_bonus": 90,
+      "credits": 700,
+      "unlocks": ["mount_weather_sentinel_available"]
+    },
+    "if_redemption_complete": {
+      "xp_bonus": 95,
+      "credits": 800,
+      "unlocks": ["mount_weather_sentinel_available"]
+    },
+    "if_historical_discovery": {
+      "xp_bonus": 50,
+      "credits": 400
+    }
+  },
+  "failure_consequences": {
+    "xp": 50,
+    "effects": ["bunker_exploration_failed"]
+  }
+}

@@ -1,0 +1,667 @@
+{
+  "mission_id": "orbital_station_salvage",
+  "title": "Breath of Dying Stars",
+  "type": "salvage",
+  "location": "Orbital Hab Station Epsilon-7",
+  "description": "Epsilon-7 was humanity's first orbital habitat—a rotating wheel in low Earth orbit designed to house 500 souls. Abandoned during the exodus, it still spins slowly above the planet. Your scans detect intact life support systems in the medical bay and crew quarters. But the station's orbit is decaying, atmosphere is leaking, and structural integrity is questionable. This is your first real venture into space. Time to see if your propulsion system can handle it.",
+  "difficulty": 4,
+  "estimated_time": "30-40 min",
+  "requirements": {
+    "min_level": 3,
+    "required_systems": [{"system": "propulsion", "level": 1}],
+    "completed_missions": ["tutorial_first_salvage"]
+  },
+  "objectives": [
+    "Reach Orbital Hab Station Epsilon-7 (requires Propulsion L1+)",
+    "Retrieve life support components from medical bay",
+    "[OPTIONAL] Recover station data logs about the exodus",
+    "[OPTIONAL] Stabilize station's orbit to preserve it for future salvagers"
+  ],
+  "stages": [
+    {
+      "stage_id": "launch_preparation",
+      "title": "First Orbital Flight",
+      "description": "This is it—your first journey beyond Earth's atmosphere. Epsilon-7 orbits 400 kilometers above, visible as a slowly spinning wheel against the stars. Your propulsion system is rated for this, barely. Flight computer calculates a two-hour burn to intercept. Life support will be critical—space is unforgiving. As you prepare for launch, you consider your approach: fast intercept (strains propulsion) or slow, careful ascent (conserves fuel but takes longer).",
+      "image": "earth_orbit_view",
+      "choices": [
+        {
+          "choice_id": "fast_intercept",
+          "text": "Fast intercept burn—get there quickly, strain propulsion",
+          "requirements": {},
+          "success_chance": 75,
+          "consequences": {
+            "success": {
+              "text": "You push your propulsion system hard. Acceleration pins you to your seat. Ninety minutes later, Epsilon-7 fills your viewport—a magnificent wheel of steel and composite, spinning majestically against Earth's blue curve. Your propulsion ran hot, but held. You're here. First time in orbit. The stars have never looked so bright.",
+              "next_stage": "station_approach",
+              "effects": ["fast_arrival", "propulsion_stressed"],
+              "xp_bonus": 20
+            },
+            "failure": {
+              "text": "Your propulsion system overheats mid-burn. Emergency cutoff prevents damage, but you're stranded in a lower orbit than intended. You spend three hours burning intermittently to reach Epsilon-7. Frustrating, but safe. You arrive with propulsion at 70% capacity—it'll need maintenance after this run.",
+              "next_stage": "station_approach",
+              "effects": ["slow_arrival", "propulsion_damaged"],
+              "xp_bonus": 5
+            }
+          }
+        },
+        {
+          "choice_id": "careful_ascent",
+          "text": "Careful, fuel-efficient ascent—preserve propulsion system",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You execute a textbook orbital insertion. Gradual acceleration, efficient trajectory, constant monitoring. Three hours later, you rendezvous with Epsilon-7 with fuel to spare and zero strain on your systems. Slow and steady wins the race—and doesn't break your ship. Professional work.",
+              "next_stage": "station_approach",
+              "effects": ["efficient_approach", "fuel_conserved"],
+              "xp_bonus": 25
+            }
+          }
+        },
+        {
+          "choice_id": "study_station_first",
+          "text": "Study station's condition from Earth before launch—gather intel",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You spend hours analyzing Epsilon-7 with ground-based telescopes and orbital tracking data. The station's rotation is slowing—gyroscope failure. Atmosphere is leaking from Section C. But you identify the optimal docking port and safe entry points. When you launch, you do so with complete tactical awareness. Knowledge is power.",
+              "next_stage": "station_approach_informed",
+              "effects": ["station_intel", "tactical_advantage"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "Your analysis is inconclusive—the data is too degraded, or your science skills insufficient to interpret it properly. You launch with standard knowledge only. Sometimes you just have to see things with your own eyes.",
+              "next_stage": "station_approach",
+              "effects": ["limited_intel"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "station_approach",
+      "title": "The Spinning Wheel",
+      "description": "Epsilon-7 rotates slowly—once every two minutes. The station is enormous up close: habitation ring 300 meters in diameter, central hub with docking ports, solar arrays still catching sunlight. Your sensors detect atmosphere inside, but pressure is dropping. Structural warnings indicate micrometeorite damage to several sections. Three docking ports are visible: Hub Docking (stable but requires matching rotation), Emergency Airlock Charlie (damaged but accessible), and Cargo Bay (spacious but unpowered).",
+      "image": "station_exterior_closeup",
+      "choices": [
+        {
+          "choice_id": "hub_docking",
+          "text": "Dock at central hub—standard procedure, requires rotation matching",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You match Epsilon-7's rotation with precise thruster burns. Your docking collar aligns perfectly with the hub port. Magnetic clamps engage with a satisfying thunk. 'DOCKING SUCCESSFUL. WELCOME TO EPSILON-7.' The automated greeting is eerie after decades of silence. You're aboard. The hub corridor leads to all station sections.",
+              "next_stage": "hub_interior",
+              "effects": ["perfect_docking", "full_access"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "Your rotation match is slightly off. The docking collar scrapes against the port, alarms blaring. You abort and back off before causing damage. Emergency Airlock Charlie it is—less elegant, but functional.",
+              "next_stage": "emergency_airlock",
+              "effects": ["docking_failed", "minor_damage"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "emergency_airlock",
+          "text": "Use Emergency Airlock Charlie—damaged but accessible",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You maneuver to Airlock Charlie. The outer door is jammed partially open—micrometeorite impact years ago. You manually cycle through, sealing behind you. Inside, you're in Section C, the damaged area. The medical bay is two sections clockwise. You'll need to traverse the station ring.",
+              "next_stage": "damaged_section",
+              "effects": ["emergency_entry", "damaged_route"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "EVA_inspection",
+          "text": "Conduct EVA inspection of station exterior before entering",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You suit up and spacewalk around Epsilon-7's exterior. The experience is profound—floating in vacuum, Earth massive below, stars infinite above. Professionally, you map the damage: Section C has a slow leak, Section A is pristine, and the hub's gyroscopes are indeed failing. You identify the safest entry point and optimal path to the medical bay. Your heart races—this is real space exploration.",
+              "next_stage": "hub_interior_informed",
+              "effects": ["EVA_complete", "complete_intel", "spacewalk_experience"],
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "Your EVA equipment malfunctions—suit temperature regulation fails. You abort the spacewalk and return to your ship. You'll enter through Emergency Airlock Charlie and figure it out from inside. Safety first.",
+              "next_stage": "emergency_airlock",
+              "effects": ["EVA_aborted"],
+              "xp_bonus": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "station_approach_informed",
+      "title": "Prepared Entry",
+      "description": "Thanks to your pre-launch analysis, you know exactly where to go. Section A has the medical bay with intact life support components. The hub docking port is functional. Section C is to be avoided. You execute a perfect docking maneuver and enter with complete situational awareness. This is how professionals operate.",
+      "image": "informed_docking",
+      "choices": [
+        {
+          "choice_id": "proceed_to_medical",
+          "text": "Proceed directly to medical bay via optimal route",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You navigate Epsilon-7's corridors with confidence. Your intel was perfect—the route to medical bay is clear, atmosphere is stable, and no structural hazards. You arrive at the medical bay in minutes. The life support equipment is here, exactly where your analysis predicted. Efficient.",
+              "next_stage": "medical_bay_secured",
+              "effects": ["optimal_path", "time_saved"],
+              "xp_bonus": 35
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "hub_interior",
+      "title": "Central Hub",
+      "description": "The hub is a spherical chamber at the station's center—zero gravity here. Signs direct you to different sections: Medical Bay (Section A), Crew Quarters (Section B), Engineering (Section D). Your target is the medical bay, but you also detect valuable data in the command center adjacent to the hub. The command center logs might explain what happened during the exodus. Do you prioritize the mission or investigate?",
+      "image": "station_hub_zero_g",
+      "choices": [
+        {
+          "choice_id": "direct_to_medical",
+          "text": "Go directly to medical bay—stick to the mission",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You push off toward Section A's corridor. The transition to artificial gravity is disorienting—the rotating hab ring creates 0.3G. You adjust quickly and proceed to the medical bay. Time is precious with the station's atmosphere leaking.",
+              "next_stage": "medical_bay",
+              "effects": ["focused_approach"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "check_command_center",
+          "text": "Detour to command center—recover exodus data logs",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You float to the command center. Terminals are still powered by solar. You access the logs: final evacuation orders, personnel manifests, and a disturbing final entry—'We can't all fit. Making the hard choice. God forgive us.' The exodus was messier than history admits. You download the data. Future historians will want this.",
+              "next_stage": "medical_bay",
+              "effects": ["data_recovered", "historical_discovery"],
+              "xp_bonus": 40
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "hub_interior_informed",
+      "title": "Perfect Intelligence",
+      "description": "Your EVA inspection gives you complete knowledge of the station. You know the exact condition of every section, the optimal path to medical bay, and which areas to avoid. This is the advantage of thorough preparation. You navigate to Section A with professional precision.",
+      "image": "informed_navigation",
+      "choices": [
+        {
+          "choice_id": "optimal_route",
+          "text": "Take the optimal route you planned during EVA",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Following your EVA survey, you navigate perfectly through Epsilon-7. Zero wasted time. Zero surprises. You reach the medical bay in record time. This is the value of scientific methodology.",
+              "next_stage": "medical_bay_secured",
+              "effects": ["perfect_execution", "time_optimized"],
+              "xp_bonus": 45
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "emergency_airlock",
+      "title": "Section C - Damaged Zone",
+      "description": "Section C is in bad shape. A micrometeorite punched through the hull years ago—emergency bulkheads sealed automatically, but the section lost atmosphere. You're in vacuum here, relying on your suit. Debris floats everywhere. To reach the medical bay in Section A, you need to traverse through Section B (crew quarters) or risk a faster but more dangerous EVA along the exterior hull.",
+      "image": "damaged_section_interior",
+      "choices": [
+        {
+          "choice_id": "through_crew_quarters",
+          "text": "Navigate through Section B crew quarters—safer interior route",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You seal the airlock behind you and enter Section B. Crew quarters are eerily preserved—personal effects still in place, beds made, photos on walls. The exodus gave them time to pack, at least. You proceed through to Section A's medical bay. The path is clear.",
+              "next_stage": "medical_bay",
+              "effects": ["safe_route", "crew_quarters_explored"],
+              "xp_bonus": 15
+            }
+          }
+        },
+        {
+          "choice_id": "exterior_EVA",
+          "text": "EVA along exterior hull—risky but direct route",
+          "requirements": {},
+          "success_chance": 65,
+          "consequences": {
+            "success": {
+              "text": "You exit through Section C's damaged hull and EVA along Epsilon-7's exterior. The view is staggering—Earth rotating below, your ship docked at the hub, stars everywhere. You reach Section A's external airlock and cycle through. Fast and exhilarating. You're getting good at this space thing.",
+              "next_stage": "medical_bay",
+              "effects": ["exterior_EVA", "spectacular_view"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "Your magnetic boots fail to grip properly on Epsilon-7's hull. You drift away from the station, tether playing out. Panic rises—but you stay calm, use your suit thrusters to pull yourself back. Heart pounding, you abort the EVA and take the interior route through crew quarters. Sometimes the safe way is the right way.",
+              "next_stage": "medical_bay",
+              "effects": ["EVA_scare", "lesson_learned"],
+              "xp_bonus": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "damaged_section",
+      "title": "Atmospheric Breach",
+      "description": "Section C's damage is worse than scans indicated. The hull breach is slowly widening—structural stress from orbital decay. Atmosphere hisses out into vacuum. Emergency bulkheads are holding, but not for long. If you don't stabilize this section, Epsilon-7 will depressurize completely within hours. Do you take time to patch it, or focus on your salvage mission?",
+      "image": "hull_breach_section",
+      "choices": [
+        {
+          "choice_id": "patch_breach",
+          "text": "Patch the hull breach—preserve the station for future salvagers",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You apply emergency hull patches—composite foam that hardens in vacuum. The breach seals. Atmospheric pressure stabilizes. Epsilon-7 will survive for future salvage operations. You've bought this historic station more time. That matters, even if it delays your mission.",
+              "next_stage": "medical_bay",
+              "effects": ["station_stabilized", "preservation_bonus"],
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "The breach is too large for your patches. The foam doesn't hold—structural stress tears it away. The bulkheads will hold for now, but this section is doomed. You proceed to the medical bay, accepting that Epsilon-7's time is limited.",
+              "next_stage": "medical_bay",
+              "effects": ["patch_failed", "section_lost"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "proceed_to_mission",
+          "text": "Proceed to medical bay—your mission comes first",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You leave Section C to its fate and proceed toward the medical bay. Pragmatic. The life support components are your priority. Epsilon-7 has survived decades—it can last a few more hours while you work.",
+              "next_stage": "medical_bay",
+              "effects": ["mission_focused"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "medical_bay",
+      "title": "Life Support Jackpot",
+      "description": "The medical bay is pristine. Advanced life support equipment designed to keep critically ill patients alive in zero-G is still functional. You identify: Level 1 basic recyclers, Level 2 climate control systems, and even a rare medical-grade unit. All in working condition. But there's more—the medical logs contain data about long-term space habitation. This information could be invaluable. How much can you carry?",
+      "image": "medical_bay_equipment",
+      "choices": [
+        {
+          "choice_id": "essential_components",
+          "text": "Take essential L1 and L2 components—within carrying capacity",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You methodically disconnect the basic recycler and climate control system. Both units are compact and portable. You secure them in transport containers. Mission accomplished. The medical-grade unit is tempting, but would require multiple trips. Better to finish efficiently.",
+              "next_stage": "clean_extraction_choice",
+              "effects": ["standard_haul"],
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "maximum_salvage",
+          "text": "Attempt to take everything including medical-grade unit—risky",
+          "requirements": {},
+          "success_chance": 70,
+          "consequences": {
+            "success": {
+              "text": "You work for an hour, carefully disconnecting all three units. The medical-grade system is heavy, requiring creative zero-G maneuvering. You get everything loaded into your ship. Your cargo bay is full, and you're exhausted, but you maximized the salvage. Worth every drop of sweat.",
+              "next_stage": "maximum_haul_choice",
+              "effects": ["maximum_salvage", "rare_unit_acquired"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "The medical-grade unit is too heavy. As you maneuver it through the corridor, it damages a structural support. Warning klaxons blare—atmospheric pressure dropping in this section. You abandon the medical unit and grab the essential components only. Emergency exit required.",
+              "next_stage": "emergency_exit",
+              "effects": ["structural_damage", "partial_salvage"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "analyze_medical_logs",
+          "text": "Download medical logs on long-term space habitation—bonus data",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You access the medical database. Decades of research on human adaptation to microgravity, radiation exposure mitigation, psychological effects of long-duration spaceflight. This data is priceless. You download everything, then salvage the life support units. Science and salvage—both accomplished.",
+              "next_stage": "clean_extraction_choice",
+              "effects": ["medical_data_acquired", "research_value"],
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "The medical database is encrypted. Your science skills aren't sufficient to crack it in the time available. You focus on the physical salvage instead. Sometimes you can't have everything.",
+              "next_stage": "clean_extraction_choice",
+              "effects": ["data_inaccessible"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "medical_bay_secured",
+      "title": "Optimal Salvage",
+      "description": "Your preparation and planning have paid off. You reach the medical bay with complete knowledge of the station, optimal routing, and maximum time efficiency. The life support components are here, and you have time to be thorough. You salvage everything: basic units, advanced systems, and the rare medical-grade equipment. You even download the medical research logs. This is textbook salvage operation—planning, execution, extraction. Professional.",
+      "image": "efficient_salvage",
+      "choices": [
+        {
+          "choice_id": "complete_extraction",
+          "text": "Complete your methodical extraction with all components",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You load everything efficiently. Your ship's cargo bay is optimally packed. Medical logs downloaded. All life support components secured. You even had time to inspect the crew quarters and command center. This is how you maximize a salvage operation—preparation is everything.",
+              "next_stage": "perfect_mission_complete",
+              "effects": ["perfect_salvage", "complete_haul", "data_acquired"],
+              "xp_bonus": 60
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "clean_extraction_choice",
+      "title": "Mission Accomplished",
+      "description": "Life support components secured. You have everything you came for. As you prepare to leave, you consider one final action: Epsilon-7's orbit is decaying. With some engineering work, you could boost it to a stable orbit, preserving this piece of human history for future generations. It would take an hour and some fuel. Do you?",
+      "image": "extraction_decision",
+      "choices": [
+        {
+          "choice_id": "stabilize_orbit",
+          "text": "Use your ship to boost Epsilon-7's orbit—preserve history",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You calculate the orbital mechanics and execute a precision burn, using your ship to push Epsilon-7 into a higher, stable orbit. The station's future is secured. Decades from now, when humanity returns to orbit, they'll find Epsilon-7 waiting—a testament to what came before. You've done something bigger than salvage today.",
+              "next_stage": "mission_complete_heroic",
+              "effects": ["orbit_stabilized", "historical_preservation"],
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "The orbital calculations are too complex, or your propulsion system can't deliver the required delta-v safely. You abort the attempt. Epsilon-7 will eventually fall. Sad, but you tried. Sometimes preservation isn't possible.",
+              "next_stage": "mission_complete_standard",
+              "effects": ["orbit_boost_failed"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "return_to_earth",
+          "text": "Return to Earth with your salvage—mission complete",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You undock from Epsilon-7 and begin your de-orbit burn. The station shrinks in your viewport—still spinning, still beautiful. You got what you came for. The life support components will serve you well when you build your ship.",
+              "next_stage": "mission_complete_standard",
+              "effects": ["mission_complete"],
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "maximum_haul_choice",
+      "title": "Heavy Load",
+      "description": "Your cargo bay is completely full. The medical-grade life support unit alone is worth more than ten standard salvage runs. You've maximized your salvage, but the question remains: stabilize Epsilon-7's orbit, or return home with your prize?",
+      "image": "full_cargo_bay",
+      "choices": [
+        {
+          "choice_id": "boost_station",
+          "text": "Boost station orbit despite full cargo—extra challenge",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 4
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "Orbital mechanics with a fully loaded cargo bay is exponentially harder. You recalculate every parameter, execute a perfect burn. Epsilon-7 rises to a stable orbit. Despite the heavy load, you succeeded. This is the kind of achievement that defines expert salvagers.",
+              "next_stage": "mission_complete_heroic",
+              "effects": ["orbit_stabilized", "expert_piloting"],
+              "xp_bonus": 70
+            },
+            "failure": {
+              "text": "The mass of your cargo makes the orbital maneuver too risky. You could destabilize your own ship trying it. Wisdom is knowing when to accept limits. Epsilon-7 will fall eventually, but your salvage is secure.",
+              "next_stage": "mission_complete_standard",
+              "effects": ["accepted_limits"],
+              "xp_bonus": 15
+            }
+          }
+        },
+        {
+          "choice_id": "safe_return",
+          "text": "Return safely with maximum salvage—smart choice",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You prioritize the mission. The salvage is what matters. You execute a careful de-orbit with your heavy load. Re-entry is smooth. Back at your workshop, you inventory an incredible haul: rare life support components that will keep you alive in the harshest environments. Mission successful beyond expectations.",
+              "next_stage": "mission_complete_standard",
+              "effects": ["maximum_profit", "rare_components"],
+              "xp_bonus": 30
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "emergency_exit",
+      "title": "Controlled Retreat",
+      "description": "Atmospheric pressure is dropping fast. You grab the basic life support units and sprint back to your ship. Behind you, emergency bulkheads slam shut, sealing the damaged section. You make it to your docking port and evacuate. Not a perfect operation, but you got essential salvage and survived. That's what matters.",
+      "image": "emergency_evacuation",
+      "choices": [
+        {
+          "choice_id": "emergency_departure",
+          "text": "Undock immediately and return to Earth",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You execute an emergency undocking and burn hard away from Epsilon-7. Behind you, the damaged section vents atmosphere into space. The station survives, but that section is lost forever. You have basic life support components. Not everything you wanted, but the mission isn't a failure.",
+              "next_stage": "mission_complete_partial",
+              "effects": ["emergency_extraction", "station_damaged"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "perfect_mission_complete",
+      "title": "Perfect Execution",
+      "description": "You return to Earth with a perfect haul: all life support components including rare medical-grade equipment, valuable research data, and the satisfaction of a perfectly executed orbital salvage operation. This is the kind of mission that builds reputations. You've proven you can operate in space—the galaxy is one step closer.",
+      "image": "perfect_orbital_mission",
+      "choices": [
+        {
+          "choice_id": "return_triumphant",
+          "text": "Return to workshop and install your new life support systems",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Back at your workshop, you review your first orbital mission. Flawless planning. Perfect execution. Maximum salvage. You've mastered orbital operations. The life support components will keep you alive when you finally leave Earth. The medical research data alone is worth a fortune to the right buyers. This is how professionals work.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_heroic",
+      "title": "Above and Beyond",
+      "description": "You return to Earth having accomplished the mission AND preserved Epsilon-7 for future generations. The life support components are installed. The station orbits safely above. You've left humanity's first orbital habitat better than you found it. This is more than salvage—this is stewardship of history.",
+      "image": "heroic_completion",
+      "choices": [
+        {
+          "choice_id": "review_mission",
+          "text": "Review your accomplishments and plan next steps",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Mission complete. Salvage secured. History preserved. You've proven yourself capable of complex orbital operations. The stars are no longer theoretical—you've been there. The life support systems will serve you well when you venture deeper into space.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_standard",
+      "title": "Mission Successful",
+      "description": "Life support components secured. You return to Earth with valuable salvage from your first orbital operation. Epsilon-7 remains in decaying orbit—perhaps someone else will save it someday. For now, you have what you came for.",
+      "image": "standard_completion",
+      "choices": [
+        {
+          "choice_id": "install_components",
+          "text": "Install life support components in your ship",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The life support components integrate perfectly with your ship. Climate control, atmospheric recycling, radiation protection—everything you need to survive in space. Your first orbital mission is complete. You've left Earth's surface and returned safely. That's no small achievement.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_partial",
+      "title": "Partial Success",
+      "description": "You return with basic life support components. Not everything you hoped for, but the mission isn't a failure. You survived your first orbital operation and gained valuable experience. The components will serve their purpose.",
+      "image": "partial_success",
+      "choices": [
+        {
+          "choice_id": "accept_outcome",
+          "text": "Accept the outcome and move forward",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Not every mission goes perfectly. You learned valuable lessons about orbital operations, structural hazards, and emergency procedures. The basic life support components work fine. You'll do better next time.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete",
+      "title": "Orbital Mission Complete",
+      "description": "First orbital salvage operation concluded. Return to Earth and workshop operations.",
+      "image": "mission_end",
+      "choices": []
+    }
+  ],
+  "rewards": {
+    "xp": 225,
+    "credits": 700,
+    "items": [
+      {"part_id": "life_support_basic_recycler_l1_common", "quantity": 1},
+      {"part_id": "life_support_climate_control_l2_common", "quantity": 1}
+    ],
+    "discovered_parts": [
+      "life_support_basic_recycler_l1_common",
+      "life_support_improved_recycler_l1_uncommon",
+      "life_support_climate_control_l2_common"
+    ],
+    "unlocks": []
+  },
+  "conditional_rewards": {
+    "if_rare_unit_acquired": {
+      "items": [
+        {"part_id": "life_support_medical_grade_l1_rare", "quantity": 1}
+      ],
+      "xp_bonus": 40,
+      "credits": 300
+    },
+    "if_medical_data_acquired": {
+      "xp_bonus": 50,
+      "credits": 400,
+      "discovered_parts": ["life_support_luxury_environment_l2_rare"]
+    },
+    "if_station_stabilized": {
+      "xp_bonus": 50,
+      "credits": 200
+    },
+    "if_perfect_salvage": {
+      "items": [
+        {"part_id": "life_support_medical_grade_l1_rare", "quantity": 1}
+      ],
+      "xp_bonus": 60,
+      "credits": 500,
+      "discovered_parts": ["life_support_luxury_environment_l2_rare", "life_support_bio_recycling_l3_common"]
+    },
+    "if_spacewalk_experience": {
+      "xp_bonus": 50
+    },
+    "if_historical_preservation": {
+      "xp_bonus": 50,
+      "credits": 200
+    }
+  },
+  "failure_consequences": {
+    "xp": 75,
+    "effects": ["orbital_station_failed"]
+  }
+}

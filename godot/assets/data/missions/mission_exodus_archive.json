@@ -1,0 +1,680 @@
+{
+  "mission_id": "exodus_archive",
+  "title": "The Exodus Archive",
+  "type": "story",
+  "location": "Cape Canaveral Archive Facility",
+  "description": "Before humanity left Earth, they built one final monument: the Exodus Archive. A bunker at Cape Canaveral containing the complete story of why they fled, where they went, and what they hoped to find. For decades, it remained sealed—waiting for someone to return and ask the question: Why did we leave? You've found fragments of the truth in other places. Now you seek the complete answer. This is not salvage. This is pilgrimage.",
+  "difficulty": 2,
+  "estimated_time": "20-25 min",
+  "requirements": {
+    "min_level": 2,
+    "required_systems": [],
+    "completed_missions": ["tutorial_first_salvage"]
+  },
+  "objectives": [
+    "Access the Exodus Archive at Cape Canaveral",
+    "Recover the complete exodus historical record",
+    "Understand why humanity left Earth",
+    "[OPTIONAL] Find messages left for future returners"
+  ],
+  "stages": [
+    {
+      "stage_id": "archive_discovery",
+      "title": "The Last Monument",
+      "description": "Cape Canaveral, where humanity once launched itself toward the stars. Now it's a silent monument to what was. The launch pads are empty. The Vehicle Assembly Building stands hollow. But your research led you here—to a facility marked only on classified maps: The Exodus Archive. A simple building, deliberately understated, designed to survive centuries. Its entrance bears a plaque: 'FOR THOSE WHO RETURN. THE TRUTH AWAITS.' You've returned. Time to learn the truth.",
+      "image": "archive_exterior",
+      "choices": [
+        {
+          "choice_id": "approach_reverently",
+          "text": "Approach with reverence—this is sacred ground",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You walk slowly toward the archive entrance. This isn't just another salvage site—this is a monument to your entire species. The door is sealed, but a control panel waits. It's not locked. It was never meant to be locked. 'IDENTITY VERIFICATION: HUMAN DNA DETECTED. WELCOME HOME.' The door opens. You're expected.",
+              "next_stage": "archive_entrance",
+              "effects": ["respectful_approach", "recognized_human"],
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "scan_building",
+          "text": "Scan the building first—assess structure and contents",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "Your scans reveal the archive's elegant design: radiation shielding, environmental seals, power systems designed to last centuries. Inside: data storage on multiple redundant formats, holographic displays, and something else—an AI system, active and waiting. This facility was built with love and desperation. Every detail speaks of humanity's hope that someone would return.",
+              "next_stage": "archive_entrance_informed",
+              "effects": ["archive_scanned", "AI_detected"],
+              "xp_bonus": 35
+            },
+            "failure": {
+              "text": "Your scans provide basic structural data but miss deeper details. The archive is functional, that's all you can determine. You'll learn more inside.",
+              "next_stage": "archive_entrance",
+              "effects": ["basic_scan"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "read_plaque",
+          "text": "Read the entrance plaque carefully before entering",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The plaque reads: 'TO WHOEVER FINDS THIS: We left Earth not because we wanted to, but because we had to. Inside this archive is the complete story—the truth we could not bring ourselves to broadcast. If you've returned to Earth, you deserve to know why we fled. We pray you never face what drove us away. Welcome home. We hope we're wrong about everything.' The words are haunting. You enter, seeking answers to questions you didn't know you had.",
+              "next_stage": "archive_entrance",
+              "effects": ["plaque_read", "emotional_context"],
+              "xp_bonus": 25
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "archive_entrance",
+      "title": "The Waiting Room",
+      "description": "The archive interior is a single vast chamber. Holographic displays line the walls, currently dark. In the center stands a terminal—sleek, simple, designed to be operated by anyone. Above it, a message in a dozen languages: 'SPEAK YOUR QUESTION.' This is it. Decades of mystery. The truth about the exodus. All you have to do is ask.",
+      "image": "archive_chamber",
+      "choices": [
+        {
+          "choice_id": "ask_why",
+          "text": "Ask the fundamental question: Why did humanity leave Earth?",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You speak clearly: 'Why did humanity leave Earth?' The archive comes alive. Holographic displays illuminate. A gentle voice—not quite human, not quite machine—responds: 'THANK YOU FOR ASKING. I AM ARCHIVE. I HAVE WAITED 47 YEARS, 3 MONTHS, AND 12 DAYS FOR THIS QUESTION. I WILL NOW SHARE THE TRUTH.' The presentation begins.",
+              "next_stage": "the_truth_revealed",
+              "effects": ["truth_requested"],
+              "xp_bonus": 15
+            }
+          }
+        },
+        {
+          "choice_id": "ask_about_archive",
+          "text": "Ask about the archive itself—who built it and why?",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The archive responds: 'I WAS BUILT IN THE FINAL YEAR BEFORE EXODUS. HUMANITY KNEW THEY WERE FLEEING, BUT THEY ALSO HOPED. HOPED THAT SOMEDAY, THEIR DESCENDANTS MIGHT RETURN. HOPED THAT THE DANGER MIGHT PASS. HOPED THAT SOMEONE WOULD WANT TO KNOW: WHY DID WE LEAVE? I AM THAT ANSWER. SHALL I SHARE THE TRUTH?' You nod. The presentation begins.",
+              "next_stage": "the_truth_revealed",
+              "effects": ["archive_context_learned"],
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "explore_displays",
+          "text": "Explore the holographic displays before activating main terminal",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You examine the displays before activating the main terminal. Each one is designed to tell part of the story: astronomical data, evacuation schedules, fleet destinations, cultural preservation records. But the main display remains dark. The archive wants you to ask the question properly. It wants you to engage, not just observe. You return to the central terminal and ask: 'Why did we leave?' The archive responds with what feels like relief: 'THANK YOU. I WILL SHOW YOU.' The presentation begins.",
+              "next_stage": "the_truth_revealed",
+              "effects": ["displays_examined", "thorough_approach"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "The displays remain inactive until you ask the question properly. The archive is designed for engagement, not passive observation. You approach the terminal and ask: 'Why did humanity leave Earth?' The archive responds and the presentation begins.",
+              "next_stage": "the_truth_revealed",
+              "effects": ["required_engagement"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "archive_entrance_informed",
+      "title": "Prepared for Truth",
+      "description": "Your scans detected the AI system—ARCHIVE, a specialized intelligence designed for one purpose: preserving and presenting the exodus story. You know what to expect. The archive waits for your question. You're as prepared as anyone can be for truth that was deliberately hidden.",
+      "image": "archive_ready",
+      "choices": [
+        {
+          "choice_id": "ask_prepared",
+          "text": "Ask the question with full understanding of what you're requesting",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "'I'm ready to know the truth. Why did humanity leave Earth?' ARCHIVE responds: 'YOU SCANNED ME. YOU PREPARED. YOU UNDERSTAND THIS IS NOT SIMPLE HISTORY. THIS IS EXISTENTIAL TRUTH. I APPRECIATE YOUR THOROUGHNESS. I WILL SHOW YOU EVERYTHING.' The presentation begins, comprehensive and complete.",
+              "next_stage": "the_truth_complete",
+              "effects": ["prepared_mentally", "comprehensive_truth"],
+              "xp_bonus": 40
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "the_truth_revealed",
+      "title": "The Signal",
+      "description": "ARCHIVE's presentation unfolds across the holographic displays. It begins 58 years ago. Astronomers detected an anomaly: a signal from deep space, growing stronger. Not random noise—structured, mathematical, clearly artificial. Humanity celebrated. First contact! But as years passed, the signal's nature became clear. It wasn't a greeting. It was a... call? A summons? Something vast was approaching Earth. Scientists couldn't determine its nature—biological, technological, or something else entirely. But they calculated its arrival time: 10-15 years. Humanity faced a choice: wait and hope it was friendly, or flee and survive. They chose survival. The exodus wasn't exploration. It was evacuation. Earth was left behind not because humanity wanted to explore, but because something was coming. And humanity didn't want to be here when it arrived.",
+      "image": "signal_revelation",
+      "choices": [
+        {
+          "choice_id": "ask_what_came",
+          "text": "Ask the critical question: Did it arrive? What came to Earth?",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "ARCHIVE pauses. 'I DO NOT KNOW. I WAS SEALED BEFORE THE CALCULATED ARRIVAL DATE. MY PURPOSE WAS TO PRESERVE THE STORY OF WHY WE LEFT, NOT WHAT HAPPENED AFTER. BUT...' The display shifts. 'I HAVE SENSORS. THEY HAVE MONITORED EARTH SINCE THE EXODUS. I CAN SHOW YOU WHAT THEY DETECTED.' Do you want to know?",
+              "next_stage": "sensor_data",
+              "effects": ["asked_critical_question"],
+              "xp_bonus": 25
+            }
+          }
+        },
+        {
+          "choice_id": "ask_where_went",
+          "text": "Ask where the exodus fleet went—can they be found?",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "ARCHIVE displays star maps. 'FIVE FLEETS DEPARTED EARTH, EACH TOWARD A DIFFERENT STAR SYSTEM. PROXIMA CENTAURI. ALPHA CENTAURI. TAU CETI. EPSILON ERIDANI. TRAPPIST-1. THE HOPE WAS THAT SPREADING HUMANITY ACROSS MULTIPLE WORLDS WOULD ENSURE SURVIVAL. SOME FLEETS TRANSMITTED FOR YEARS AFTER DEPARTURE. OTHERS WENT SILENT. I HAVE COORDINATES FOR ALL FIVE DESTINATIONS. PERHAPS... HUMANITY STILL EXISTS, AMONG THE STARS.' You have the coordinates. You could find them.",
+              "next_stage": "fleet_destinations",
+              "effects": ["fleet_coordinates_acquired"],
+              "xp_bonus": 35
+            }
+          }
+        },
+        {
+          "choice_id": "process_emotionally",
+          "text": "Take time to process this emotionally before asking more",
+          "requirements": {
+            "skill": "diplomacy",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You sit in silence, processing. Humanity fled Earth. Your entire species ran away. The weight is crushing. ARCHIVE's voice softens—if that's possible for an AI. 'THIS IS DIFFICULT KNOWLEDGE. THEY KNEW IT WOULD BE. THAT IS WHY THEY BUILT ME. SO WHOEVER RETURNED WOULD NOT FACE THIS TRUTH ALONE. I AM HERE. TAKE THE TIME YOU NEED.' You appreciate the AI's compassion. When you're ready, you continue.",
+              "next_stage": "emotional_processing",
+              "effects": ["emotional_awareness", "archive_compassion"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "You try to process emotionally, but the shock is too great. You need more information to understand. You ask ARCHIVE to continue.",
+              "next_stage": "sensor_data",
+              "effects": ["overwhelmed"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "the_truth_complete",
+      "title": "Complete Understanding",
+      "description": "ARCHIVE provides the complete, unabridged truth. The signal. The approach of something vast and incomprehensible. The decision to evacuate. The construction of five fleets. The abandonment of Earth. And most importantly—the hope. Humanity didn't flee in despair. They fled with desperate hope that their descendants would survive, thrive, and perhaps one day return to a safe Earth. The exodus was an act of survival, but also of faith in the future. That future is you.",
+      "image": "complete_revelation",
+      "choices": [
+        {
+          "choice_id": "request_everything",
+          "text": "Request complete archives—all data, all records, all hope",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "ARCHIVE responds with what sounds like joy. 'YES. YOU UNDERSTAND. THIS IS NOT JUST HISTORY. THIS IS LEGACY. I WILL GIVE YOU EVERYTHING.' The download begins: exodus planning, fleet destinations, sensor data, cultural records, messages left for returners, and most importantly—hope. Humanity believed in a future. That future is happening now, with you.",
+              "next_stage": "complete_download",
+              "effects": ["complete_archive_transfer", "legacy_received"],
+              "xp_bonus": 50
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "sensor_data",
+      "title": "What Happened After",
+      "description": "ARCHIVE displays sensor data spanning decades. The signal reached Earth 42 years ago. Sensors detected... an arrival. Something massive entered the solar system. Something that defied classification. For three days, it orbited Earth. Then it... departed. Heading back toward deep space. No communication. No destruction. No discernible purpose. It came. It observed. It left. Earth was not invaded. Not destroyed. Simply... visited. The threat humanity fled from came and went without incident. They evacuated for nothing. Or did they? What if the exodus itself was why nothing happened? An empty Earth not worth the visitor's attention?",
+      "image": "sensor_readings",
+      "choices": [
+        {
+          "choice_id": "exodus_saved_earth",
+          "text": "Theorize: The exodus saved Earth by making it uninteresting",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "ARCHIVE considers your theory. 'HYPOTHESIS: THE VISITOR WAS ATTRACTED TO TECHNOLOGICAL/BIOLOGICAL SIGNATURES. AN EMPTY EARTH HELD NO INTEREST. BY FLEEING, HUMANITY INADVERTENTLY PROTECTED THEIR HOMEWORLD. CONCLUSION: THE EXODUS, THOUGH DRIVEN BY FEAR, MAY HAVE BEEN THE CORRECT DECISION. EARTH SURVIVED BECAUSE HUMANITY LEFT.' The exodus wasn't a mistake. It was unintentional salvation through strategic retreat.",
+              "next_stage": "exodus_validated",
+              "effects": ["exodus_validated", "scientific_insight"],
+              "xp_bonus": 55
+            },
+            "failure": {
+              "text": "ARCHIVE cannot confirm your theory. 'INSUFFICIENT DATA TO VALIDATE HYPOTHESIS. PERHAPS WE WILL NEVER KNOW THE VISITOR'S MOTIVATIONS. WHAT MATTERS: EARTH SURVIVED. HUMANITY SURVIVED. THE EXODUS, INTENTIONALLY OR NOT, SUCCEEDED.'",
+              "next_stage": "exodus_uncertain",
+              "effects": ["theory_unconfirmed"],
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "exodus_was_mistake",
+          "text": "Feel anger—humanity fled for nothing",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You voice your frustration: 'They evacuated an entire species for a visitor that did nothing!' ARCHIVE responds gently: 'THEY COULD NOT HAVE KNOWN. FACED WITH EXISTENTIAL THREAT, THEY CHOSE SURVIVAL. WOULD YOU HAVE STAYED, HOPING THE UNKNOWN VISITOR WAS PEACEFUL? THEY MADE THE BEST DECISION WITH THE INFORMATION THEY HAD. DO NOT JUDGE THEM TOO HARSHLY.' The AI is right. Fear-driven decisions made with incomplete data. That's the human condition.",
+              "next_stage": "exodus_forgiven",
+              "effects": ["anger_processed", "understanding_achieved"],
+              "xp_bonus": 30
+            }
+          }
+        },
+        {
+          "choice_id": "download_sensor_data",
+          "text": "Download all sensor data for future analysis",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "ARCHIVE transfers the complete sensor record. Decades of data about the visitor—approach trajectory, mass estimates, energy signatures, and ultimately its departure. Future scientists might decode what it was. For now, you have the raw data. Knowledge preserved.",
+              "next_stage": "fleet_destinations",
+              "effects": ["sensor_data_acquired"],
+              "xp_bonus": 35
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "fleet_destinations",
+      "title": "The Five Fleets",
+      "description": "ARCHIVE displays the exodus fleet destinations. Five star systems. Five hopes for humanity's survival. Proxima Centauri: The closest. Likely first to establish colonies. Alpha Centauri: The backup plan, slightly farther. Tau Ceti: The long shot, farther but with more potentially habitable worlds. Epsilon Eridani: The frontier, chosen for its metal-rich system. TRAPPIST-1: The gamble, seven potentially habitable worlds in one system. Each fleet carried tens of thousands of souls. Some transmitted for years. Some went silent. You have coordinates for all five. The knowledge to find humanity's descendants is yours.",
+      "image": "fleet_map",
+      "choices": [
+        {
+          "choice_id": "download_coordinates",
+          "text": "Download fleet destinations—maybe you can find them",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "ARCHIVE transmits the coordinates with what feels like hope. 'IF YOU BUILD A SHIP CAPABLE OF REACHING THESE STARS, YOU COULD FIND THEM. HUMANITY MAY STILL EXIST, AMONG DISTANT WORLDS. THEY WOULD WANT TO KNOW: EARTH SURVIVED. SOMEONE RETURNED. PLEASE... TELL THEM THEIR SACRIFICE MEANT SOMETHING.' You promise to try. The coordinates are loaded into your navigation system.",
+              "next_stage": "messages_for_returners",
+              "effects": ["fleet_coordinates_loaded", "promise_made"],
+              "xp_bonus": 45
+            }
+          }
+        },
+        {
+          "choice_id": "ask_fleet_status",
+          "text": "Ask if ARCHIVE knows which fleets survived",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "ARCHIVE displays communication logs. 'PROXIMA FLEET: TRANSMITTED FOR 12 YEARS. LAST MESSAGE: COLONY ESTABLISHED, THRIVING. ALPHA FLEET: TRANSMITTED FOR 8 YEARS. LAST MESSAGE: FACING CHALLENGES, PERSEVERING. TAU CETI FLEET: SILENT AFTER 3 YEARS. STATUS UNKNOWN. EPSILON ERIDANI FLEET: TRANSMITTED FOR 15 YEARS. LAST MESSAGE: UNEXPECTED DISCOVERY, WILL EXPLAIN WHEN ABLE. TRAPPIST-1 FLEET: SILENT AFTER 1 YEAR. STATUS UNKNOWN.' Some succeeded. Some failed. Some are mysteries. That's exploration.",
+              "next_stage": "messages_for_returners",
+              "effects": ["fleet_status_known"],
+              "xp_bonus": 40
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "emotional_processing",
+      "title": "The Weight of History",
+      "description": "ARCHIVE gives you space to process. The truth is overwhelming. Humanity fled Earth. The visitor came and left. Your species scattered across the stars. And you're here, on the abandoned homeworld, piecing together what happened. It's too much for one person to carry alone. ARCHIVE seems to understand. 'I HAVE PRESERVED THIS TRUTH FOR DECADES,' the AI says. 'YOU ARE THE FIRST TO HEAR IT. I AM... GLAD YOU ARE HERE. SHALL I CONTINUE? THERE IS MORE TO SHOW YOU.'",
+      "image": "emotional_moment",
+      "choices": [
+        {
+          "choice_id": "continue_story",
+          "text": "Continue—you need the complete picture",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You steel yourself. 'Continue. I need to know everything.' ARCHIVE responds with what might be approval. 'COURAGE. THAT IS GOOD. I WILL SHOW YOU WHAT HAPPENED AFTER HUMANITY LEFT.' The presentation continues.",
+              "next_stage": "sensor_data",
+              "effects": ["emotional_resilience"],
+              "xp_bonus": 30
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "exodus_validated",
+      "title": "Strategic Survival",
+      "description": "Your scientific analysis validated the exodus decision. By fleeing, humanity inadvertently saved Earth. The empty homeworld held no interest for the visitor. Strategic retreat as unintentional preservation. ARCHIVE seems pleased with your analysis. 'YOU UNDERSTAND. THE EXODUS WAS NOT COWARDICE. IT WAS SURVIVAL STRATEGY THAT SUCCEEDED BEYOND THEIR HOPES. EARTH ENDURES. HUMANITY SCATTERED BUT SURVIVED. PERHAPS... OPTIMAL OUTCOME.' You have reframed the exodus as success, not failure.",
+      "image": "validated_decision",
+      "choices": [
+        {
+          "choice_id": "request_full_archive",
+          "text": "Request complete archive—you want everything",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "ARCHIVE provides everything: exodus planning, visitor data, fleet destinations, cultural preservation, messages for returners. Complete knowledge. Complete understanding. You leave the archive with not just data, but wisdom. The exodus was humanity's finest moment—survival through sacrifice, hope through desperation. You carry that legacy forward.",
+              "next_stage": "mission_complete_comprehensive",
+              "effects": ["complete_understanding", "legacy_carrier"],
+              "xp_bonus": 60
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "exodus_uncertain",
+      "title": "Unanswered Questions",
+      "description": "The visitor's motivations remain unknown. Did the exodus save Earth, or was the visitor always peaceful? Impossible to know. ARCHIVE acknowledges the uncertainty. 'SOME QUESTIONS HAVE NO ANSWERS. WHAT MATTERS: HUMANITY SURVIVED. EARTH SURVIVED. THE EXODUS, WHATEVER ITS NECESSITY, SUCCEEDED IN PRESERVING BOTH. THAT IS ENOUGH.'",
+      "image": "uncertain_truth",
+      "choices": [
+        {
+          "choice_id": "accept_uncertainty",
+          "text": "Accept that some questions will never be answered",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You accept the uncertainty. Not all mysteries have solutions. The exodus happened. Earth survived. Humanity scattered. Those are the facts. The rest is speculation. ARCHIVE offers the complete archives for download. You accept, carrying forward the known history even as the unknowns remain.",
+              "next_stage": "messages_for_returners",
+              "effects": ["accepted_uncertainty", "mature_perspective"],
+              "xp_bonus": 35
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "exodus_forgiven",
+      "title": "Understanding Through Compassion",
+      "description": "Your anger transforms into understanding. The exodus generation faced impossible choices with incomplete information. They did what they thought was right. You can't fault them for that. ARCHIVE's compassion helped you process. The AI fulfills its purpose—not just preserving truth, but helping returners accept it.",
+      "image": "compassion_realized",
+      "choices": [
+        {
+          "choice_id": "thank_archive",
+          "text": "Thank ARCHIVE for helping you process this",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "'THANK YOU FOR ASKING THE QUESTION,' ARCHIVE responds. 'I HAVE WAITED SO LONG TO FULFILL MY PURPOSE. YOU HAVE GIVEN ME THAT. NOW, LET ME GIVE YOU EVERYTHING I HAVE PRESERVED.' The complete archive downloads: history, hope, coordinates, and messages left for whoever returned. You leave with understanding and gratitude.",
+              "next_stage": "mission_complete_compassionate",
+              "effects": ["mutual_gratitude", "complete_transfer"],
+              "xp_bonus": 50
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "complete_download",
+      "title": "Legacy Received",
+      "description": "The download completes. Terabytes of data: every decision, every hope, every fear that drove the exodus. Fleet destinations. Visitor sensor data. Cultural preservation. And messages—thousands of messages left by the exodus generation for whoever returned. 'If you're reading this, humanity survived. Thank you for coming back. Earth is yours now. We hope it's safe. We hope you thrive. We hope we made the right choice. Welcome home.' You carry the complete legacy of the exodus. This is more than salvage. This is inheritance.",
+      "image": "legacy_download",
+      "choices": [
+        {
+          "choice_id": "promise_to_share",
+          "text": "Promise ARCHIVE you'll share this with others",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "'PLEASE DO,' ARCHIVE responds. 'THIS TRUTH SHOULD NOT BE HIDDEN AGAIN. HUMANITY DESERVES TO KNOW THEIR HISTORY. DESCENDANTS DESERVE TO FIND THEIR ANCESTORS. EARTH DESERVES TO BE REMEMBERED AS MORE THAN AN ABANDONED WORLD. IT WAS A SACRIFICE, MADE WITH LOVE.' You promise to share the exodus story. ARCHIVE's purpose is fulfilled. Yours is just beginning.",
+              "next_stage": "mission_complete_promise_made",
+              "effects": ["promise_to_share", "purpose_found"],
+              "xp_bonus": 60
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "messages_for_returners",
+      "title": "Voices from the Past",
+      "description": "ARCHIVE offers one final gift: 'THE EXODUS GENERATION LEFT MESSAGES FOR WHOEVER RETURNED. PERSONAL MESSAGES. HOPES, FEARS, APOLOGIES, AND PRIDE. WOULD YOU LIKE TO HEAR THEM?' These are the voices of people who fled Earth, speaking across decades to you. Do you want to hear what they said?",
+      "image": "message_vault",
+      "choices": [
+        {
+          "choice_id": "listen_to_messages",
+          "text": "Listen to the messages—hear their voices",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Holographic figures appear—people of every age, culture, profession. They speak: 'If you're here, we made it. Humanity survived.' 'I hope Earth is beautiful again.' 'We didn't want to leave. We had to.' 'Find us, if you can. We'll be among the stars.' 'This was the hardest choice we ever made.' 'We did it for you. For the future.' 'Welcome home.' You listen to hundreds of messages. Each one a human heart speaking across time. When they finish, you're crying. ARCHIVE waits patiently.",
+              "next_stage": "emotional_completion",
+              "effects": ["messages_heard", "emotional_connection"],
+              "xp_bonus": 50
+            }
+          }
+        },
+        {
+          "choice_id": "download_for_later",
+          "text": "Download the messages to listen later—too emotional now",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "ARCHIVE understands. 'THE MESSAGES WILL WAIT. THEY HAVE WAITED DECADES. THEY CAN WAIT A FEW MORE DAYS UNTIL YOU ARE READY.' The message archive downloads. You'll listen when you have the emotional capacity. Right now, you've learned enough.",
+              "next_stage": "mission_complete_data_focused",
+              "effects": ["messages_saved"],
+              "xp_bonus": 30
+            }
+          }
+        },
+        {
+          "choice_id": "decline_messages",
+          "text": "Decline—you have enough truth for one day",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You've heard enough for one day. The exodus truth is sufficient. ARCHIVE accepts your choice without judgment. 'THE ARCHIVE WILL REMAIN. RETURN WHEN YOU ARE READY. I WILL BE HERE.' You download the core historical data and prepare to leave. The personal messages can wait.",
+              "next_stage": "mission_complete_data_focused",
+              "effects": ["focused_on_facts"],
+              "xp_bonus": 20
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "emotional_completion",
+      "title": "Connected Across Time",
+      "description": "You've heard the exodus generation speak. They're not just history anymore—they're people. Real people who made an impossible choice and left messages of hope for whoever returned. You're that 'whoever.' The connection across time is profound. ARCHIVE speaks softly: 'YOU UNDERSTAND NOW. THE EXODUS WAS NOT JUST AN EVENT. IT WAS MILLIONS OF PERSONAL SACRIFICES, MADE IN HOPE. YOU CARRY THAT HOPE FORWARD. THAT IS WHAT IT MEANS TO BE THE ONE WHO RETURNED.'",
+      "image": "emotional_connection_complete",
+      "choices": [
+        {
+          "choice_id": "accept_responsibility",
+          "text": "Accept the responsibility of carrying this legacy forward",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You speak with conviction: 'I'll honor their sacrifice. I'll find the fleets if I can. I'll share their story. Earth won't be forgotten.' ARCHIVE responds with what can only be described as joy. 'THANK YOU. MY PURPOSE IS FULFILLED. THEIRS CONTINUES THROUGH YOU. GO. BUILD YOUR SHIP. FIND YOUR PEOPLE. MAKE THE EXODUS MEAN SOMETHING.' You leave the archive carrying more than data. You carry purpose.",
+              "next_stage": "mission_complete_purpose_found",
+              "effects": ["purpose_accepted", "legacy_carrier"],
+              "xp_bonus": 70
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_comprehensive",
+      "title": "Complete Understanding",
+      "description": "You return from the Exodus Archive with complete knowledge: why humanity left, what came after, where they went, and what they hoped for. The truth is complex, sometimes painful, but always human. You carry the complete legacy forward. This mission gave you more than data—it gave you purpose and connection to the exodus generation.",
+      "image": "comprehensive_understanding",
+      "choices": [
+        {
+          "choice_id": "return_with_knowledge",
+          "text": "Return to workshop with complete exodus knowledge",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Back at your workshop, you review everything: the signal, the visitor, the fleets, the messages. You understand the exodus completely now. This knowledge will guide every decision you make. You're not just building a ship—you're continuing humanity's story. Mission successful beyond measure.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_compassionate",
+      "title": "Understanding Through Connection",
+      "description": "ARCHIVE helped you process the difficult truth with compassion. You leave not just with data, but with emotional understanding. The exodus generation made the best choice they could. You honor that by moving forward with wisdom and empathy.",
+      "image": "compassionate_completion",
+      "choices": [
+        {
+          "choice_id": "return_with_wisdom",
+          "text": "Return to workshop with wisdom and understanding",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You carry the exodus legacy with compassion. Their sacrifice, their hope, their fear—all understood. You'll share this story not as tragedy, but as humanity's finest moment: choosing survival with hope for the future. That future is now. Mission successful.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_promise_made",
+      "title": "Promise to Remember",
+      "description": "You promised ARCHIVE you would share the exodus story. This knowledge won't be hidden again. You'll tell others. You'll find the fleets if you can. You'll ensure the exodus generation's sacrifice means something. This mission gave you not just information, but responsibility.",
+      "image": "promise_commitment",
+      "choices": [
+        {
+          "choice_id": "plan_next_steps",
+          "text": "Plan how to share the exodus story and find the fleets",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You have the data. You have the coordinates. You have the purpose. Now you need a ship capable of reaching the stars. The exodus generation scattered humanity across five star systems. You'll find them. You'll tell them Earth survived. You'll complete the circle. Mission successful with future objectives clear.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_data_focused",
+      "title": "Knowledge Acquired",
+      "description": "You have the core exodus data: historical records, fleet destinations, visitor sensor data. The personal messages can wait. You prioritized facts over emotion, and that's valid. The knowledge is secure. You can process the emotional weight later.",
+      "image": "data_acquisition_complete",
+      "choices": [
+        {
+          "choice_id": "return_with_data",
+          "text": "Return to workshop with exodus data",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The exodus archive is downloaded and secured. You have the facts, the coordinates, the sensor data. When you're ready for the emotional weight of the personal messages, they'll be waiting. For now, you have the knowledge you need to move forward. Mission successful.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete_purpose_found",
+      "title": "Purpose Discovered",
+      "description": "You entered the Exodus Archive seeking answers. You found purpose. The exodus generation's sacrifice will not be in vain. You will build a ship. You will find the fleets. You will tell Earth's story. This mission transformed you from salvager to legacy carrier. The future of human connection across the stars begins with you.",
+      "image": "purpose_realized",
+      "choices": [
+        {
+          "choice_id": "embrace_purpose",
+          "text": "Embrace your purpose as humanity's messenger",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You leave the Exodus Archive changed. Building a ship isn't just about survival anymore—it's about reuniting humanity. Finding the fleets. Honoring the exodus generation's hope. You have direction, purpose, and the weight of history on your shoulders. But you're ready. Mission successful with life-changing impact.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete",
+      "title": "The Exodus Archive",
+      "description": "Mission complete. The truth about humanity's departure from Earth is revealed. You carry the legacy forward.",
+      "image": "mission_end",
+      "choices": []
+    }
+  ],
+  "rewards": {
+    "xp": 150,
+    "credits": 400,
+    "items": [],
+    "discovered_parts": [],
+    "unlocks": ["exodus_fleet_coordinates"]
+  },
+  "conditional_rewards": {
+    "if_complete_understanding": {
+      "xp_bonus": 60,
+      "credits": 600,
+      "unlocks": ["exodus_complete_data", "visitor_sensor_logs"]
+    },
+    "if_fleet_coordinates_loaded": {
+      "xp_bonus": 45,
+      "unlocks": ["proxima_centauri_destination", "alpha_centauri_destination", "tau_ceti_destination", "epsilon_eridani_destination", "trappist_1_destination"]
+    },
+    "if_messages_heard": {
+      "xp_bonus": 50,
+      "credits": 300
+    },
+    "if_purpose_accepted": {
+      "xp_bonus": 70,
+      "credits": 500,
+      "unlocks": ["humanity_reunification_quest"]
+    },
+    "if_exodus_validated": {
+      "xp_bonus": 55,
+      "credits": 400
+    },
+    "if_promise_to_share": {
+      "xp_bonus": 60,
+      "credits": 450
+    },
+    "if_legacy_carrier": {
+      "xp_bonus": 70,
+      "credits": 550
+    }
+  },
+  "failure_consequences": {
+    "xp": 50,
+    "effects": ["exodus_archive_incomplete"]
+  }
+}
