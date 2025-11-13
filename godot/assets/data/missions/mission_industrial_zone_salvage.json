@@ -1,0 +1,424 @@
+{
+  "mission_id": "industrial_zone_salvage",
+  "title": "Toxic Treasures",
+  "type": "salvage",
+  "location": "Detroit Industrial Complex",
+  "description": "The rusted heart of old Detroit holds valuable warp drive components in its abandoned manufacturing plants. Decades of chemical processing left the zone contaminated with radioactive and toxic materials. Your scans show intact warp coils in the main assembly building—but the environmental hazards make this a dangerous run. Risk versus reward.",
+  "difficulty": 3,
+  "estimated_time": "20-25 min",
+  "requirements": {
+    "min_level": 2,
+    "required_systems": [],
+    "completed_missions": ["tutorial_first_salvage"]
+  },
+  "objectives": [
+    "Retrieve warp drive components from Assembly Plant 7",
+    "[OPTIONAL] Salvage hazardous materials for bonus credits",
+    "[OPTIONAL] Complete salvage without radiation exposure"
+  ],
+  "stages": [
+    {
+      "stage_id": "complex_approach",
+      "title": "Rust and Radiation",
+      "description": "The Detroit Industrial Complex sprawls before you—kilometers of corroded metal, collapsed smokestacks, and chemical pools glowing with unnatural colors. Your radiation detector clicks steadily. Assembly Plant 7 is at the complex's center, surrounded by processing tanks that may still contain dangerous materials. Three routes are visible: the main road (direct but exposed), the drainage tunnels (sheltered but potentially flooded with toxins), or the overhead gantry system (high but structurally questionable).",
+      "image": "industrial_complex_exterior",
+      "choices": [
+        {
+          "choice_id": "main_road",
+          "text": "Take the main road—direct approach through open ground",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You drive straight down the wide industrial avenue. Decades of acid rain have eaten through the pavement, creating treacherous potholes. The radiation levels are moderate here—you'll be fine with limited exposure. Assembly Plant 7's massive doors loom ahead. They're sealed, but the control terminal is accessible.",
+              "next_stage": "plant_entrance",
+              "effects": ["moderate_radiation", "direct_approach"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "drainage_tunnels",
+          "text": "Navigate through drainage tunnels—avoid surface radiation",
+          "requirements": {},
+          "success_chance": 65,
+          "consequences": {
+            "success": {
+              "text": "The tunnels are dark and claustrophobic, but radiation levels are lower underground. You navigate by flashlight through ankle-deep chemical runoff. Unpleasant, but safer than surface exposure. You emerge inside the plant's lower levels, bypassing the main entrance entirely. Clean infiltration.",
+              "next_stage": "plant_interior_lower",
+              "effects": ["chemical_exposure_minor", "stealth_entry"],
+              "xp_bonus": 20
+            },
+            "failure": {
+              "text": "A tunnel collapse forces you to backtrack. The detour takes you through a section flooded with industrial waste. Your suit protects you, but you're splashed with caustic chemicals. You'll need decontamination later. You emerge at the plant's main entrance, worse for wear.",
+              "next_stage": "plant_entrance",
+              "effects": ["chemical_contamination", "suit_damaged"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "gantry_system",
+          "text": "Climb the overhead gantry—risky but excellent vantage point",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You assess the gantry's structural integrity and identify the safe path. The climb is precarious, but you make it across. From this height, you scout the entire complex—radiation hotspots, structural weaknesses, and multiple entry points into Assembly Plant 7. Knowledge is power. You descend directly onto the plant's roof access.",
+              "next_stage": "plant_roof_access",
+              "effects": ["tactical_intel", "high_ground_advantage"],
+              "xp_bonus": 30
+            },
+            "failure": {
+              "text": "A gantry support gives way under your weight. You fall three meters onto a rusted platform, bruising ribs and ego. The noise echoes across the complex. If anyone—or anything—is out here, they know you're here now. You proceed to the main entrance, limping slightly.",
+              "next_stage": "plant_entrance",
+              "effects": ["injury_minor", "noise_made"],
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "plant_entrance",
+      "title": "Sealed Doors",
+      "description": "Assembly Plant 7's massive industrial doors are sealed tight. The control terminal flickers with emergency power—the facility's solar arrays still function after all these years. Your scanner confirms warp coils are inside, deep in the assembly section. But something else pings on your sensors: a large cache of radioactive isotopes in the processing wing. Dangerous materials, but valuable on the black market. Do you stick to the plan or take the extra risk?",
+      "image": "plant_entrance_doors",
+      "choices": [
+        {
+          "choice_id": "hack_terminal",
+          "text": "Hack the control terminal to open the main doors",
+          "requirements": {
+            "skill": "engineering",
+            "skill_level": 2
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "The terminal's security is decades old—child's play for modern techniques. You bypass the lockout and trigger the door mechanism. Hydraulics groan as the doors part, revealing the dark interior. Lights flicker on automatically. You're in.",
+              "next_stage": "assembly_section",
+              "effects": ["doors_opened", "power_active"],
+              "xp_bonus": 25
+            },
+            "failure": {
+              "text": "Your hacking attempt triggers a security lockout. Red lights flash. 'UNAUTHORIZED ACCESS ATTEMPT. LOCKDOWN PROTOCOL ENGAGED.' The terminal goes dark. You'll need another way in—or better engineering skills.",
+              "next_stage": "find_alternate_entry",
+              "effects": ["security_triggered", "lockout_active"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "force_doors",
+          "text": "Use plasma cutter to force the doors open—loud but effective",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You cut through the door seal with your plasma torch. Sparks shower down, metal screaming as you carve an entry point. Subtle? No. Effective? Absolutely. You step through the molten gap into the plant's darkness. The warp coils are somewhere in this industrial maze.",
+              "next_stage": "assembly_section",
+              "effects": ["forced_entry", "loud_approach", "no_power"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "search_alternate",
+          "text": "Search for an alternate entry point—avoid confronting security",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You circle the building, scanning for weaknesses. A loading dock door hangs partially open—structural failure from years of neglect. You slip inside through the narrow gap. You're in, and no alarms triggered. The assembly section is ahead through the main corridor.",
+              "next_stage": "assembly_section",
+              "effects": ["quiet_entry"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "find_alternate_entry",
+      "title": "Locked Out",
+      "description": "The main entrance is sealed against you. But industrial complexes always have multiple access points—loading docks, maintenance shafts, ventilation systems. You just need to find one that's not completely collapsed.",
+      "image": "searching_perimeter",
+      "choices": [
+        {
+          "choice_id": "loading_dock",
+          "text": "Try the loading dock on the east side",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The loading dock door is partially open, jammed in place by debris. You squeeze through. Inside is dark—no automatic lights here. You activate your flashlight and proceed toward the assembly section.",
+              "next_stage": "assembly_section",
+              "effects": ["alternate_entry", "no_power"],
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "plant_interior_lower",
+      "title": "Lower Levels",
+      "description": "You emerge from the drainage tunnels into the plant's basement level. Machinery looms in the darkness—silent giants frozen mid-operation when the exodus happened. Your scanner points upward—the warp coils are two levels above in the main assembly area. Stairs are ahead, but so is something else: a service elevator, still powered by the solar grid. Faster, but potentially louder.",
+      "image": "plant_basement",
+      "choices": [
+        {
+          "choice_id": "use_elevator",
+          "text": "Take the service elevator—fast and easy",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "The elevator rattles upward, ancient motors groaning. You arrive at the assembly level in seconds. The doors open to reveal rows of fabrication equipment and, in the distance, the warp component storage racks. Easy.",
+              "next_stage": "assembly_section",
+              "effects": ["elevator_used", "quick_ascent"],
+              "xp_bonus": 0
+            }
+          }
+        },
+        {
+          "choice_id": "climb_stairs",
+          "text": "Climb the stairs—quiet and controlled approach",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You climb two flights of industrial stairs, moving silently. Each landing offers a view of the plant's interior—still pristine in places, catastrophically decayed in others. You reach the assembly level without incident. The warp coils are visible ahead, racked and labeled.",
+              "next_stage": "assembly_section",
+              "effects": ["stealth_maintained", "tactical_positioning"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "plant_roof_access",
+      "title": "High Ground",
+      "description": "From the roof access, you have perfect oversight of the plant's interior through skylights. The assembly section is directly below—you can see the warp coils on their storage racks. You also spot the radiation hazard in the processing wing: sealed containers of radioactive materials, still valuable despite their danger. An internal stairway leads down to the assembly floor. You have complete tactical advantage.",
+      "image": "roof_access_view",
+      "choices": [
+        {
+          "choice_id": "descend_tactical",
+          "text": "Descend with full knowledge of plant layout—use your advantage",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You map the optimal route in your mind, then descend the internal stairs. No surprises. No mistakes. You arrive at the assembly section knowing exactly where everything is. Professional work.",
+              "next_stage": "assembly_section",
+              "effects": ["tactical_superiority", "perfect_intel"],
+              "xp_bonus": 25
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "assembly_section",
+      "title": "The Warp Coils",
+      "description": "The assembly section is a cathedral of industry—hundred-meter-high ceilings, rows of fabrication equipment, and walls lined with component storage. The warp coils are here: Level 1 and Level 2 components, properly stored and labeled. But you also detect the radioactive materials in the adjacent processing wing. Taking both would maximize profit, but doubles your radiation exposure. The mission was for warp coils. Do you stick to the plan?",
+      "image": "assembly_storage_racks",
+      "choices": [
+        {
+          "choice_id": "warp_coils_only",
+          "text": "Take only the warp coils—stick to the plan, minimize risk",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You load the warp coils into your transport container: one basic L1 core and one enhanced L2 coil assembly. Quality components, well-preserved. Mission accomplished without unnecessary risk. You seal the container and prepare to exit.",
+              "next_stage": "clean_extraction",
+              "effects": ["mission_complete", "minimal_exposure"],
+              "xp_bonus": 20
+            }
+          }
+        },
+        {
+          "choice_id": "take_both",
+          "text": "Take warp coils AND radioactive materials—high risk, high reward",
+          "requirements": {},
+          "success_chance": 70,
+          "consequences": {
+            "success": {
+              "text": "You work quickly, loading warp coils first, then moving to the processing wing. The radioactive containers are properly shielded—your rad counter spikes but stays in safe range. You load everything into your transport. Your exposure levels are elevated but manageable. Both objectives secured.",
+              "next_stage": "maximum_haul",
+              "effects": ["maximum_salvage", "elevated_radiation", "bonus_materials"],
+              "xp_bonus": 40
+            },
+            "failure": {
+              "text": "One of the radioactive containers has a cracked seal. As you lift it, contamination alarms shriek. Your radiation exposure spikes into the danger zone. You drop the container and sprint back to the warp coils. You'll take what you came for and get out—now. Your suit's decontamination will be expensive.",
+              "next_stage": "contaminated_extraction",
+              "effects": ["radiation_contaminated", "emergency_exit"],
+              "xp_bonus": 10
+            }
+          }
+        },
+        {
+          "choice_id": "examine_materials",
+          "text": "Examine the radioactive materials first—assess the risk",
+          "requirements": {
+            "skill": "science",
+            "skill_level": 3
+          },
+          "success_chance": "skill_based",
+          "consequences": {
+            "success": {
+              "text": "You scan the radioactive containers thoroughly. Most are properly sealed, but one shows signs of decay. You identify the safe containers and mark the dangerous one. With this knowledge, you can safely extract both the warp coils and the viable radioactive materials. Science saves the day.",
+              "next_stage": "informed_extraction",
+              "effects": ["identified_safe_materials", "scientific_approach"],
+              "xp_bonus": 50
+            },
+            "failure": {
+              "text": "Your scans are inconclusive—your science skills aren't advanced enough to assess radiation shielding integrity. Better to play it safe. You take the warp coils and leave the radioactive materials alone. Smart choice.",
+              "next_stage": "clean_extraction",
+              "effects": ["played_safe"],
+              "xp_bonus": 15
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "clean_extraction",
+      "title": "Mission Complete",
+      "description": "Warp coils secured. Radiation exposure minimal. You exit Assembly Plant 7 the way you came in, transport container in tow. The industrial complex is silent as you leave—a graveyard of humanity's industrial age. But you found what you needed. The warp drive components will get you one step closer to the stars.",
+      "image": "clean_exit",
+      "choices": [
+        {
+          "choice_id": "return_to_workshop",
+          "text": "Return to workshop with warp drive components",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Back at your workshop, you inspect the components: pristine condition, full functionality. These coils will serve you well when you finally install a warp drive. Mission accomplished professionally.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "maximum_haul",
+      "title": "Risk and Reward",
+      "description": "You successfully extracted both warp components and radioactive materials. Your transport container is heavy, and your rad counter shows elevated exposure, but nothing dangerous. Back at your workshop, you'll need decontamination procedures, but the payoff is worth it. The radioactive materials alone will fetch a high price from traders—enough to fund your next several upgrades.",
+      "image": "maximum_salvage_exit",
+      "choices": [
+        {
+          "choice_id": "return_with_haul",
+          "text": "Return to workshop for decontamination and assessment",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Decontamination takes hours, but it's routine. You inventory your haul: warp coils in excellent condition, radioactive isotopes properly stored. The materials fetch 400 credits from a trader. Your risk paid off handsomely. This is how you build a ship—calculated risks and professional execution.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 30
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "contaminated_extraction",
+      "title": "Hazardous Retreat",
+      "description": "Your radiation alarm screams as you sprint from the processing wing. You sealed the warp coils container and exited the plant at a run. Outside, you trigger your suit's emergency decontamination—chemical foam covering your entire body. The warp coils are safe, but you took unnecessary radiation exposure. You'll need medical monitoring for the next few weeks. Lesson learned: some risks aren't worth taking.",
+      "image": "contamination_emergency",
+      "choices": [
+        {
+          "choice_id": "return_contaminated",
+          "text": "Return to workshop, seek medical attention",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "Medical scans show elevated radiation but nothing permanent. You'll recover fully. The warp coils are intact and uncontaminated. Mission technically successful, but the medical costs eat into your profits. Next time, you'll be more careful with radioactive materials.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "rewards_modified": {"credits": -150},
+              "xp_bonus": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "informed_extraction",
+      "title": "Scientific Precision",
+      "description": "Your scientific analysis paid off. You extracted warp coils, safe radioactive materials, and left the compromised container untouched. Zero unnecessary exposure, maximum profit. This is the difference between amateur scavengers and professional salvage operators. Back at your workshop, you review your methodology—this approach can be applied to future hazardous salvage operations.",
+      "image": "precise_extraction",
+      "choices": [
+        {
+          "choice_id": "return_triumphant",
+          "text": "Return to workshop with perfect haul and valuable knowledge",
+          "requirements": {},
+          "success_chance": 100,
+          "consequences": {
+            "success": {
+              "text": "You catalog everything: warp coils (excellent condition), safe radioactive materials (high market value), and detailed notes on radiation shielding assessment. The materials sell for 500 credits. More importantly, you've developed a methodology for hazardous salvage that will serve you for years. Scientific knowledge is as valuable as the salvage itself.",
+              "next_stage": "mission_complete",
+              "mission_result": "success",
+              "xp_bonus": 50
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "mission_complete",
+      "title": "Industrial Zone Cleared",
+      "description": "Mission complete. Warp drive components secured. The Detroit Industrial Complex is crossed off your salvage list.",
+      "image": "mission_end",
+      "choices": []
+    }
+  ],
+  "rewards": {
+    "xp": 175,
+    "credits": 500,
+    "items": [
+      {"part_id": "warp_basic_core_l1_common", "quantity": 1},
+      {"part_id": "warp_w3_drive_l2_common", "quantity": 1}
+    ],
+    "discovered_parts": [
+      "warp_basic_core_l1_common",
+      "warp_enhanced_coils_l1_uncommon",
+      "warp_w3_drive_l2_common"
+    ],
+    "unlocks": []
+  },
+  "conditional_rewards": {
+    "if_bonus_materials": {
+      "credits": 400,
+      "xp_bonus": 30
+    },
+    "if_scientific_approach": {
+      "credits": 500,
+      "xp_bonus": 50,
+      "discovered_parts": ["warp_prototype_core_l1_rare"]
+    },
+    "if_stealth_entry": {
+      "xp_bonus": 20
+    },
+    "if_tactical_intel": {
+      "xp_bonus": 25
+    },
+    "if_minimal_exposure": {
+      "xp_bonus": 20
+    }
+  },
+  "failure_consequences": {
+    "xp": 50,
+    "effects": ["industrial_zone_failed"]
+  }
+}
