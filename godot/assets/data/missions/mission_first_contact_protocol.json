@@ -450,7 +450,7 @@
           "consequences": {
             "success": {
               "text": "ATLAS appears, a proud expression on the AI's holographic face. 'There is no next stage, Captain. This simulation was never about perfect execution—it was about testing your character, your judgment, and your capacity for empathy. You succeeded. Not perfectly, but genuinely. And that is what matters in first contact.' The simulation fades, returning you to your workshop. You feel ready for what lies ahead.",
-              "next_stage": "simulation_complete",
+              "next_stage": "mission_complete",
               "mission_result": "success",
               "xp_bonus": 50
             }
@@ -472,7 +472,7 @@
           "consequences": {
             "success": {
               "text": "You exchange gestures of respect and goodwill. The meeting ends not with perfect understanding, but with hope. ATLAS's voice: 'Well done, Captain. First contact is rarely smooth, but it can still be successful. You demonstrated adaptability, humility, and genuine respect. Those qualities will serve you well among the stars.' The simulation fades.",
-              "next_stage": "simulation_complete",
+              "next_stage": "mission_complete",
               "mission_result": "success",
               "xp_bonus": 45
             }
@@ -494,7 +494,7 @@
           "consequences": {
             "success": {
               "text": "You accept the coordinates and convey optimism for future contact. The aliens depart peacefully. ATLAS materializes: 'A careful, measured success, Captain. Not all first contacts require immediate deep friendship. Sometimes, simply establishing communication and trust over time is the wisest path. You showed strategic thinking alongside diplomatic skill.' The simulation ends.",
-              "next_stage": "simulation_complete",
+              "next_stage": "mission_complete",
               "mission_result": "success",
               "xp_bonus": 40
             }
