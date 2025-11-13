@@ -35,6 +35,22 @@
       "story_unlock": null
     },
     {
+      "id": "warp_prototype_core_l1_rare",
+      "name": "Prototype Warp Core",
+      "description": "Pre-exodus experimental design. Pushes Warp 1 to its theoretical limits.",
+      "system_type": "warp",
+      "level": 1,
+      "rarity": "rare",
+      "weight": 26.0,
+      "stats": {
+        "warp_factor": 1,
+        "range_ly": 4,
+        "power_cost": 17
+      },
+      "discovered": false,
+      "story_unlock": "mission_research_facility"
+    },
+    {
       "id": "warp_w3_drive_l2_common",
       "name": "Warp 3 Drive System",
       "description": "Now we're traveling. The close sectors open up to you.",
@@ -67,6 +83,22 @@
       "story_unlock": "mission_crystal_caves"
     },
     {
+      "id": "warp_quantum_tuned_l2_rare",
+      "name": "Quantum-Tuned Drive",
+      "description": "Quantum field harmonics reduce subspace resistance. Flies like a dream.",
+      "system_type": "warp",
+      "level": 2,
+      "rarity": "rare",
+      "weight": 36.0,
+      "stats": {
+        "warp_factor": 3,
+        "range_ly": 18,
+        "power_cost": 26
+      },
+      "discovered": false,
+      "story_unlock": "mission_experimental_lab"
+    },
+    {
       "id": "warp_w5_drive_l3_common",
       "name": "Warp 5 Drive System",
       "description": "Standard deep-space warp drive. The galaxy is yours.",
@@ -97,6 +129,22 @@
       },
       "discovered": false,
       "story_unlock": null
+    },
+    {
+      "id": "warp_military_spec_l3_rare",
+      "name": "Military-Spec Warp Core",
+      "description": "Over-engineered for extreme reliability. Fast enough to outrun most threats.",
+      "system_type": "warp",
+      "level": 3,
+      "rarity": "rare",
+      "weight": 46.0,
+      "stats": {
+        "warp_factor": 5,
+        "range_ly": 90,
+        "power_cost": 43
+      },
+      "discovered": false,
+      "story_unlock": "mission_military_cache"
     }
   ]
 }

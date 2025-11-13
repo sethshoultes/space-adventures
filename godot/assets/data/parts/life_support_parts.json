@@ -35,6 +35,22 @@
       "story_unlock": null
     },
     {
+      "id": "life_support_medical_grade_l1_rare",
+      "name": "Medical-Grade Life Support",
+      "description": "Hospital-level filtration and monitoring. Keeps crew healthy and alert.",
+      "system_type": "life_support",
+      "level": 1,
+      "rarity": "rare",
+      "weight": 8.0,
+      "stats": {
+        "crew_capacity": 2,
+        "radiation_protection": 20,
+        "power_cost": 4
+      },
+      "discovered": false,
+      "story_unlock": "mission_medical_facility"
+    },
+    {
       "id": "life_support_climate_control_l2_common",
       "name": "Climate Control System",
       "description": "Temperature and humidity regulation. Much more comfortable.",
@@ -67,6 +83,22 @@
       "story_unlock": null
     },
     {
+      "id": "life_support_luxury_environment_l2_rare",
+      "name": "Luxury Environmental System",
+      "description": "Starship-class comfort. Custom atmospheres, perfect air quality, mood lighting.",
+      "system_type": "life_support",
+      "level": 2,
+      "rarity": "rare",
+      "weight": 15.0,
+      "stats": {
+        "crew_capacity": 8,
+        "radiation_protection": 45,
+        "power_cost": 9
+      },
+      "discovered": false,
+      "story_unlock": "mission_luxury_liner"
+    },
+    {
       "id": "life_support_bio_recycling_l3_common",
       "name": "Advanced Bio-Recycling",
       "description": "Closed-loop life support. Months of self-sufficiency.",
@@ -97,6 +129,22 @@
       },
       "discovered": false,
       "story_unlock": null
+    },
+    {
+      "id": "life_support_ecosystem_module_l3_rare",
+      "name": "Ecosystem Life Support Module",
+      "description": "Self-sustaining biological ecosystem. Living quarters become a garden.",
+      "system_type": "life_support",
+      "level": 3,
+      "rarity": "rare",
+      "weight": 21.0,
+      "stats": {
+        "crew_capacity": 18,
+        "radiation_protection": 65,
+        "power_cost": 14
+      },
+      "discovered": false,
+      "story_unlock": "mission_biodome_research"
     }
   ]
 }
