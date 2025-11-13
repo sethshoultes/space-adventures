@@ -232,9 +232,22 @@ func _get_mission_status(mission: Dictionary) -> String:
 
 	# Check required systems
 	if requirements.has("required_systems") and requirements.required_systems is Array:
-		for system_name in requirements.required_systems:
-			if GameState.ship.systems[system_name].level == 0:
-				return "LOCKED"
+		for system_req in requirements.required_systems:
+			# system_req can be either a string (system name) or dict with {system, level}
+			if system_req is String:
+				# Simple format: just system name, must be installed (level > 0)
+				if GameState.ship.systems[system_req].level == 0:
+					return "LOCKED"
+			elif system_req is Dictionary:
+				# Advanced format: {system: "name", level: N}
+				var system_name = system_req.get("system", "")
+				var required_level = system_req.get("level", 1)
+				if GameState.ship.systems.has(system_name):
+					if GameState.ship.systems[system_name].level < required_level:
+						return "LOCKED"
+				else:
+					push_warning("Mission requires unknown system: " + system_name)
+					return "LOCKED"
 
 	# Check completed missions
 	if requirements.has("completed_missions") and requirements.completed_missions is Array:
