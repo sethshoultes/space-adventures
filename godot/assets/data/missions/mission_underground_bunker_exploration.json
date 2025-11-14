@@ -327,7 +327,7 @@
             },
             "failure": {
               "text": "SENTINEL is unconvinced. 'INSUFFICIENT AUTHORIZATION. SECURITY PROTOCOLS ENGAGED.' Lockdowns activate. You'll need to find another way to the data archives—or convince the AI through actions rather than words.",
-              "next_stage": "security_lockdown",
+              "next_stage": "hostile_lockdown",
               "effects": ["AI_suspicious"],
               "xp_bonus": 10
             }
