@@ -1,0 +1,159 @@
+{
+  "version": "1.0.0",
+  "system_type": "communications",
+  "parts": [
+    {
+      "id": "communications_radio_transceiver_l1_common",
+      "name": "Radio Transceiver",
+      "description": "Hello? Can anyone hear me?",
+      "system_type": "communications",
+      "level": 1,
+      "rarity": "common",
+      "weight": 8.0,
+      "stats": {
+        "comm_range": "short",
+        "translation_languages": 1,
+        "diplomacy_bonus": 0,
+        "power_cost": 5
+      },
+      "discovered": true,
+      "story_unlock": null
+    },
+    {
+      "id": "communications_enhanced_radio_l1_uncommon",
+      "name": "Enhanced Radio Array",
+      "description": "Amplified signal strength extends communication range.",
+      "system_type": "communications",
+      "level": 1,
+      "rarity": "uncommon",
+      "weight": 7.5,
+      "stats": {
+        "comm_range": "short",
+        "translation_languages": 2,
+        "diplomacy_bonus": 2,
+        "power_cost": 5
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "communications_military_radio_l1_rare",
+      "name": "Military Radio System",
+      "description": "Encrypted military communications with superior range and clarity.",
+      "system_type": "communications",
+      "level": 1,
+      "rarity": "rare",
+      "weight": 7.0,
+      "stats": {
+        "comm_range": "short",
+        "translation_languages": 3,
+        "diplomacy_bonus": 3,
+        "power_cost": 4
+      },
+      "discovered": false,
+      "story_unlock": "mission_comm_array"
+    },
+    {
+      "id": "communications_subspace_radio_l2_common",
+      "name": "Subspace Radio Transceiver",
+      "description": "Connected to the local network. Information is power.",
+      "system_type": "communications",
+      "level": 2,
+      "rarity": "common",
+      "weight": 12.0,
+      "stats": {
+        "comm_range": "system",
+        "translation_languages": 10,
+        "diplomacy_bonus": 10,
+        "power_cost": 8
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "communications_advanced_subspace_l2_uncommon",
+      "name": "Advanced Subspace Array",
+      "description": "Multi-channel subspace communication with improved encryption.",
+      "system_type": "communications",
+      "level": 2,
+      "rarity": "uncommon",
+      "weight": 11.0,
+      "stats": {
+        "comm_range": "system",
+        "translation_languages": 15,
+        "diplomacy_bonus": 12,
+        "power_cost": 8
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "communications_diplomatic_array_l2_rare",
+      "name": "Diplomatic Communications Suite",
+      "description": "Specialized for first contact scenarios with extensive language database.",
+      "system_type": "communications",
+      "level": 2,
+      "rarity": "rare",
+      "weight": 10.0,
+      "stats": {
+        "comm_range": "system",
+        "translation_languages": 20,
+        "diplomacy_bonus": 15,
+        "power_cost": 7
+      },
+      "discovered": false,
+      "story_unlock": "mission_comm_array"
+    },
+    {
+      "id": "communications_universal_translator_l3_common",
+      "name": "Universal Translator Matrix",
+      "description": "Speak to anyone, anywhere. The galaxy becomes much friendlier.",
+      "system_type": "communications",
+      "level": 3,
+      "rarity": "common",
+      "weight": 18.0,
+      "stats": {
+        "comm_range": "galaxy",
+        "translation_languages": 999999,
+        "diplomacy_bonus": 20,
+        "power_cost": 12
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "communications_enhanced_translator_l3_uncommon",
+      "name": "Enhanced Universal Translator",
+      "description": "Real-time translation with cultural context and diplomatic protocols.",
+      "system_type": "communications",
+      "level": 3,
+      "rarity": "uncommon",
+      "weight": 16.0,
+      "stats": {
+        "comm_range": "galaxy",
+        "translation_languages": 999999,
+        "diplomacy_bonus": 23,
+        "power_cost": 11
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "communications_federation_translator_l3_rare",
+      "name": "Federation Translator System",
+      "description": "Top-tier diplomatic communications with galactic network access.",
+      "system_type": "communications",
+      "level": 3,
+      "rarity": "rare",
+      "weight": 15.0,
+      "stats": {
+        "comm_range": "galaxy",
+        "translation_languages": 999999,
+        "diplomacy_bonus": 25,
+        "power_cost": 10
+      },
+      "discovered": false,
+      "story_unlock": "mission_comm_array"
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "version": "1.0.0",
+  "system_type": "shields",
+  "parts": [
+    {
+      "id": "shields_deflector_screen_l1_common",
+      "name": "Deflector Screen Emitter",
+      "description": "Better than nothing. Barely.",
+      "system_type": "shields",
+      "level": 1,
+      "rarity": "common",
+      "weight": 18.0,
+      "stats": {
+        "shield_hp": 50,
+        "damage_reduction": 25,
+        "recharge_rate": 5,
+        "power_cost": 15
+      },
+      "discovered": true,
+      "story_unlock": null
+    },
+    {
+      "id": "shields_enhanced_deflector_l1_uncommon",
+      "name": "Enhanced Deflector Screen",
+      "description": "Improved field stability increases protection and recharge efficiency.",
+      "system_type": "shields",
+      "level": 1,
+      "rarity": "uncommon",
+      "weight": 17.0,
+      "stats": {
+        "shield_hp": 55,
+        "damage_reduction": 28,
+        "recharge_rate": 6,
+        "power_cost": 15
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "shields_reinforced_deflector_l1_rare",
+      "name": "Reinforced Deflector Array",
+      "description": "Military-grade deflector with redundant emitters for superior protection.",
+      "system_type": "shields",
+      "level": 1,
+      "rarity": "rare",
+      "weight": 16.0,
+      "stats": {
+        "shield_hp": 60,
+        "damage_reduction": 30,
+        "recharge_rate": 7,
+        "power_cost": 14
+      },
+      "discovered": false,
+      "story_unlock": "mission_shield_research"
+    },
+    {
+      "id": "shields_standard_generator_l2_common",
+      "name": "Standard Shield Generator",
+      "description": "Solid protection. Standard across the galaxy.",
+      "system_type": "shields",
+      "level": 2,
+      "rarity": "common",
+      "weight": 30.0,
+      "stats": {
+        "shield_hp": 150,
+        "damage_reduction": 50,
+        "recharge_rate": 15,
+        "power_cost": 25
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "shields_improved_generator_l2_uncommon",
+      "name": "Improved Shield Generator",
+      "description": "Enhanced field density and faster recharge make this a significant upgrade.",
+      "system_type": "shields",
+      "level": 2,
+      "rarity": "uncommon",
+      "weight": 28.0,
+      "stats": {
+        "shield_hp": 165,
+        "damage_reduction": 52,
+        "recharge_rate": 17,
+        "power_cost": 24
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "shields_military_generator_l2_rare",
+      "name": "Military Shield Generator",
+      "description": "Battle-tested shield system with rapid recharge and superior absorption.",
+      "system_type": "shields",
+      "level": 2,
+      "rarity": "rare",
+      "weight": 26.0,
+      "stats": {
+        "shield_hp": 175,
+        "damage_reduction": 55,
+        "recharge_rate": 18,
+        "power_cost": 23
+      },
+      "discovered": false,
+      "story_unlock": "mission_shield_research"
+    },
+    {
+      "id": "shields_multilayer_array_l3_common",
+      "name": "Multi-Layered Shield Array",
+      "description": "Multiple shield layers provide excellent protection.",
+      "system_type": "shields",
+      "level": 3,
+      "rarity": "common",
+      "weight": 45.0,
+      "stats": {
+        "shield_hp": 300,
+        "damage_reduction": 70,
+        "recharge_rate": 30,
+        "power_cost": 40
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "shields_advanced_multilayer_l3_uncommon",
+      "name": "Advanced Multi-Layer System",
+      "description": "Redundant layers with rapid field regeneration for sustained protection.",
+      "system_type": "shields",
+      "level": 3,
+      "rarity": "uncommon",
+      "weight": 42.0,
+      "stats": {
+        "shield_hp": 330,
+        "damage_reduction": 72,
+        "recharge_rate": 33,
+        "power_cost": 38
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "shields_fortress_array_l3_rare",
+      "name": "Fortress Shield Array",
+      "description": "Heavy-duty military shielding with maximum protection and rapid recovery.",
+      "system_type": "shields",
+      "level": 3,
+      "rarity": "rare",
+      "weight": 40.0,
+      "stats": {
+        "shield_hp": 350,
+        "damage_reduction": 75,
+        "recharge_rate": 35,
+        "power_cost": 37
+      },
+      "discovered": false,
+      "story_unlock": "mission_shield_research"
+    }
+  ]
+}

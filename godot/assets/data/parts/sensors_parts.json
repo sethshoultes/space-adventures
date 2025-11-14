@@ -1,0 +1,150 @@
+{
+  "version": "1.0.0",
+  "system_type": "sensors",
+  "parts": [
+    {
+      "id": "sensors_optical_array_l1_common",
+      "name": "Optical Sensor Array",
+      "description": "Fancy cameras pointed at space.",
+      "system_type": "sensors",
+      "level": 1,
+      "rarity": "common",
+      "weight": 12.0,
+      "stats": {
+        "detection_range": 1.0,
+        "scan_quality": 50,
+        "power_cost": 5
+      },
+      "discovered": true,
+      "story_unlock": null
+    },
+    {
+      "id": "sensors_enhanced_optics_l1_uncommon",
+      "name": "Enhanced Optical System",
+      "description": "Multi-spectrum cameras with improved resolution and range.",
+      "system_type": "sensors",
+      "level": 1,
+      "rarity": "uncommon",
+      "weight": 11.0,
+      "stats": {
+        "detection_range": 1.2,
+        "scan_quality": 55,
+        "power_cost": 5
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "sensors_military_optics_l1_rare",
+      "name": "Military-Grade Optical Sensors",
+      "description": "Precision targeting cameras salvaged from military hardware.",
+      "system_type": "sensors",
+      "level": 1,
+      "rarity": "rare",
+      "weight": 10.0,
+      "stats": {
+        "detection_range": 1.5,
+        "scan_quality": 60,
+        "power_cost": 4
+      },
+      "discovered": false,
+      "story_unlock": "mission_military_cache"
+    },
+    {
+      "id": "sensors_em_spectrum_l2_common",
+      "name": "EM Spectrum Sensor Suite",
+      "description": "See across the electromagnetic spectrum. Much more useful.",
+      "system_type": "sensors",
+      "level": 2,
+      "rarity": "common",
+      "weight": 20.0,
+      "stats": {
+        "detection_range": 5.0,
+        "scan_quality": 70,
+        "power_cost": 10
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "sensors_advanced_em_l2_uncommon",
+      "name": "Advanced EM Array",
+      "description": "Refined signal processing extends detection range and clarity.",
+      "system_type": "sensors",
+      "level": 2,
+      "rarity": "uncommon",
+      "weight": 18.0,
+      "stats": {
+        "detection_range": 6.0,
+        "scan_quality": 75,
+        "power_cost": 9
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "sensors_quantum_em_l2_rare",
+      "name": "Quantum-Enhanced EM Sensors",
+      "description": "Quantum interference patterns reveal hidden details.",
+      "system_type": "sensors",
+      "level": 2,
+      "rarity": "rare",
+      "weight": 16.0,
+      "stats": {
+        "detection_range": 7.0,
+        "scan_quality": 80,
+        "power_cost": 8
+      },
+      "discovered": false,
+      "story_unlock": "mission_research_facility"
+    },
+    {
+      "id": "sensors_subspace_array_l3_common",
+      "name": "Subspace Sensor Array",
+      "description": "Peer deep into space. Little escapes your notice.",
+      "system_type": "sensors",
+      "level": 3,
+      "rarity": "common",
+      "weight": 35.0,
+      "stats": {
+        "detection_range": 50.0,
+        "scan_quality": 85,
+        "power_cost": 20
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "sensors_enhanced_subspace_l3_uncommon",
+      "name": "Enhanced Subspace Array",
+      "description": "Amplified subspace resonance improves range and penetration.",
+      "system_type": "sensors",
+      "level": 3,
+      "rarity": "uncommon",
+      "weight": 32.0,
+      "stats": {
+        "detection_range": 60.0,
+        "scan_quality": 90,
+        "power_cost": 18
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "sensors_tactical_subspace_l3_rare",
+      "name": "Tactical Subspace Sensors",
+      "description": "Military-grade long-range sensors with threat analysis capabilities.",
+      "system_type": "sensors",
+      "level": 3,
+      "rarity": "rare",
+      "weight": 30.0,
+      "stats": {
+        "detection_range": 70.0,
+        "scan_quality": 95,
+        "power_cost": 17
+      },
+      "discovered": false,
+      "story_unlock": "mission_military_cache"
+    }
+  ]
+}

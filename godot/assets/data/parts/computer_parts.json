@@ -1,0 +1,150 @@
+{
+  "version": "1.0.0",
+  "system_type": "computer",
+  "parts": [
+    {
+      "id": "computer_basic_core_l1_common",
+      "name": "Basic Computer Core",
+      "description": "Calculator with delusions of grandeur.",
+      "system_type": "computer",
+      "level": 1,
+      "rarity": "common",
+      "weight": 10.0,
+      "stats": {
+        "processing_power": 1,
+        "automation_level": 0,
+        "power_cost": 5
+      },
+      "discovered": true,
+      "story_unlock": null
+    },
+    {
+      "id": "computer_enhanced_core_l1_uncommon",
+      "name": "Enhanced Computer Core",
+      "description": "Faster processor and more memory for improved calculations.",
+      "system_type": "computer",
+      "level": 1,
+      "rarity": "uncommon",
+      "weight": 9.5,
+      "stats": {
+        "processing_power": 1,
+        "automation_level": 5,
+        "power_cost": 5
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "computer_advanced_core_l1_rare",
+      "name": "Advanced Computer Core",
+      "description": "Cutting-edge processors deliver superior computational performance.",
+      "system_type": "computer",
+      "level": 1,
+      "rarity": "rare",
+      "weight": 9.0,
+      "stats": {
+        "processing_power": 1,
+        "automation_level": 8,
+        "power_cost": 4
+      },
+      "discovered": false,
+      "story_unlock": "mission_ai_laboratory"
+    },
+    {
+      "id": "computer_standard_ai_l2_common",
+      "name": "Standard AI Core",
+      "description": "Helpful AI assistant. Follows orders without complaint.",
+      "system_type": "computer",
+      "level": 2,
+      "rarity": "common",
+      "weight": 15.0,
+      "stats": {
+        "processing_power": 2,
+        "automation_level": 20,
+        "power_cost": 10
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "computer_improved_ai_l2_uncommon",
+      "name": "Improved AI Matrix",
+      "description": "Enhanced learning algorithms and faster threat assessment.",
+      "system_type": "computer",
+      "level": 2,
+      "rarity": "uncommon",
+      "weight": 14.0,
+      "stats": {
+        "processing_power": 2,
+        "automation_level": 25,
+        "power_cost": 9
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "computer_intelligent_ai_l2_rare",
+      "name": "Intelligent AI System",
+      "description": "Advanced neural network with superior decision-making capabilities.",
+      "system_type": "computer",
+      "level": 2,
+      "rarity": "rare",
+      "weight": 13.0,
+      "stats": {
+        "processing_power": 2,
+        "automation_level": 28,
+        "power_cost": 9
+      },
+      "discovered": false,
+      "story_unlock": "mission_ai_laboratory"
+    },
+    {
+      "id": "computer_advanced_ai_l3_common",
+      "name": "Advanced AI Core",
+      "description": "Intelligent AI that learns and adapts. Almost like having a crew.",
+      "system_type": "computer",
+      "level": 3,
+      "rarity": "common",
+      "weight": 25.0,
+      "stats": {
+        "processing_power": 3,
+        "automation_level": 40,
+        "power_cost": 20
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "computer_quantum_ai_l3_uncommon",
+      "name": "Quantum AI Processor",
+      "description": "Quantum computing enables predictive analysis and tactical mastery.",
+      "system_type": "computer",
+      "level": 3,
+      "rarity": "uncommon",
+      "weight": 23.0,
+      "stats": {
+        "processing_power": 3,
+        "automation_level": 45,
+        "power_cost": 18
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "computer_tactical_ai_l3_rare",
+      "name": "Tactical AI Core",
+      "description": "Military-grade AI with combat automation and emergency protocols.",
+      "system_type": "computer",
+      "level": 3,
+      "rarity": "rare",
+      "weight": 21.0,
+      "stats": {
+        "processing_power": 3,
+        "automation_level": 50,
+        "power_cost": 17
+      },
+      "discovered": false,
+      "story_unlock": "mission_ai_laboratory"
+    }
+  ]
+}

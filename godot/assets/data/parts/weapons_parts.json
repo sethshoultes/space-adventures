@@ -1,0 +1,162 @@
+{
+  "version": "1.0.0",
+  "system_type": "weapons",
+  "parts": [
+    {
+      "id": "weapons_laser_cannon_l1_common",
+      "name": "Salvaged Laser Cannon",
+      "description": "Salvaged mining laser. It'll hurt... eventually.",
+      "system_type": "weapons",
+      "level": 1,
+      "rarity": "common",
+      "weight": 15.0,
+      "stats": {
+        "damage_min": 15,
+        "damage_max": 25,
+        "accuracy": 70,
+        "power_cost": 10
+      },
+      "discovered": true,
+      "story_unlock": null
+    },
+    {
+      "id": "weapons_focused_laser_l1_uncommon",
+      "name": "Focused Laser Array",
+      "description": "Improved beam coherence increases damage and accuracy.",
+      "system_type": "weapons",
+      "level": 1,
+      "rarity": "uncommon",
+      "weight": 14.0,
+      "stats": {
+        "damage_min": 17,
+        "damage_max": 28,
+        "accuracy": 75,
+        "power_cost": 10
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "weapons_precision_laser_l1_rare",
+      "name": "Precision Laser System",
+      "description": "Military-grade targeting increases critical hit potential.",
+      "system_type": "weapons",
+      "level": 1,
+      "rarity": "rare",
+      "weight": 13.0,
+      "stats": {
+        "damage_min": 18,
+        "damage_max": 30,
+        "accuracy": 78,
+        "power_cost": 9
+      },
+      "discovered": false,
+      "story_unlock": "mission_weapons_depot"
+    },
+    {
+      "id": "weapons_phaser_array_l2_common",
+      "name": "Standard Phaser Array",
+      "description": "Standard energy weapon. Reliable and accurate.",
+      "system_type": "weapons",
+      "level": 2,
+      "rarity": "common",
+      "weight": 25.0,
+      "stats": {
+        "damage_min": 30,
+        "damage_max": 50,
+        "accuracy": 80,
+        "power_cost": 20
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "weapons_enhanced_phaser_l2_uncommon",
+      "name": "Enhanced Phaser Array",
+      "description": "Variable power settings and targeting flexibility improve combat options.",
+      "system_type": "weapons",
+      "level": 2,
+      "rarity": "uncommon",
+      "weight": 23.0,
+      "stats": {
+        "damage_min": 33,
+        "damage_max": 55,
+        "accuracy": 82,
+        "power_cost": 19
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "weapons_tactical_phaser_l2_rare",
+      "name": "Tactical Phaser System",
+      "description": "Military-grade phaser array with subsystem targeting capability.",
+      "system_type": "weapons",
+      "level": 2,
+      "rarity": "rare",
+      "weight": 21.0,
+      "stats": {
+        "damage_min": 35,
+        "damage_max": 58,
+        "accuracy": 85,
+        "power_cost": 18
+      },
+      "discovered": false,
+      "story_unlock": "mission_weapons_depot"
+    },
+    {
+      "id": "weapons_photon_torpedoes_l3_common",
+      "name": "Photon Torpedo System",
+      "description": "Serious firepower. You can hold your own in a fight.",
+      "system_type": "weapons",
+      "level": 3,
+      "rarity": "common",
+      "weight": 40.0,
+      "stats": {
+        "damage_min": 40,
+        "damage_max": 60,
+        "accuracy": 85,
+        "power_cost": 35,
+        "has_torpedoes": true
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "weapons_enhanced_torpedoes_l3_uncommon",
+      "name": "Enhanced Torpedo System",
+      "description": "Improved torpedo guidance and phaser accuracy for superior combat performance.",
+      "system_type": "weapons",
+      "level": 3,
+      "rarity": "uncommon",
+      "weight": 37.0,
+      "stats": {
+        "damage_min": 43,
+        "damage_max": 65,
+        "accuracy": 87,
+        "power_cost": 33,
+        "has_torpedoes": true
+      },
+      "discovered": false,
+      "story_unlock": null
+    },
+    {
+      "id": "weapons_military_arsenal_l3_rare",
+      "name": "Military Arsenal Package",
+      "description": "Complete military weapons package with advanced targeting and maximum firepower.",
+      "system_type": "weapons",
+      "level": 3,
+      "rarity": "rare",
+      "weight": 35.0,
+      "stats": {
+        "damage_min": 45,
+        "damage_max": 68,
+        "accuracy": 90,
+        "power_cost": 32,
+        "has_torpedoes": true
+      },
+      "discovered": false,
+      "story_unlock": "mission_weapons_depot"
+    }
+  ]
+}
