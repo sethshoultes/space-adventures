@@ -4,6 +4,10 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings
 
+# Project root is the parent of server/
+_SERVER_DIR = Path(__file__).resolve().parent.parent  # server/src -> server/
+_PROJECT_ROOT = _SERVER_DIR.parent  # server/ -> project root
+
 
 class Settings(BaseSettings):
     """Server configuration loaded from environment variables."""
@@ -26,14 +30,14 @@ class Settings(BaseSettings):
     # Redis (optional, for future event queue)
     redis_url: str = "redis://localhost:6379"
 
-    # Database
-    database_path: str = "./space_adventures.db"
+    # Database — stored in server/ directory
+    database_path: str = str(_SERVER_DIR / "space_adventures.db")
 
-    # Memory
-    memory_dir: str = "./memory"
+    # Memory — stored at project root memory/ directory
+    memory_dir: str = str(_PROJECT_ROOT / "memory")
 
-    # Game data
-    game_data_dir: str = str(Path(__file__).resolve().parent / "data")
+    # Game data — bundled inside server/src/data/
+    game_data_dir: str = str(_SERVER_DIR / "src" / "data")
 
     model_config = {"env_file": ".env", "env_prefix": "SA_"}
 
