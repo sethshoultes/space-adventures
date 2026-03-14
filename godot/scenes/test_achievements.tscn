@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://c3k8ymqw1vsqb"]
-
-[ext_resource type="Script" path="res://scripts/test_achievements.gd" id="1_test_achievements"]
-
-[node name="TestAchievements" type="Node"]
-script = ExtResource("1_test_achievements")
