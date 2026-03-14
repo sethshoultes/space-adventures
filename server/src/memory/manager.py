@@ -10,7 +10,7 @@ structured by category.
 from __future__ import annotations
 
 import re
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 
@@ -197,7 +197,7 @@ class MemoryManager:
 
         # Daily logs (today + yesterday)
         today = date.today().isoformat()
-        yesterday = (date.today().replace(day=date.today().day - 1)).isoformat() if date.today().day > 1 else None
+        yesterday = (date.today() - timedelta(days=1)).isoformat()
         for day_str in [yesterday, today]:
             if day_str is None:
                 continue
