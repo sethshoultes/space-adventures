@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useChatStore } from '../stores/chatStore';
-import { sendWSMessage, sendChoice } from '../api/client';
+import { sendWSMessage, sendMessage } from '../api/client';
 import { useGameStore } from '../stores/gameStore';
 import type { ChatMessage } from '../types/game';
 
@@ -73,15 +73,19 @@ function MessageBubble({ message }: { message: ChatMessage }) {
 
 function ChoiceButton({ choice }: { choice: { id: string; text: string; disabled?: boolean } }) {
   const connected = useGameStore((s) => s.connected);
+  const sessionId = useGameStore((s) => s.sessionId);
   const isStreaming = useChatStore((s) => s.isStreaming);
 
   const handleClick = () => {
     if (choice.disabled || isStreaming) return;
     useChatStore.getState().addPlayerMessage(choice.text);
+    // Send choice text as a message — the Game Master handles it narratively
     if (connected) {
-      sendWSMessage('player_choice', { choice_id: choice.id });
-    } else {
-      sendChoice(choice.id).catch((err) => {
+      sendWSMessage(choice.text);
+    } else if (sessionId) {
+      sendMessage(sessionId, choice.text).then((res) => {
+        useChatStore.getState().addNarrative(res.response, 'GM');
+      }).catch((err) => {
         useChatStore.getState().addError(`Choice failed: ${err.message}`);
       });
     }

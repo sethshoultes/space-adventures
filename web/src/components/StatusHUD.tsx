@@ -18,8 +18,8 @@ export default function StatusHUD() {
   const world = useGameStore((s) => s.world);
   const connected = useGameStore((s) => s.connected);
 
-  const xpPercent = player.xpToNext > 0
-    ? Math.round((player.xp / player.xpToNext) * 100)
+  const xpPercent = player.xp_to_next > 0
+    ? Math.round((player.xp / player.xp_to_next) * 100)
     : 0;
 
   return (
@@ -55,7 +55,7 @@ export default function StatusHUD() {
 
       {/* Right: Player Stats */}
       <div className="status-hud__right">
-        <span className="status-hud__location">📍 {world.currentLocation}</span>
+        <span className="status-hud__location">📍 Phase {world.phase}</span>
         <span className="status-hud__credits">⚡ {player.credits} CR</span>
         <div className="status-hud__level">
           <span>★ Lv.{player.level}</span>

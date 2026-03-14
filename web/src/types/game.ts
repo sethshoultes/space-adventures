@@ -1,56 +1,66 @@
-// ── Game Types ──────────────────────────────────────────────
+// ── Game Types (match server snake_case JSON) ──────────────
 
 export interface PlayerState {
   name: string;
   level: number;
   xp: number;
-  xpToNext: number;
+  xp_to_next: number;
   credits: number;
+  skill_points: number;
   skills: Record<string, number>;
 }
 
 export interface ShipSystem {
   name: string;
+  display_name: string;
   level: number;
-  maxLevel: number;
   health: number;
-  maxHealth: number;
   active: boolean;
-  powerCost: number;
+  installed_part: string | null;
+  power_cost: number;
 }
 
 export interface ShipState {
   name: string;
   classification: string;
   systems: Record<string, ShipSystem>;
-  hullHp: number;
-  maxHullHp: number;
-  powerAvailable: number;
-  powerTotal: number;
+  inventory: InventoryItem[];
+  hull_hp: number;
+  max_hull_hp: number;
+  power_available: number;
+  power_total: number;
 }
 
 export interface WorldState {
   phase: number;
-  currentLocation: string;
-  activeMission: string | null;
-  completedMissions: string[];
-  discoveredLocations: string[];
+  completed_missions: string[];
+  active_mission_id: string | null;
+  active_stage_id: string | null;
+  discovered_locations: string[];
+  discovered_parts: string[];
+  major_choices: string[];
+  active_effects: string[];
+  factions: Record<string, number>;
+  active_events: string[];
 }
 
 export interface GameState {
+  session_id: string;
   player: PlayerState;
   ship: ShipState;
   world: WorldState;
-  inventory: InventoryItem[];
+  turn_count: number;
 }
 
 export interface InventoryItem {
-  id: string;
+  item_id: string;
   name: string;
-  type: string;
-  rarity: 'common' | 'uncommon' | 'rare' | 'legendary';
-  quantity: number;
   description: string;
+  quantity: number;
+  rarity: string;
+  weight: number;
+  system_type: string | null;
+  level: number;
 }
 
 // ── Chat Types ──────────────────────────────────────────────
@@ -61,7 +71,6 @@ export interface ChatChoice {
   id: string;
   text: string;
   disabled?: boolean;
-  requiresLevel?: number;
 }
 
 export interface ChatMessage {
@@ -74,24 +83,43 @@ export interface ChatMessage {
   isStreaming?: boolean;
 }
 
-// ── API Types ───────────────────────────────────────────────
+// ── WebSocket Message Types ─────────────────────────────────
 
 export interface WSMessage {
-  type: 'narrative' | 'choices' | 'state_update' | 'system' | 'error' | 'stream_start' | 'stream_chunk' | 'stream_end';
+  type: 'narrative' | 'state_update' | 'error' | 'stream_start' | 'stream_chunk' | 'stream_end' | 'pong';
   payload: Record<string, unknown>;
 }
 
-export interface APIResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  error?: string;
+// ── API Response Types ──────────────────────────────────────
+
+export interface NewGameResponse {
+  session_id: string;
+  message: string;
+}
+
+export interface MessageResponse {
+  session_id: string;
+  response: string;
+  turn: number;
+}
+
+export interface SaveListResponse {
+  saves: Array<{
+    session_id: string;
+    player_name: string;
+    player_level: number;
+    phase: number;
+    turn_count: number;
+    created_at: string;
+    updated_at: string;
+  }>;
 }
 
 // ── Ship system names constant ──────────────────────────────
 
 export const SYSTEM_NAMES = [
-  'hull', 'power_core', 'propulsion', 'warp_drive', 'life_support',
-  'computer_core', 'sensors', 'shields', 'weapons', 'communications',
+  'hull', 'power', 'propulsion', 'warp', 'life_support',
+  'computer', 'sensors', 'shields', 'weapons', 'communications',
 ] as const;
 
 export type SystemName = typeof SYSTEM_NAMES[number];
@@ -102,35 +130,42 @@ export const DEFAULT_PLAYER: PlayerState = {
   name: 'Captain',
   level: 1,
   xp: 0,
-  xpToNext: 200,
-  credits: 100,
+  xp_to_next: 100,
+  credits: 0,
+  skill_points: 0,
   skills: { engineering: 0, diplomacy: 0, combat: 0, science: 0 },
 };
 
 const makeSystem = (name: string): ShipSystem => ({
   name,
+  display_name: name.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
   level: 0,
-  maxLevel: 5,
   health: 100,
-  maxHealth: 100,
   active: false,
-  powerCost: 0,
+  installed_part: null,
+  power_cost: 0,
 });
 
 export const DEFAULT_SHIP: ShipState = {
   name: 'Unnamed Vessel',
-  classification: 'Unclassified',
+  classification: 'Hulk',
   systems: Object.fromEntries(SYSTEM_NAMES.map(n => [n, makeSystem(n)])),
-  hullHp: 0,
-  maxHullHp: 100,
-  powerAvailable: 0,
-  powerTotal: 0,
+  inventory: [],
+  hull_hp: 0,
+  max_hull_hp: 0,
+  power_available: 0,
+  power_total: 0,
 };
 
 export const DEFAULT_WORLD: WorldState = {
   phase: 1,
-  currentLocation: 'Abandoned Shipyard',
-  activeMission: null,
-  completedMissions: [],
-  discoveredLocations: ['Abandoned Shipyard'],
+  completed_missions: [],
+  active_mission_id: null,
+  active_stage_id: null,
+  discovered_locations: [],
+  discovered_parts: [],
+  major_choices: [],
+  active_effects: [],
+  factions: {},
+  active_events: [],
 };

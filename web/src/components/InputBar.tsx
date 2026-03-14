@@ -1,21 +1,20 @@
 import { useState, useCallback, type KeyboardEvent } from 'react';
 import { useChatStore } from '../stores/chatStore';
-import { sendWSMessage, sendAction } from '../api/client';
+import { sendWSMessage, sendMessage } from '../api/client';
 import { useGameStore } from '../stores/gameStore';
 
 const COMMANDS: Record<string, string> = {
   '/help': 'Show available commands',
   '/save': 'Save your game',
-  '/load': 'Load a saved game',
   '/status': 'Show ship status',
   '/systems': 'Toggle systems panel',
-  '/inventory': 'Show inventory',
 };
 
 export default function InputBar() {
   const [input, setInput] = useState('');
   const isStreaming = useChatStore((s) => s.isStreaming);
   const connected = useGameStore((s) => s.connected);
+  const sessionId = useGameStore((s) => s.sessionId);
   const addPlayerMessage = useChatStore((s) => s.addPlayerMessage);
   const addSystem = useChatStore((s) => s.addSystem);
 
@@ -40,17 +39,21 @@ export default function InputBar() {
 
     addPlayerMessage(text);
 
-    // Send via WebSocket if connected, otherwise REST
+    // Send via WebSocket if connected, otherwise REST fallback
     if (connected) {
-      sendWSMessage('player_action', { action: text });
-    } else {
-      sendAction(text).catch((err) => {
+      sendWSMessage(text);
+    } else if (sessionId) {
+      sendMessage(sessionId, text).then((res) => {
+        useChatStore.getState().addNarrative(res.response, 'GM');
+      }).catch((err) => {
         useChatStore.getState().addError(`Failed to send: ${err.message}`);
       });
+    } else {
+      useChatStore.getState().addError('No active session. Start a new game first.');
     }
 
     setInput('');
-  }, [input, connected, addPlayerMessage, addSystem]);
+  }, [input, connected, sessionId, addPlayerMessage, addSystem]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {

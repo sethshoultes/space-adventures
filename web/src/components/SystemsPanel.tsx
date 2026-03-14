@@ -12,7 +12,7 @@ function healthColor(health: number): string {
   return '#ff4444';
 }
 
-function levelBar(level: number, maxLevel: number): string {
+function levelBar(level: number, maxLevel = 5): string {
   const filled = '█'.repeat(level);
   const empty = '░'.repeat(maxLevel - level);
   return filled + empty;
@@ -39,7 +39,7 @@ export default function SystemsPanel() {
         <div className="systems-panel__header">
           <h3>Ship Systems</h3>
           <span className="systems-panel__power">
-            ⚡ {ship.powerAvailable}/{ship.powerTotal} PWR
+            ⚡ {ship.power_available}/{ship.power_total} PWR
           </span>
         </div>
         <div className="systems-panel__list">
@@ -60,8 +60,8 @@ export default function SystemsPanel() {
                   </span>
                 </div>
                 <div className="systems-panel__item-details">
-                  <span className="systems-panel__item-level" title={`Level ${sys.level}/${sys.maxLevel}`}>
-                    {levelBar(sys.level, sys.maxLevel)}
+                  <span className="systems-panel__item-level" title={`Level ${sys.level}/5`}>
+                    {levelBar(sys.level)}
                   </span>
                   <span
                     className="systems-panel__item-health"

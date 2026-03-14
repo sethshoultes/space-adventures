@@ -606,6 +606,60 @@ body {
   font-weight: 600;
 }
 
+/* ── Start Screen ───────────────────────────────────────── */
+.app__start-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+  background: radial-gradient(ellipse at center, #0d1a2d 0%, var(--bg-deep) 70%);
+}
+
+.app__title {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+}
+
+.app__subtitle {
+  font-size: 16px;
+  color: var(--text-dim);
+  font-family: var(--font-narrative);
+  font-style: italic;
+}
+
+.app__start-btn {
+  margin-top: 24px;
+  padding: 14px 40px;
+  background: transparent;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.app__start-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: var(--bg-deep);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+}
+
+.app__start-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 768px) {
   .app__main {

@@ -1,6 +1,19 @@
+/**
+ * API Client — REST + WebSocket communication with the game server.
+ *
+ * REST endpoints match server/src/api/game.py routes.
+ * WebSocket matches server/src/api/ws.py protocol.
+ */
+
 import { useGameStore } from '../stores/gameStore';
 import { useChatStore } from '../stores/chatStore';
-import type { GameState, WSMessage } from '../types/game';
+import type {
+  GameState,
+  NewGameResponse,
+  MessageResponse,
+  SaveListResponse,
+  WSMessage,
+} from '../types/game';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const WS_BASE = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
@@ -8,52 +21,84 @@ const WS_BASE = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
 // ── REST Client ─────────────────────────────────────────────
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
-  const sessionId = useGameStore.getState().sessionId;
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      ...(sessionId ? { 'X-Session-ID': sessionId } : {}),
       ...options?.headers,
     },
   });
   if (!res.ok) {
-    throw new Error(`API error ${res.status}: ${res.statusText}`);
+    const body = await res.text().catch(() => '');
+    throw new Error(`API ${res.status}: ${body || res.statusText}`);
   }
   return res.json();
 }
 
-export async function startNewGame(): Promise<GameState> {
-  return apiFetch<GameState>('/api/game/new', { method: 'POST' });
-}
-
-export async function loadGame(slot: number): Promise<GameState> {
-  return apiFetch<GameState>(`/api/game/load/${slot}`);
-}
-
-export async function saveGame(slot: number): Promise<void> {
-  await apiFetch('/api/game/save', {
+/** Start a new game. Returns session_id and opening narrative. */
+export async function startNewGame(playerName = 'Captain'): Promise<NewGameResponse> {
+  return apiFetch<NewGameResponse>('/api/game/new', {
     method: 'POST',
-    body: JSON.stringify({ slot }),
+    body: JSON.stringify({ player_name: playerName }),
   });
 }
 
-export async function sendAction(action: string): Promise<void> {
-  await apiFetch('/api/game/action', {
+/** Get current game state for a session. */
+export async function getGameState(sessionId: string): Promise<GameState> {
+  return apiFetch<GameState>(`/api/game/state/${sessionId}`);
+}
+
+/** Send a player message to the Game Master (non-streaming). */
+export async function sendMessage(sessionId: string, message: string): Promise<MessageResponse> {
+  return apiFetch<MessageResponse>(`/api/game/message/${sessionId}`, {
     method: 'POST',
-    body: JSON.stringify({ action }),
+    body: JSON.stringify({ message }),
   });
 }
 
-export async function sendChoice(choiceId: string): Promise<void> {
-  await apiFetch('/api/game/choice', {
+/** Send a player message and get a streaming text response. */
+export async function sendMessageStream(
+  sessionId: string,
+  message: string,
+  onChunk: (chunk: string) => void,
+): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/game/message/${sessionId}/stream`, {
     method: 'POST',
-    body: JSON.stringify({ choice_id: choiceId }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message }),
   });
+  if (!res.ok || !res.body) {
+    throw new Error(`Stream error ${res.status}`);
+  }
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    onChunk(decoder.decode(value, { stream: true }));
+  }
 }
 
-export async function getGameState(): Promise<GameState> {
-  return apiFetch<GameState>('/api/game/state');
+/** Save current game state. */
+export async function saveGame(sessionId: string): Promise<void> {
+  await apiFetch(`/api/game/save/${sessionId}`, { method: 'POST' });
+}
+
+/** List all saved games. */
+export async function listSaves(): Promise<SaveListResponse> {
+  return apiFetch<SaveListResponse>('/api/game/saves');
+}
+
+/** Load a saved game. */
+export async function loadGame(sessionId: string): Promise<GameState> {
+  // Load returns summary; fetch full state
+  await apiFetch(`/api/game/load/${sessionId}`, { method: 'POST' });
+  return getGameState(sessionId);
+}
+
+/** Delete a saved game. */
+export async function deleteSave(sessionId: string): Promise<void> {
+  await apiFetch(`/api/game/save/${sessionId}`, { method: 'DELETE' });
 }
 
 // ── WebSocket Client ────────────────────────────────────────
@@ -70,32 +115,16 @@ function handleWSMessage(event: MessageEvent) {
 
     switch (msg.type) {
       case 'narrative':
-        chat.addNarrative(
-          msg.payload.content as string,
-          msg.payload.sender as string | undefined,
-        );
-        break;
-
-      case 'choices':
-        chat.addChoices(msg.payload.choices as { id: string; text: string }[]);
+        chat.addNarrative(msg.payload.content as string, msg.payload.sender as string | undefined);
         break;
 
       case 'state_update':
-        game.updateState(msg.payload as Partial<GameState>);
+        game.applyServerState(msg.payload as Record<string, unknown>);
         break;
 
-      case 'system':
-        chat.addSystem(msg.payload.content as string);
-        break;
-
-      case 'error':
-        chat.addError(msg.payload.message as string);
-        break;
-
-      case 'stream_start': {
+      case 'stream_start':
         chat.startStreaming();
         break;
-      }
 
       case 'stream_chunk': {
         const streamId = chat.streamingMessageId;
@@ -112,16 +141,27 @@ function handleWSMessage(event: MessageEvent) {
         }
         break;
       }
+
+      case 'error':
+        chat.addError(msg.payload.content as string);
+        break;
+
+      case 'pong':
+        break;
     }
   } catch (err) {
-    console.error('Failed to parse WS message:', err);
+    console.error('[WS] Failed to parse message:', err);
   }
 }
 
+/**
+ * Connect WebSocket to game session.
+ * Server route: /ws/{session_id}
+ */
 export function connectWebSocket(sessionId: string) {
   if (ws?.readyState === WebSocket.OPEN) return;
 
-  ws = new WebSocket(`${WS_BASE}/ws/game?session_id=${sessionId}`);
+  ws = new WebSocket(`${WS_BASE}/ws/${sessionId}`);
 
   ws.onopen = () => {
     console.log('[WS] Connected');
@@ -149,15 +189,25 @@ function scheduleReconnect(sessionId: string) {
   setTimeout(() => connectWebSocket(sessionId), delay);
 }
 
-export function sendWSMessage(type: string, payload: Record<string, unknown>) {
+/**
+ * Send a message via WebSocket.
+ * Server expects: {"type": "message", "content": "..."}
+ */
+export function sendWSMessage(content: string) {
   if (ws?.readyState !== WebSocket.OPEN) {
-    console.warn('[WS] Not connected, cannot send message');
+    console.warn('[WS] Not connected');
     return;
   }
-  ws.send(JSON.stringify({ type, payload }));
+  ws.send(JSON.stringify({ type: 'message', content }));
+}
+
+export function sendWSPing() {
+  if (ws?.readyState !== WebSocket.OPEN) return;
+  ws.send(JSON.stringify({ type: 'ping' }));
 }
 
 export function disconnectWebSocket() {
+  reconnectAttempt = Infinity; // Prevent reconnect
   if (ws) {
     ws.close();
     ws = null;

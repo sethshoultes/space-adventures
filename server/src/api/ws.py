@@ -1,4 +1,16 @@
-"""WebSocket API — Real-time streaming game communication."""
+"""WebSocket API — Real-time streaming game communication.
+
+Protocol (aligned with web/src/api/client.ts):
+    Client sends: {"type": "message", "content": "player text"}
+    Client sends: {"type": "ping"}
+    Server sends: {"type": "stream_start", "payload": {}}
+    Server sends: {"type": "stream_chunk", "payload": {"chunk": "text"}}
+    Server sends: {"type": "stream_end", "payload": {}}
+    Server sends: {"type": "state_update", "payload": {...}}
+    Server sends: {"type": "narrative", "payload": {"content": "...", "sender": "GM"}}
+    Server sends: {"type": "error", "payload": {"content": "msg"}}
+    Server sends: {"type": "pong", "payload": {}}
+"""
 
 from __future__ import annotations
 
@@ -29,42 +41,35 @@ def _agent() -> GameMasterAgent:
     return agent
 
 
+def _msg(msg_type: str, payload: dict | None = None) -> dict:
+    """Build a WebSocket message in the frontend-expected format."""
+    return {"type": msg_type, "payload": payload or {}}
+
+
 @router.websocket("/{session_id}")
 async def game_ws(websocket: WebSocket, session_id: str):
-    """WebSocket connection for real-time game interaction.
-
-    Protocol:
-        Client sends: {"type": "message", "content": "player text"}
-        Server sends: {"type": "token", "content": "chunk"}  (streaming)
-        Server sends: {"type": "done", "turn": N}  (end of response)
-        Server sends: {"type": "error", "content": "msg"}  (on error)
-        Server sends: {"type": "state_update", "data": {...}}  (after turn)
-    """
+    """WebSocket connection for real-time game interaction."""
     await websocket.accept()
 
     # Validate session exists
     session = await _db().load_game(session_id)
     if not session:
-        await websocket.send_json({"type": "error", "content": "Session not found"})
+        await websocket.send_json(_msg("error", {"content": "Session not found"}))
         await websocket.close(code=4004)
         return
 
-    # Send initial state
-    await websocket.send_json({
-        "type": "state_update",
-        "data": {
-            "player_name": session.player.name,
-            "player_level": session.player.level,
-            "credits": session.player.credits,
-            "turn": session.turn_count,
-            "phase": session.world.phase,
-            "active_mission": session.world.active_mission_id,
-        },
-    })
+    # Send initial state update
+    await websocket.send_json(_msg("state_update", {
+        "player_name": session.player.name,
+        "player_level": session.player.level,
+        "credits": session.player.credits,
+        "turn": session.turn_count,
+        "phase": session.world.phase,
+        "active_mission": session.world.active_mission_id,
+    }))
 
     try:
         while True:
-            # Receive player message
             raw = await websocket.receive_text()
             try:
                 data = json.loads(raw)
@@ -72,52 +77,61 @@ async def game_ws(websocket: WebSocket, session_id: str):
                 data = {"type": "message", "content": raw}
 
             msg_type = data.get("type", "message")
-            content = data.get("content", "")
 
             if msg_type == "ping":
-                await websocket.send_json({"type": "pong"})
+                await websocket.send_json(_msg("pong"))
                 continue
 
-            if msg_type != "message" or not content.strip():
-                await websocket.send_json({"type": "error", "content": "Send {type: 'message', content: '...'}"})
+            # Extract content from either format
+            content = data.get("content", "")
+            if not content and "payload" in data:
+                content = data["payload"].get("action", "") or data["payload"].get("content", "")
+            if not content.strip():
+                await websocket.send_json(_msg("error", {
+                    "content": "Send {\"type\": \"message\", \"content\": \"your text\"}",
+                }))
                 continue
 
             # Reload session (may have been saved by REST endpoint)
             session = await _db().load_game(session_id)
             if not session:
-                await websocket.send_json({"type": "error", "content": "Session lost"})
+                await websocket.send_json(_msg("error", {"content": "Session lost"}))
                 break
+
+            # Signal stream start
+            await websocket.send_json(_msg("stream_start"))
 
             # Stream Game Master response
             full_response: list[str] = []
             try:
                 async for chunk in _agent().process_turn_streaming(session, content):
                     full_response.append(chunk)
-                    await websocket.send_json({"type": "token", "content": chunk})
+                    await websocket.send_json(_msg("stream_chunk", {"chunk": chunk}))
             except Exception as e:
                 logger.exception("Agent error in WS session %s", session_id)
-                await websocket.send_json({"type": "error", "content": f"Game Master error: {e}"})
+                await websocket.send_json(_msg("error", {
+                    "content": f"Game Master error: {e}",
+                }))
                 continue
+
+            # Signal stream end
+            await websocket.send_json(_msg("stream_end"))
 
             # Save turn
             response_text = "".join(full_response)
             _agent().save_to_history(session, content, response_text)
             await _db().save_game(session)
 
-            # Send completion + state update
-            await websocket.send_json({"type": "done", "turn": session.turn_count})
-            await websocket.send_json({
-                "type": "state_update",
-                "data": {
-                    "player_name": session.player.name,
-                    "player_level": session.player.level,
-                    "credits": session.player.credits,
-                    "xp": session.player.xp,
-                    "turn": session.turn_count,
-                    "phase": session.world.phase,
-                    "active_mission": session.world.active_mission_id,
-                },
-            })
+            # Send state update
+            await websocket.send_json(_msg("state_update", {
+                "player_name": session.player.name,
+                "player_level": session.player.level,
+                "credits": session.player.credits,
+                "xp": session.player.xp,
+                "turn": session.turn_count,
+                "phase": session.world.phase,
+                "active_mission": session.world.active_mission_id,
+            }))
 
     except WebSocketDisconnect:
         logger.info("WebSocket disconnected: session %s", session_id)
