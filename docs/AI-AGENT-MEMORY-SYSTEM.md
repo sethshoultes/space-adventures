@@ -18,6 +18,7 @@ This document describes a **persistent memory system for AI-assisted development
 - Zero session-to-session context loss
 - Consistent decision-making across AI sessions
 - Reduced context window usage (targeted docs vs. full codebase)
+- Successfully adopted in additional projects (e.g., a commercial WordPress plugin: MemberPress Referral Program) to provide persistent context across AI-assisted sessions
 
 **Core Innovation:**
 A structured set of markdown files (`STATUS.md`, `ROADMAP.md`, `DECISIONS.md`, `JOURNAL.md`, `CLAUDE.md`, directory-level `CLAUDE.md`) that provide persistent memory for AI agents across sessions.
