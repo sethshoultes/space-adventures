@@ -1,0 +1,13 @@
+name = "space-adventures-heartbeat"
+main = "src/index.ts"
+compatibility_date = "2026-03-14"
+account_id = "c28ea6353f4a578e429690ad3944c16b"
+
+[triggers]
+crons = ["*/15 * * * *"]
+
+[ai]
+binding = "AI"
+
+[vars]
+GAME_SERVER_URL = "http://localhost:8000"
