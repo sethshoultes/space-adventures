@@ -1,5 +1,7 @@
 """Application configuration using pydantic-settings."""
 
+from pathlib import Path
+
 from pydantic_settings import BaseSettings
 
 
@@ -17,18 +19,21 @@ class Settings(BaseSettings):
     # CORS
     cors_origins: list[str] = ["http://localhost:3000", "http://localhost:5173"]
 
-    # Claude Agent SDK
+    # Anthropic API
     anthropic_api_key: str = ""
     claude_model: str = "claude-sonnet-4-20250514"
 
-    # Redis
+    # Redis (optional, for future event queue)
     redis_url: str = "redis://localhost:6379"
 
     # Database
-    database_url: str = "sqlite+aiosqlite:///./space_adventures.db"
+    database_path: str = "./space_adventures.db"
 
     # Memory
     memory_dir: str = "./memory"
+
+    # Game data
+    game_data_dir: str = str(Path(__file__).resolve().parent / "data")
 
     model_config = {"env_file": ".env", "env_prefix": "SA_"}
 
